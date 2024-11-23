@@ -6,7 +6,6 @@ from sqlalchemy.orm.exc import DetachedInstanceError
 
 
 class AlchemyBaseModel(DeclarativeBase):
-    """Базовый класс для моделей Алхимии. Реализует удобный вывод для дебага."""
 
     __abstract__ = True
 
@@ -21,7 +20,6 @@ class AlchemyBaseModel(DeclarativeBase):
     )
 
     def __repr__(self) -> str:
-        """Вывод информации о моделе в человекочитаемом виде."""
         return self._repr(
             **{
                 c.name: getattr(self, c.name)
@@ -30,11 +28,6 @@ class AlchemyBaseModel(DeclarativeBase):
         )
 
     def _repr(self, **fields: Any) -> str:
-        """
-        Помощник __repr__.
-
-        Взят с https://stackoverflow.com/a/55749579
-        """
         field_strings = []
         at_least_one_attached_attribute = False
 

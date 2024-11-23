@@ -1,0 +1,23 @@
+version: "3.12"
+
+services:
+
+  database:
+    image: postgres:16.2-alpine3.19
+    container_name: SSD-database
+    restart: unless-stopped
+    volumes:
+      - "/var/prod/SSD-bot/db:/var/lib/postgresql/data"
+    ports:
+      - "5678:5432"
+    environment:
+      POSTGRES_DB: SSD_db
+      POSTGRES_USER: SSD
+      POSTGRES_PASSWORD: SSD
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U SSD -d SSD_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s

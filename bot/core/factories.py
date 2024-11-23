@@ -4,15 +4,14 @@ from aiogram import Dispatcher, Bot
 from aiogram.types import BotCommand, BotCommandScopeAllGroupChats
 
 
-from loguru import logger
 from bot.handlers import include_routers
-from bot.core.enums import Commands
+from bot.core.enums import SlashCommands
 
 
 async def set_commands(bot: "Bot") -> None:
     commands: dict[str, str] ={
-        Commands.START: "Старт",
-        Commands.HELP: "Помощь"
+        SlashCommands.START: "Старт",
+        SlashCommands.HELP: "Помощь"
     }
     await bot.set_my_commands(
         [

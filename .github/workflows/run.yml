@@ -1,6 +1,12 @@
 name: Build and Run Docker Compose
 
 on: [ push, pull_request]
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
 
 jobs:
   docker-compose:
@@ -10,11 +16,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Docker Compose
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose
+          sudo apt-get install -y make docker-compose
 
-      - name: Build Docker Images
-        run: docker compose build
+      - name: Run Docker Compose via Makefile
+        run: make run
         shell: bash

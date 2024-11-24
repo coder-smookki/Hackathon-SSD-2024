@@ -5,6 +5,7 @@ import NotFoundPage from "@/pages/NotFoundPage.tsx";
 import EventsPage from "@/pages/EventsPage.tsx";
 import ProtectedRoute from "@/hoc/ProtectedRoute.tsx";
 import { ThemeProvider } from '@/components/theme-provider.tsx';
+import ProfilePage from "@/pages/ProfilePage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -16,6 +17,14 @@ const App: React.FC = () => {
                     element={
                         <ProtectedRoute>
                             <EventsPage/>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage/>
                         </ProtectedRoute>
                     }
                 />

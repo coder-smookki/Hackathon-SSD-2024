@@ -1,4 +1,4 @@
-import { User, Home, Inbox, Search, Settings } from "lucide-react"
+import { User, Inbox } from "lucide-react"
 
 import {
     Sidebar,
@@ -15,29 +15,14 @@ import {Link, useLocation} from "react-router";
 
 const items = [
     {
-        title: "Пусто",
-        url: "#",
-        icon: Home,
-    },
-    {
         title: "Все мероприятия",
         url: "/events",
         icon: Inbox,
     },
     {
         title: "Профиль",
-        url: "#",
+        url: "/profile",
         icon: User,
-    },
-    {
-        title: "Пусто21",
-        url: "#",
-        icon: Search,
-    },
-    {
-        title: "Пусто2",
-        url: "#",
-        icon: Settings,
     },
 ]
 

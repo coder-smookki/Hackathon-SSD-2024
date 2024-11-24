@@ -13,8 +13,6 @@ WORKDIR /app
 
 COPY ./pyproject.toml ./poetry.lock* /app/
 
-ENV DATABASE_URL=postgresql://user:password@localhost/dbname
-
 RUN poetry config virtualenvs.in-project true && \
     poetry install --only main --no-interaction --no-ansi
 
@@ -29,6 +27,8 @@ COPY --from=builder /app/.venv /app/.venv
 
 ENV PATH="/app/.venv/bin:$PATH"
 
+COPY ./alembic.ini ./alembic.ini
+COPY ./migrations ./migrations
 COPY ./scheduler ./scheduler
 COPY ./database ./database
 COPY ./bot ./bot

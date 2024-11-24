@@ -18,7 +18,7 @@ async def database_init(db_settings: DBSettings) -> async_sessionmaker[AsyncSess
     :return: Асинхронный делатель сессий. :)
     """
     database_url = URL.create(
-        drivername="postgres",
+        drivername="postgresql+asyncpg",
         username=db_settings.user,
         password=db_settings.password,
         host=db_settings.host,

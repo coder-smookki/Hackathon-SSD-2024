@@ -1,5 +1,6 @@
-from .user_repo import UserRepo
+from .user_repo import UserAlchemyRepo
+from .base import BaseAlchemyRepo
 
 __all__ = (
-    "UserRepo",
+    "UserAlchemyRepo", "BaseAlchemyRepo"
 )

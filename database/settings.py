@@ -27,12 +27,13 @@ def get_settings() -> Settings:
 
     :return: Настройки.
     """
+
     db = DBSettings(
-        host=os.environ["POSTGRES_HOST"],
-        host_port=int(os.environ["POSTGRES_HOST_PORT"]),
-        db=os.environ["POSTGRES_DB"],
-        user=os.environ["POSTGRES_USER"],
-        password=os.environ["POSTGRES_PASSWORD"],
+        host=os.environ["DB_HOST"],
+        host_port=int(os.environ["DB_PORT"]),
+        db=os.environ["DB_NAME"],
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
     )
 
     # bot = BotSettings(

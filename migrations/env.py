@@ -1,6 +1,7 @@
 import asyncio
 import os
 from logging.config import fileConfig
+from typing import List, Any
 
 from alembic import context
 from alembic.script import ScriptDirectory
@@ -28,7 +29,16 @@ if config.config_file_name is not None:
 target_metadata = AlchemyBaseModel.metadata
 
 
-def process_revision_directives(context, revision, directives):
+def process_revision_directives(context: Any, revision: str, directives: List[object]):
+    """
+    Функция для обработки директив миграции и назначения нового номера ревизии.
+
+    :param context: Контекст миграции Alembic.
+    :param revision: Ревизия.
+    :param directives: Список директив, которые будут переданы в процесс миграции.
+    :return: None
+    """
+
     migration_script = directives[0]
     head_revision = ScriptDirectory.from_config(context.config).get_current_head()
 

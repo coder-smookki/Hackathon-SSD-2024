@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
-from bot.middlewares.request.retry import RetryRequestMiddleware
-from bot.middlewares.outer.save_users_id import SaveUsersIdMiddleware
+from middlewares.request.retry import RetryRequestMiddleware
+from middlewares.outer.save_users_id import SaveUsersIdMiddleware
 
 
 if TYPE_CHECKING:

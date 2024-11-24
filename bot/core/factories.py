@@ -4,8 +4,8 @@ from aiogram import Dispatcher, Bot
 from aiogram.types import BotCommand, BotCommandScopeAllGroupChats
 
 
-from bot.handlers import include_routers
-from bot.core.enums import SlashCommands
+from handlers import include_routers
+from core.utils.enums import SlashCommands
 
 
 async def set_commands(bot: "Bot") -> None:

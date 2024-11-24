@@ -4,7 +4,7 @@ import contextlib
 from dotenv import load_dotenv
 import os
 
-from bot.middlewares import setup_global_middlewares
+from middlewares import setup_global_middlewares
 from core.factories import make_bot, make_disp
 
 

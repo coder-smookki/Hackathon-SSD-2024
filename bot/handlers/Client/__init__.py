@@ -1,7 +1,7 @@
 from aiogram import Router
 
-from bot.handlers.Client.start.private import start as private_start
-from bot.handlers.Client.authorization.auth_users import router_auth
+from handlers.Client.start.private import start as private_start
+from handlers.Client.authorization.auth_users import router_auth
 
 
 client_router = Router()

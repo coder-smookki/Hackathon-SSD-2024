@@ -3,9 +3,9 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from bot.core.enums import SlashCommands, TextCommands
-from bot.handlers.Client.start.private.formulations import START_TEXT, HELP_TEXT
-from bot.keyboards.client.start import start_reply_keyboard
+from core.utils.enums import SlashCommands, TextCommands
+from handlers.Client.start.private.formulations import START_TEXT, HELP_TEXT
+from keyboards.client.start import start_reply_keyboard
 
 
 router = Router(name=__name__)

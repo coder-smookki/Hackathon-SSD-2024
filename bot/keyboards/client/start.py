@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from bot.callbacks.client import ProfileAuthorization, ProfileOpen
-from bot.core.enums import Operation
+from callbacks.client import ProfileAuthorization, ProfileOpen
+from core.utils.enums import Operation
 
 start_reply_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[

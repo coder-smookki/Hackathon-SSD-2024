@@ -9,7 +9,7 @@ from bot.core.enums import SlashCommands
 
 
 async def set_commands(bot: "Bot") -> None:
-    commands: dict[str, str] ={
+    commands: dict[str, str] = {
         SlashCommands.START: "Старт",
         SlashCommands.HELP: "Помощь"
     }

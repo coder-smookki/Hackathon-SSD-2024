@@ -2,6 +2,7 @@ import asyncio
 import os
 from logging.config import fileConfig
 from typing import List, Any
+from dotenv import load_dotenv
 
 from alembic import context
 from alembic.script import ScriptDirectory
@@ -12,13 +13,14 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from database.models import *
 from database.models.base import AlchemyBaseModel
 
+
+load_dotenv() # Загрузка переменных из .env файла
+
 config = context.config
 
 section = config.config_ini_section
 config.set_section_option(section, "DB_HOST", os.environ["DB_HOST"])
-config.set_section_option(
-    section, "DB_PORT", os.environ["DB_PORT"]
-)
+config.set_section_option(section, "DB_PORT", os.environ["DB_PORT"])
 config.set_section_option(section, "DB_NAME", os.environ["DB_NAME"])
 config.set_section_option(section, "DB_USER", os.environ["DB_USER"])
 config.set_section_option(section, "DB_PASSWORD", os.environ["DB_PASSWORD"])

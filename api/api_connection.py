@@ -24,7 +24,7 @@ async def initialize_api_client():
 class AsyncAPIClient:
     _instance: Optional["AsyncAPIClient"] = None
     _client: Optional[httpx.AsyncClient] = None
-    token: str = None
+    token: Optional[str] = None
 
     def __new__(self, base_url: str = None, headers: dict = None, login_data: dict = None):
         # создаем экземпляр только один раз
@@ -69,6 +69,9 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as e:
             print(f"HTTP error during {method} request to {endpoint}: {e}")
             return None
+        
+    async def get_token(self):
+        return self.token
 
     async def get_users(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'users')

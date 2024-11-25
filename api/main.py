@@ -11,6 +11,7 @@ async def main():
     print(events)
     users = await client.get_users_by_id(1)  # Получаем пользователей (тоже асинхронный запрос)
     print(users)
+    print(await client.get_token())
 
 # Запуск основной асинхронной функции
 if __name__ == "__main__":

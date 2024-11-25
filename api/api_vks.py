@@ -73,6 +73,7 @@ class AsyncAPIClient:
     async def get_token(self):
         return self.token
 
+    # requests users {
     async def get_users(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'users')
 
@@ -81,7 +82,9 @@ class AsyncAPIClient:
         
     async def create_user(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', f'users', data=data)
+    # requests users }
     
+    # requests rooms {
     async def get_rooms(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'catalogs/rooms')
 
@@ -90,24 +93,77 @@ class AsyncAPIClient:
 
     async def create_room(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'catalogs/rooms', data=data)
+    # requests rooms }
     
+    # requests events {
     async def get_events(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'events')
 
     async def get_events_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'events/{id}')
 
-    async def create_event(self, endpoint: str, params: dict = None, data: dict = None) -> Optional[Any]:
+    async def create_event(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'events', data=data)
+    # requests events }
     
-    async def get_meetings(self, endpoint: str, params: dict = None) -> Optional[Any]:
-        return await self._make_request('GET', 'meetings?force=true')
+    # requests meetings {
+    async def get_meetings(self, params: dict = None, data: dict = None, toDatetime: str = None, fromDatetime: str = None ) -> Optional[Any]:
+        params = {
+            'state': 'started',
+            'toDatetime': toDatetime,
+            'fromDatetime': fromDatetime,
+        }
+        
+        return await self._make_request('GET', 'meetings', data=data, params=params)
+        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
 
-    async def get_meetings_by_id(self, id: int, endpoint: str, params: dict = None) -> Optional[Any]:
-        return await self._make_request('GET', f'meetings/{id}')
 
-    async def create_meeting(self, endpoint: str, params: dict = None, data: dict = None) -> Optional[Any]:
-        return await self._make_request('POST', 'meetings?force=true', data=data)
+    async def get_meetings_by_id(self, id: int, params: dict = None, data: dict = None) -> Optional[Any]:
+        return await self._make_request('GET', f'meetings/{id}', data=data)
+
+    async def create_meeting(self, params: dict = None,
+                            
+                            name_vks: str = None,
+                            date_vks: str = None, 
+                            duration_vks: int = None, 
+                            participants_count_vks: int = None, ) -> Optional[Any]:
+        data ={
+            "name": name_vks,
+            "comment": "string",
+            "participantsCount": participants_count_vks,
+            "sendNotificationsAt": "2024-11-25T17:32:00.000000",
+            "startedAt": date_vks,
+            "duration": duration_vks,
+            "ciscoSettings": {
+            "isMicrophoneOn": true,
+            "isVideoOn": true,
+            "isWaitingRoomEnabled": true,
+            "needVideoRecording": false
+        },
+        "vinteoSettings": {
+            "needVideoRecording": false
+        },
+            "participants": [
+                {
+                    "id": 544,
+                    "email": "hantaton10.h@mail.ru",
+                    "lastName": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "isApproved": null
+                }
+            ],
+            "recurrenceUpdateType": "only",
+            "isVirtual": false,
+            "state": "booked",
+            "backend": "cisco",
+            "organizedBy": {
+            "id": 544
+        }
+        }
+
+        return await self._make_request('POST', 'meetings', data=data)
+    # requests meetings }
     
     
     #Закрыть клиент при завершении работы.

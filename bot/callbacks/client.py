@@ -6,7 +6,7 @@ class ProfileAuthorization(CallbackData, prefix='authorization'):
 
     operation_auth: str
     # open_profile: bool
-
+    
 
 class ProfileOpen(CallbackData, prefix='profile'):
     '''Фабрика для открытие профиля'''

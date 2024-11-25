@@ -9,6 +9,7 @@ from aiogram.types import TelegramObject
 from callbacks.client import ProfileAuthorization
 
 import logging
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 router_auth = Router(name=__name__)
@@ -20,6 +21,12 @@ class ExtractData(StatesGroup):
     login = State()
     password = State()
     confirm = State()
+
+
+
+# @router_auth.callback_query(ProfileAuthorization.filter(F.operation_auth == "authorization"))
+# async def IsAuthYet(callback: CallbackQuery, data: Dict[str, Any]):
+#     await callback.answer("Вы уже авторизированы")
 
 
 @router_auth.callback_query(ProfileAuthorization.filter(F.operation_auth == "authorization"))

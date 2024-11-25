@@ -1,13 +1,13 @@
 from typing import Callable
 
-from core.models.user import User
-from core.models.user import (
+from bot.core.models.user import User
+from bot.core.models.user import (
     MAX_USER_NAME_LENGTH,
     MAX_USER_EMAIL,
     MAX_TG_NAME_LENGTH,
 ) 
-from core.repositories.user import UserRepo
-from core.utils.enums import ProfileField
+from bot.core.repositories.user import UserRepo
+from bot.core.utils.enums import ProfileField
 
 
 class UserService:

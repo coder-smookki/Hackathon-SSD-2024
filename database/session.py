@@ -2,7 +2,7 @@ from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from database.models.base import AlchemyBaseModel
-from settings import DBSettings
+from database.settings import DBSettings
 
 __all__ = (
     "AlchemyBaseModel",

@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from core.models.base import BaseCoreModel
+from bot.core.models.base import BaseCoreModel
 
 MAX_USER_NAME_LENGTH = 128
 MAX_USER_EMAIL = 254

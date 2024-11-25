@@ -48,4 +48,5 @@ class DatabaseMiddleware(BaseMiddleware):
         """
         async with self.session_maker() as session:
             data[self.session_key] = session  # Передаём сессию в data
+            print(session)
             return await handler(event, data)

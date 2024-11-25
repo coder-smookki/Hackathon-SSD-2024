@@ -11,7 +11,7 @@ import logging
 from typing import TYPE_CHECKING, cast, Union
 from aiogram.types import TelegramObject, Message, User
 
-from core.services.user import UserService
+from bot.core.services.user import UserService
 
 
 if TYPE_CHECKING:
@@ -33,13 +33,10 @@ class SaveUsersIdMiddleware(BaseMiddleware):
         state: FSMContext = data.get("state")
         if state:
             user_data = await state.get_data()
-            if user_data:
+            if user_data.get("confirm") is True:
                 user_info = {
-                    "email": user_data.get("email") or "Не указано",
-                    "login": user_data.get("login") or "Не указано",
-                    "password": user_data.get("password") or "Не указано",
+                    "email": user_data.get("email"),
+                    "password": user_data.get("password")
                 }
                 data[self.USER_INFO_KEY] = user_info
-                print(f"Данные пользователя сохранены в middleware: {user_info}")
         return await handler(event, data)
-

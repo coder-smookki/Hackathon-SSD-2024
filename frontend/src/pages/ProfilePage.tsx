@@ -38,10 +38,10 @@ const ProfilePage: React.FC = () => {
 
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center pt-10">
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center mt-10">
                 Ваш профиль
             </h1>
-            <Card className="w-[93vw]">
+            <Card className="w-[93vw] max-w-2xl mx-auto">
                 <CardContent>
                     {profile ? (
                         <>

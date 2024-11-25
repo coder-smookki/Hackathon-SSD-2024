@@ -1,5 +1,4 @@
-import { User, Inbox } from "lucide-react"
-
+import { User, CalendarPlus, CalendarDays } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -17,7 +16,12 @@ const items = [
     {
         title: "Все мероприятия",
         url: "/events",
-        icon: Inbox,
+        icon: CalendarDays,
+    },
+    {
+        title: "Создать мероприятие",
+        url: "/create-event",
+        icon: CalendarPlus,
     },
     {
         title: "Профиль",

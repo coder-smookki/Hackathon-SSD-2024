@@ -6,6 +6,7 @@ import EventsPage from "@/pages/EventsPage.tsx";
 import ProtectedRoute from "@/hoc/ProtectedRoute.tsx";
 import { ThemeProvider } from '@/components/theme-provider.tsx';
 import ProfilePage from "@/pages/ProfilePage.tsx";
+import CreateEventPage from "@/pages/CreateEventPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -25,6 +26,14 @@ const App: React.FC = () => {
                     element={
                         <ProtectedRoute>
                             <ProfilePage/>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/create-event"
+                    element={
+                        <ProtectedRoute>
+                            <CreateEventPage/>
                         </ProtectedRoute>
                     }
                 />

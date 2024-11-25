@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -38,5 +37,3 @@ async def database_init(db_settings: DBSettings) -> async_sessionmaker[AsyncSess
         future=True,
         expire_on_commit=False,
     )
-=======
->>>>>>> 7a8f03a469b698a80f8f55f3438061037a5b8653

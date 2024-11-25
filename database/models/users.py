@@ -1,7 +1,7 @@
 from typing import Any
 
 from database.models.base import AlchemyBaseModel
-from sqlalchemy import BigInteger, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, ForeignKey, Integer, String, ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 #
@@ -30,6 +30,8 @@ class UserModel(AlchemyBaseModel):
     email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), nullable=False)
     password: Mapped[str] = mapped_column(String(MAX_PASSWORD_LENGTH), nullable=False)
     jwt_token: Mapped[str] = mapped_column(String(), nullable=False)
+    events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)  # С id встреч, в которых учавствует человек
+
 
     # def __init__(self, tg_id, login, email, password, jwt_token, **kw: Any):
     #     super().__init__(**kw)

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { IEvent } from "@/types/Events.ts";
-import EventCard from "@/components/Events/EventCard.tsx";
-import Pagination from "@/components/Events/Pagination.tsx";
-import Skeleton from "@/components/Events/Skeleton.tsx";
+import { IMeeting } from "@/types/Meetings.ts";
+import MeetingCard from "@/components/Meetings/MeetingCard.tsx";
+import Pagination from "@/components/Meetings/Pagination.tsx";
+import Skeleton from "@/components/Meetings/Skeleton.tsx";
 import SidebarLayout from "@/layout.tsx";
-import EventService from "@/services/EventService.ts";
+import EventService from "@/services/MeetingService.ts";
 
-const EventsPage: React.FC = () => {
-    // Состояния
-    const [events, setEvents] = useState<IEvent[]>([]);
+const MeetingsPage: React.FC = () => {
+    const [events, setEvents] = useState<IMeeting[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState(1);
@@ -17,14 +16,14 @@ const EventsPage: React.FC = () => {
 
     // Загрузка данных
     useEffect(() => {
-        const fetchEventsData = async () => {
+        const fetchMeetingsData = async () => {
             setLoading(true);
             setError(null);
 
             try {
-                const data = await EventService.fetchEvents(page, rowsPerPage);
+                const data = await EventService.fetchEvents(page, rowsPerPage, "2024-11-14T20:23:10.028122", "2024-11-14T00:23:10.028081");
                 setEvents(data.data.data);
-                const newTotalPages = Math.ceil(data.data.rowsNumber / rowsPerPage);
+                const newTotalPages = Math.ceil(data.data.rowsPerPage / rowsPerPage);
                 setTotalPages(newTotalPages);
 
                 // Если текущая страница выходит за пределы общего количества страниц
@@ -39,7 +38,7 @@ const EventsPage: React.FC = () => {
             }
         };
 
-        fetchEventsData();
+        fetchMeetingsData();
     }, [page, rowsPerPage]);
 
     // Управление страницами
@@ -72,12 +71,10 @@ const EventsPage: React.FC = () => {
 
     const eventsGrid = (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-                <EventCard
-                    key={event.id}
-                    name={event.name}
-                    startedAt={event.startedAt}
-                    endedAt={event.endedAt}
+            {events.map((meeting) => (
+                <MeetingCard
+                    key={meeting.id}
+                    meeting={meeting}
                 />
             ))}
         </div>
@@ -117,4 +114,4 @@ const EventsPage: React.FC = () => {
     );
 };
 
-export default EventsPage;
+export default MeetingsPage;

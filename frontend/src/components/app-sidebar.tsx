@@ -15,12 +15,12 @@ import {Link, useLocation} from "react-router";
 const items = [
     {
         title: "Все мероприятия",
-        url: "/events",
+        url: "/meetings",
         icon: CalendarDays,
     },
     {
         title: "Создать мероприятие",
-        url: "/create-event",
+        url: "/create-meeting",
         icon: CalendarPlus,
     },
     {
@@ -39,7 +39,7 @@ export function AppSidebar() {
                 <SidebarGroup>
                     <SidebarGroupLabel>Меню</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenu>
+                        <SidebarMenu className="gap-5">
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>

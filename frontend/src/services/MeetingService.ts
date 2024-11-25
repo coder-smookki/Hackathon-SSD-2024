@@ -1,12 +1,17 @@
 import $api from "../http";
 import axios, {AxiosResponse} from "axios";
-import {IEventsData} from "../types/Events.ts";
+import {IMeetingsData} from "../types/Meetings.ts";
 
-export default class EventService {
-    static async fetchEvents(page: number, rowsPerPage: number): Promise<AxiosResponse<IEventsData>> {
+export default class MeetingService {
+    static async fetchEvents(page: number, rowsPerPage: number, toDatetime: string, fromDatetime: string): Promise<AxiosResponse<IMeetingsData>> {
         try {
-            return await $api.get<IEventsData>(`/events`, {
-                params: { page, rowsPerPage },
+            return await $api.get<IMeetingsData>(`/meetings`, {
+                params: {
+                    "toDatetime": toDatetime,
+                    "fromDatetime": fromDatetime,
+                    "rowsPerPage": rowsPerPage,
+                    "page": page
+                },
             });
         } catch (error) {
             // Обработка ошибки

@@ -2,11 +2,11 @@ import React from 'react';
 import LoginPage from "@/pages/LoginPage.tsx";
 import {Route, Routes} from "react-router";
 import NotFoundPage from "@/pages/NotFoundPage.tsx";
-import EventsPage from "@/pages/EventsPage.tsx";
+import MeetingsPage from "@/pages/MeetingsPage.tsx";
 import ProtectedRoute from "@/hoc/ProtectedRoute.tsx";
 import { ThemeProvider } from '@/components/theme-provider.tsx';
 import ProfilePage from "@/pages/ProfilePage.tsx";
-import CreateEventPage from "@/pages/CreateEventPage.tsx";
+import CreateMeetingPage from "@/pages/CreateMeetingPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -14,10 +14,10 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/login" element={<LoginPage/>} />
                 <Route
-                    path="/events"
+                    path="/meetings"
                     element={
                         <ProtectedRoute>
-                            <EventsPage/>
+                            <MeetingsPage/>
                         </ProtectedRoute>
                     }
                 />
@@ -30,10 +30,10 @@ const App: React.FC = () => {
                     }
                 />
                 <Route
-                    path="/create-event"
+                    path="/create-meeting"
                     element={
                         <ProtectedRoute>
-                            <CreateEventPage/>
+                            <CreateMeetingPage/>
                         </ProtectedRoute>
                     }
                 />

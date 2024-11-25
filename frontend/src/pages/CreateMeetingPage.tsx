@@ -16,12 +16,11 @@ interface ApplicationFormValues {
     duration: number;
 }
 
-const CreateEventPage: React.FC = () => {
+const CreateMeetingPage: React.FC = () => {
     const {
         register,
-        handleSubmit,
-        setValue,
         formState: { errors },
+        handleSubmit,
     } = useForm<ApplicationFormValues>();
 
     const onSubmit = (data: ApplicationFormValues) => {
@@ -59,7 +58,9 @@ const CreateEventPage: React.FC = () => {
                             <Input
                                 id="name"
                                 type="text"
-                                {...register("name", { required: "Это поле обязательно" })}
+                                {...register("name", {
+                                    required: "Это поле обязательно"
+                                })}
                             />
                             {errors.name && (
                                 <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -132,4 +133,4 @@ const CreateEventPage: React.FC = () => {
     );
 };
 
-export default CreateEventPage;
+export default CreateMeetingPage;

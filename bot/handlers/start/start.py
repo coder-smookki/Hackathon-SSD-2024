@@ -10,7 +10,6 @@ from bot.keyboards.start import start_keyboard
 
 router = Router(name=__name__)
 
-
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
     await state.clear()

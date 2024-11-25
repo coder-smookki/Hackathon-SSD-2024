@@ -1,3 +1,4 @@
+import logging
 import asyncio
 import contextlib
 import aiohttp
@@ -14,6 +15,8 @@ from bot.core.setting import get_settings
 
 async def main() -> None:
     load_dotenv()
+
+    logging.basicConfig(level=logging.DEBUG)
 
     settings = get_settings()
     dp = make_disp(settings)

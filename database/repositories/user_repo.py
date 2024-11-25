@@ -1,10 +1,10 @@
 from typing import Optional, cast
 from sqlalchemy import delete, select
 
-from bot.core.models import User
-from bot.core.repositories import UserRepo
-from database.models import UserModel
-from repositories.base import BaseAlchemyRepo
+from bot.core.models.user import User
+from bot.core.repositories.user import UserRepo
+from database.models.users import UserModel
+from database.repositories.base import BaseAlchemyRepo
 
 
 class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):
@@ -16,11 +16,12 @@ class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):
         :return: Экземпляр User (с обновленными данными).
         """
         user = UserModel(**instance.model_dump())  # Преобразуем данные из User в модель базы данных
+        
         self.session.add(user)
         await self.session.commit()
 
-        model = await self.get(instance.id)  
-        model = cast(UserModel, await self.get(instance.id))
+        model = await self.get(instance.tg_id)  
+        model = cast(UserModel, await self.get(instance.tg_id))
         return model  # Возвращаем модель User, без обертки UserExtended
 
     async def delete(self, tg_id: int) -> None:

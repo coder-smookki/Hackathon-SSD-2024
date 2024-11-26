@@ -61,7 +61,7 @@ class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):
         updated_model = await self.get(tg_id)  # Получаем обновленную модель из базы данных
         return updated_model  # Возвращаем обновленную модель UserModel
 
-    
+      
     async def compare(self, tg_id: int, email: str, password: str) -> Optional[UserModel]:
         query = select(UserModel).where(UserModel.email == email)
 

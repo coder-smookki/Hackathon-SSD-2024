@@ -1,5 +1,7 @@
 import httpx
 from typing import Optional, Any
+import aiohttp
+import asyncio
 
 
 async def initialize_api_client():
@@ -15,7 +17,7 @@ async def initialize_api_client():
     }
 
     # Создаем экземпляр клиента
-    api_client = AsyncAPIClient(base_url, headers, login_data=data)
+    api_client = AsyncAPIClient(base_url, headers)
     # Выполняем асинхронную аутентификацию и получаем токен
     await api_client.authenticate(login_data=data)
     return api_client
@@ -24,9 +26,10 @@ async def initialize_api_client():
 class AsyncAPIClient:
     _instance: Optional["AsyncAPIClient"] = None
     _client: Optional[httpx.AsyncClient] = None
+    #headers: Optional[dict] = None
     token: Optional[str] = None
 
-    def __new__(self, base_url: str = None, headers: dict = None, login_data: dict = None):
+    def __new__(self, base_url: str = None, headers: dict = None):
         # создаем экземпляр только один раз
         if self._instance is None:
             self._instance = super(AsyncAPIClient, self).__new__(self)
@@ -69,10 +72,77 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as e:
             print(f"HTTP error during {method} request to {endpoint}: {e}")
             return None
-        
+            
+
+    # Получение jwt токена для админа
     async def get_token(self):
         return self.token
+    
 
+    # Получение jwt токена для пользователя
+    async def auth_login(self, login: str = None, password: str = None, params: dict = None) -> Optional[Any]:
+        data = {  
+            "login": login,
+            "password": password,
+        }
+
+        headers = {
+            'Content-Type': 'application/json',  # Тип содержимого JSON
+        }
+                
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://test.vcc.uriit.ru/api/auth/login', json=data, headers=headers) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    token = response_data.get('token') 
+                    return token
+                else:
+                    print(f"Ошибка: {response.status}")
+    
+    
+    # Регистрация пользователя
+    async def auth_register(self,
+                            login: str = None,
+                            password: str = None,
+                            email: str = None,
+                            lastName: str = None,
+                            firstName: str = None,
+                            middleName: str = None,
+                            phone: str = None,
+                            birthday: str = None,
+                            roleId: int = None,
+                            params: dict = None) -> Optional[Any]:
+        
+        data = {
+                "login": login,
+                "password": password,
+                "email": email,
+                "lastName": lastName,
+                "firstName": firstName,
+                "middleName": middleName,
+                "phone": phone,
+                "birthday": birthday,
+                "roleId": roleId,
+                "type": "native"
+        }
+
+
+        headers = {
+            'Content-Type': 'application/json',
+        }
+
+                        
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://test.vcc.uriit.ru/api/auth/register', json=data, headers=headers) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    token = response_data.get('token') 
+                    return token
+                else:
+                    print(f"Ошибка: {response.status}")
+
+
+    # requests users {
     async def get_users(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'users')
 
@@ -81,7 +151,9 @@ class AsyncAPIClient:
         
     async def create_user(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', f'users', data=data)
+    # }
     
+    # requests rooms {
     async def get_rooms(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'catalogs/rooms')
 
@@ -90,24 +162,99 @@ class AsyncAPIClient:
 
     async def create_room(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'catalogs/rooms', data=data)
+    # }
     
+    # requests events {
     async def get_events(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'events')
 
     async def get_events_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'events/{id}')
 
-    async def create_event(self, endpoint: str, params: dict = None, data: dict = None) -> Optional[Any]:
+    async def create_event(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'events', data=data)
+    # }
     
-    async def get_meetings(self, endpoint: str, params: dict = None) -> Optional[Any]:
-        return await self._make_request('GET', 'meetings?force=true')
+    # requests meetings {
+    async def get_meetings(self, params: dict = None, data: dict = None, toDatetime: str = None, fromDatetime: str = None ) -> Optional[Any]:
+        params = {
+            'state': 'started',
+            'toDatetime': toDatetime,
+            'fromDatetime': fromDatetime,
+        }
+        
+        return await self._make_request('GET', 'meetings', data=data, params=params)
+        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
 
-    async def get_meetings_by_id(self, id: int, endpoint: str, params: dict = None) -> Optional[Any]:
-        return await self._make_request('GET', f'meetings/{id}')
+    async def get_meetings(self, params: dict = None, data: dict = None, toDatetime: str = None, fromDatetime: str = None ) -> Optional[Any]:
+        params = {
+            'state': 'started',
+            'toDatetime': toDatetime,
+            'fromDatetime': fromDatetime,
+        }
+        
+        return await self._make_request('GET', 'meetings', data=data, params=params)
+        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
 
-    async def create_meeting(self, endpoint: str, params: dict = None, data: dict = None) -> Optional[Any]:
-        return await self._make_request('POST', 'meetings?force=true', data=data)
+
+    async def get_meetings_by_id(self, id: int, params: dict = None, data: dict = None) -> Optional[Any]:
+        return await self._make_request('GET', f'meetings/{id}', data=data)
+
+    async def create_meeting(self, params: dict = None,
+                            custom_data: dict = None,
+                            name_vks: str = None,
+                            date_vks: str = None, 
+                            duration_vks: int = None, 
+                            participants_count_vks: int = None, 
+                            organizer: dict = None,
+                            participants: list[dict] = None) -> Optional[Any]:
+        #print(participants.insert(0, organizer), participants)
+        
+        if custom_data is None:
+
+            data = { 
+                    "name": name_vks,
+                    "comment": "string",
+                    "participantsCount": participants_count_vks,
+                    "sendNotificationsAt": date_vks,
+                    "startedAt": date_vks,
+                    "duration": duration_vks,
+                    "ciscoSettings": {
+                    "isMicrophoneOn": True,
+                    "isVideoOn": True,
+                    "isWaitingRoomEnabled": True,
+                    "needVideoRecording": False
+                    },
+                    "vinteoSettings": {
+                        "needVideoRecording": False
+                    },
+                    "participants": participants,
+                    "recurrenceUpdateType": "only",
+                    "isVirtual": False,
+                    "state": "booked",
+                    "backend": "cisco",
+                    "createdUser": {
+                        "id": 546,
+                        "lastName": "Хантатонов",
+                        "firstName": "Хантатон",
+                        "middleName": "",
+                        "roleIds": [3],
+                        "departmentId": 2,
+                        "email": "hantaton03.h@mail.ru"
+                    },
+                    "organizedUser": {
+                        "id": organizer['id'],
+                        "lastName": "Хантатонов",
+                        "firstName": "Хантатон",
+                        "middleName": None,
+                        "roleIds": [3],
+                        "departmentId": 2,
+                        "email": "test1.b@mail.ru"
+                    },
+            }
+
+        return await self._make_request('POST', 'meetings', data=data)
+    # }
     
     
     #Закрыть клиент при завершении работы.

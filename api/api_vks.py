@@ -1,6 +1,7 @@
 import httpx
 from typing import Optional, Any
-import requests
+import aiohttp
+import asyncio
 
 
 async def initialize_api_client():
@@ -88,9 +89,15 @@ class AsyncAPIClient:
         headers = {
             'Content-Type': 'application/json',  # Тип содержимого JSON
         }
-
-        response = requests.post('https://test.vcc.uriit.ru/api/auth/login', json=data, headers=headers)
-        return response.json().get('token')
+                
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://test.vcc.uriit.ru/api/auth/login', json=data, headers=headers) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    token = response_data.get('token') 
+                    return token
+                else:
+                    print(f"Ошибка: {response.status}")
     
     
     # Регистрация пользователя
@@ -124,12 +131,15 @@ class AsyncAPIClient:
             'Content-Type': 'application/json',
         }
 
-        response = requests.post('https://test.vcc.uriit.ru/api/auth/register', json=data, headers=headers)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return f'Ошибка запроса пользователей: {response.status_code}, {response.text}'
+                        
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://test.vcc.uriit.ru/api/auth/register', json=data, headers=headers) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    token = response_data.get('token') 
+                    return token
+                else:
+                    print(f"Ошибка: {response.status}")
 
 
     # requests users {

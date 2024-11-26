@@ -1,19 +1,19 @@
 services:
-    # bot:
-    #     image: ssd-bot-image
-    #     container_name: ssd-bot
-    #     restart: unless-stopped
-    #     build:
-    #         context: .
-    #         dockerfile: ./bot/Dockerfile
-    #     volumes:
-    #         - "/volumes/ssd-bot/logs:/app/logs"
-    #     env_file: .env
-    #     environment:
-    #         PYTHONUNBUFFERED: 1
-    #         PYTHONDONTWRITEBYTECODE: 1
-    #     links:
-    #         - database
+    bot:
+        image: ssd-bot-image
+        container_name: ssd-bot
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./bot/Dockerfile
+        volumes:
+            - "/volumes/ssd-bot/logs:/app/logs"
+        env_file: .env
+        environment:
+            PYTHONUNBUFFERED: 1
+            PYTHONDONTWRITEBYTECODE: 1
+        links:
+            - database
   
     # backend:
     #     image: ssd-backend-image

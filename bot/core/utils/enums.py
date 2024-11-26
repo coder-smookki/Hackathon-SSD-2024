@@ -19,18 +19,29 @@ class ProfileField(StrEnum, ValuesEnum):
 
 
 class SlashCommands(str, Enum):
-    START = "Client"
+    START = "start"
     HELP = "help"
     PROFILE = "profile"
+    AUTHORIZATIONS = "authorization"
 
 
 class TextCommands(str, Enum):
     HELP = 'Помощь'
     PROFILE = 'Профиль'
+    AUTHORIZATIONS = "Авторизация"
 
 
 class Operation(str, Enum):
     '''Для Callbacks'''
 
+    PROFILE = "profile"
+    AUTHORIZATIONS = "authorization"
+    CANCEL = "cancel"
+    CONFIRM = "confirm"
+    START = "start"
+
+
+class BotMenu(StrEnum):
+    START = "start"
     PROFILE = "profile"
     AUTHORIZATIONS = "authorization"

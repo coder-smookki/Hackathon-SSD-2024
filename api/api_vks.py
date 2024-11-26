@@ -207,13 +207,15 @@ class AsyncAPIClient:
                             duration_vks: int = None, 
                             participants_count_vks: int = None, 
                             organizer: dict = None,
-                            participants: list[dict] = None) -> Optional[Any]:
+                            participants: list[dict] = None, 
+                            room_id: int = None) -> Optional[Any]:
         #print(participants.insert(0, organizer), participants)
         
         if custom_data is None:
 
             data = { 
                     "name": name_vks,
+                    "roomId": room_id,
                     "comment": "string",
                     "participantsCount": participants_count_vks,
                     "sendNotificationsAt": date_vks,

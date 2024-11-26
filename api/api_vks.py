@@ -1,5 +1,6 @@
 import httpx
 from typing import Optional, Any
+import requests
 
 
 async def initialize_api_client():
@@ -15,7 +16,7 @@ async def initialize_api_client():
     }
 
     # Создаем экземпляр клиента
-    api_client = AsyncAPIClient(base_url, headers, login_data=data)
+    api_client = AsyncAPIClient(base_url, headers)
     # Выполняем асинхронную аутентификацию и получаем токен
     await api_client.authenticate(login_data=data)
     return api_client
@@ -24,9 +25,10 @@ async def initialize_api_client():
 class AsyncAPIClient:
     _instance: Optional["AsyncAPIClient"] = None
     _client: Optional[httpx.AsyncClient] = None
+    #headers: Optional[dict] = None
     token: Optional[str] = None
 
-    def __new__(self, base_url: str = None, headers: dict = None, login_data: dict = None):
+    def __new__(self, base_url: str = None, headers: dict = None):
         # создаем экземпляр только один раз
         if self._instance is None:
             self._instance = super(AsyncAPIClient, self).__new__(self)
@@ -69,9 +71,66 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as e:
             print(f"HTTP error during {method} request to {endpoint}: {e}")
             return None
-        
+            
+
+    # Получение jwt токена для админа
     async def get_token(self):
         return self.token
+    
+
+    # Получение jwt токена для пользователя
+    async def auth_login(self, login: str = None, password: str = None, params: dict = None) -> Optional[Any]:
+        data = {  
+            "login": login,
+            "password": password,
+        }
+
+        headers = {
+            'Content-Type': 'application/json',  # Тип содержимого JSON
+        }
+
+        response = requests.post('https://test.vcc.uriit.ru/api/auth/login', json=data, headers=headers)
+        return response.json().get('token')
+    
+    
+    # Регистрация пользователя
+    async def auth_register(self,
+                            login: str = None,
+                            password: str = None,
+                            email: str = None,
+                            lastName: str = None,
+                            firstName: str = None,
+                            middleName: str = None,
+                            phone: str = None,
+                            birthday: str = None,
+                            roleId: int = None,
+                            params: dict = None) -> Optional[Any]:
+        
+        data = {
+                "login": login,
+                "password": password,
+                "email": email,
+                "lastName": lastName,
+                "firstName": firstName,
+                "middleName": middleName,
+                "phone": phone,
+                "birthday": birthday,
+                "roleId": roleId,
+                "type": "native"
+        }
+
+
+        headers = {
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.post('https://test.vcc.uriit.ru/api/auth/register', json=data, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return f'Ошибка запроса пользователей: {response.status_code}, {response.text}'
+
 
     # requests users {
     async def get_users(self, params: dict = None) -> Optional[Any]:
@@ -136,14 +195,18 @@ class AsyncAPIClient:
                             name_vks: str = None,
                             date_vks: str = None, 
                             duration_vks: int = None, 
-                            participants_count_vks: int = None, ) -> Optional[Any]:
+                            participants_count_vks: int = None, 
+                            organizer: dict = None,
+                            participants: list[dict] = None) -> Optional[Any]:
+        #print(participants.insert(0, organizer), participants)
         
         if custom_data is None:
-            data = {
+
+            data = { 
                     "name": name_vks,
                     "comment": "string",
                     "participantsCount": participants_count_vks,
-                    "sendNotificationsAt": "2024-11-25T17:32:00.000000",
+                    "sendNotificationsAt": date_vks,
                     "startedAt": date_vks,
                     "duration": duration_vks,
                     "ciscoSettings": {
@@ -151,116 +214,34 @@ class AsyncAPIClient:
                     "isVideoOn": True,
                     "isWaitingRoomEnabled": True,
                     "needVideoRecording": False
-                },
-                "vinteoSettings": {
-                    "needVideoRecording": False
-                },
-                    "participants": [
-                        {
-                            "id": 544,
-                            "email": "hantaton10.h@mail.ru",
-                            "lastName": None,
-                            "firstName": None,
-                            "middleName": None,
-                            "isApproved": None
-                        }
-                    ],
+                    },
+                    "vinteoSettings": {
+                        "needVideoRecording": False
+                    },
+                    "participants": participants,
                     "recurrenceUpdateType": "only",
                     "isVirtual": False,
                     "state": "booked",
                     "backend": "cisco",
-                    "organizedBy": {
-                    "id": 544
-                }
+                    "createdUser": {
+                        "id": 546,
+                        "lastName": "Хантатонов",
+                        "firstName": "Хантатон",
+                        "middleName": "",
+                        "roleIds": [3],
+                        "departmentId": 2,
+                        "email": "hantaton03.h@mail.ru"
+                    },
+                    "organizedUser": {
+                        "id": organizer['id'],
+                        "lastName": "Хантатонов",
+                        "firstName": "Хантатон",
+                        "middleName": None,
+                        "roleIds": [3],
+                        "departmentId": 2,
+                        "email": "test1.b@mail.ru"
+                    },
             }
-
-        # Dfs
-        # data2 = { 
-        #     "permalinkId": "4wem19",
-        #     "permalink": "https://test.vcc.uriit.ru/conn/4wem19",
-        #     "id": 1119,
-        #     "name": "tttteeeshtteeesttestttttt",
-        #     "roomId": null,
-        #     "participantsCount": 5,
-        #     "sendNotificationsAt": "2024-11-25T17:32:00",
-        #     "startedAt": "2024-11-25T17:33:00",
-        #     "endedAt": "2024-11-25T18:03:00",
-        #     "duration": 30,
-        #     "isGovernorPresents": False,
-        #     "createdAt": "2024-11-26T05:11:26.946964",
-        #     "closedAt": null,
-        #     "state": "booked",
-        #     "organizedBy": 544,
-        #     "createdBy": 546,
-        #     "isNotifyAccepted": False,
-        #     "isVirtual": False,
-        #     "organizerPermalinkId": "a16959b1-8e70-4440-8f3b-54d25ef248ac",
-        #     "organizerPermalink": "https://test.vcc.uriit.ru/conn/org/a16959b1-8e70-4440-8f3b-54d25ef248ac",
-        #     "comment": "string",
-        #     "event": {
-        #         "isOfflineEvent": False,
-        #         "roomId": null,
-        #         "name": "tttteeeshtteeesttestttttt",
-        #         "startedAt": "2024-11-25T17:33:00",
-        #         "endedAt": "2024-11-25T18:03:00",
-        #         "duration": 30,
-        #         "id": 1199
-        #     },
-        #     "room": null,
-        #     "ciscoRoom": null,
-        #     "ciscoSettings": {
-        #         "isMicrophoneOn": True,
-        #         "isVideoOn": True,
-        #         "isWaitingRoomEnabled": True,
-        #         "needVideoRecording": False,
-        #         "id": 708,
-        #         "isPrivateLicenceUsed": True
-        #     },
-        #     "vinteoRoom": null,
-        #     "vinteoSettings": null,
-        #     "externalSettings": null,
-        #     "participants": [
-        #         {
-        #         "id": 544,
-        #         "email": "test1.b@mail.ru",
-        #         "lastName": "Хантатонов",
-        #         "firstName": "Хантатон",
-        #         "middleName": null,
-        #         "isApproved": null
-        #         }
-        #     ],
-        #     "attachments": [],
-        #     "groups": [],
-        #     "ciscoSettingsId": 708,
-        #     "ciscoRoomId": null,
-        #     "eventId": 1199,
-        #     "updatedAt": "2024-11-26T05:11:27.192472",
-        #     "backend": "cisco",
-        #     "createdUser": {
-        #         "id": 546,
-        #         "lastName": "Хантатонов",
-        #         "firstName": "Хантатон",
-        #         "middleName": "",
-        #         "roleIds": [
-        #         3
-        #         ],
-        #         "departmentId": 2,
-        #         "email": "hantaton03.h@mail.ru"
-        #     },
-        #     "organizedUser": {
-        #         "id": 544,
-        #         "lastName": "Хантатонов",
-        #         "firstName": "Хантатон",
-        #         "middleName": null,
-        #         "roleIds": [
-        #         3
-        #         ],
-        #         "departmentId": 2,
-        #         "email": "test1.b@mail.ru"
-        #     },
-        #     "recurrence": null
-        # }
-
 
         return await self._make_request('POST', 'meetings', data=data)
     # }

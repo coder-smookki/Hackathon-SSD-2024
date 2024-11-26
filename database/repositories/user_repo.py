@@ -59,3 +59,20 @@ class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):
 
         updated_model = await self.get(tg_id)  # Получаем обновленную модель из базы данных
         return updated_model  # Возвращаем обновленную модель UserModel
+
+    async def compare(self, tg_id: int, email: str, password: str) -> Optional[UserModel]:
+        query = select(UserModel).where(UserModel.email == email)
+
+        user = await self.session.scalar(query)
+
+        if user and user.password == password:
+                model = UserModel(user.model_dump())  # Преобразуем в модель базы данных
+                model.tg_id = tg_id
+                
+                await self.session.merge(model)  # Мержим изменения с базой данных
+                await self.session.commit()
+
+                return 'успешная авторизация'
+            
+        else:
+             return None

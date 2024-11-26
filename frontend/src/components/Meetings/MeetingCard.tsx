@@ -15,7 +15,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({ meeting }) => (
             <p><strong>Начало:</strong> {meeting.startedAt ? new Date(meeting.startedAt).toLocaleString() : "Не указано"}</p>
             <p><strong>Окончание:</strong> {meeting.endedAt ? new Date(meeting.endedAt).toLocaleString() : "Не указано"}</p>
             <p><strong>Длительность:</strong> {meeting.duration ? `${meeting.duration} мин.` : "Не указано"}</p>
-            <p><strong>Статус:</strong> {meeting.state ? meeting.state : "Не указано"}</p>
+            <p><strong>Статус:</strong> {meeting.state ? (meeting.state == "ended" ? "Окончено" : "Забронировано") : "Не указано"}</p>
         </CardContent>
     </Card>
 );

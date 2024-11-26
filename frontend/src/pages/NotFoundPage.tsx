@@ -10,7 +10,7 @@ const NotFoundPage: React.FC = () => {
             </h1>
 
             <Button asChild>
-                <Link to="/events">Назад</Link>
+                <Link to="/meetings">Назад</Link>
             </Button>
         </div>
     );

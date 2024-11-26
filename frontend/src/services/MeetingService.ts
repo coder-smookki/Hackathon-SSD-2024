@@ -3,7 +3,7 @@ import axios, {AxiosResponse} from "axios";
 import {IMeetingsData} from "../types/Meetings.ts";
 
 export default class MeetingService {
-    static async fetchEvents(page: number, rowsPerPage: number, toDatetime: string, fromDatetime: string): Promise<AxiosResponse<IMeetingsData>> {
+    static async fetchMeetings(page: number, rowsPerPage: number, fromDatetime: string, toDatetime: string): Promise<AxiosResponse<IMeetingsData>> {
         try {
             return await $api.get<IMeetingsData>(`/meetings`, {
                 params: {

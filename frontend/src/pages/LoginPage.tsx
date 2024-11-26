@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
             const authData: AuthResponse = response.data;
             localStorage.setItem('token', authData.token);
             localStorage.setItem('refreshToken', getRefreshToken(authData.token));
-            navigate("/events");
+            navigate("/meetings");
         } catch (error) {
             console.error('Ошибка:', error);
             form.setError('login', {message: 'Неверный логин или пароль!'});

@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import SidebarLayout from "@/layout";
 
 interface ApplicationFormValues {
-    isOfflineEvent: boolean;
+    isOfflineMeeting: boolean;
     roomId: number;
     name: string;
     startedAt: string;
@@ -113,13 +113,13 @@ const CreateMeetingPage: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Поле isOfflineEvent */}
+                        {/* Поле isOfflineMeeting */}
                         <div className="flex items-center gap-2">
                             <Checkbox
-                                id="isOfflineEvent"
-                                {...register("isOfflineEvent")}
+                                id="isOfflineMeeting"
+                                {...register("isOfflineMeeting")}
                             />
-                            <Label htmlFor="isOfflineEvent">Офлайн мероприятие</Label>
+                            <Label htmlFor="isOfflineMeeting">Офлайн мероприятие</Label>
                         </div>
 
                         {/* Кнопка отправки */}

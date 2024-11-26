@@ -17,16 +17,19 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, rowsPerPage, 
             <Button onClick={onPrev} disabled={page === 1} aria-label="Предыдущая страница">
                 Предыдущая
             </Button>
+            <div>
+                <span className="font-semibold">{page}</span> из <span className="font-semibold">{totalPages}</span>
+            </div>
             <Button onClick={onNext} disabled={page === totalPages} aria-label="Следующая страница">
                 Следующая
             </Button>
         </div>
-        <div className={"leading-7 [&:not(:first-child)]:mt-6 text-center"}>
-            <p className="text-center">
-                Страница <span className="font-semibold">{page}</span> из <span
-                className="font-semibold">{totalPages}</span>
-            </p>
-        </div>
+        {/*<div className={"leading-7 [&:not(:first-child)]:mt-6 text-center"}>*/}
+        {/*    <p className="text-center">*/}
+        {/*        Страница <span className="font-semibold">{page}</span> из <span*/}
+        {/*        className="font-semibold">{totalPages}</span>*/}
+        {/*    </p>*/}
+        {/*</div>*/}
         <div className="mt-4">
             <Select value={String(rowsPerPage)} onValueChange={(value) => onRowsChange(Number(value))}>
                 <SelectTrigger className="w-[180px]">

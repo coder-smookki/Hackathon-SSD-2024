@@ -25,6 +25,7 @@ MAX_PASSWORD_LENGTH = 64
 class UserModel(AlchemyBaseModel):
     __tablename__ = "users"
 
+
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
     tg_id: Mapped[int] = mapped_column(BigInteger, nullable=False)  
     jwt_token: Mapped[str] = mapped_column(String(), nullable=False)

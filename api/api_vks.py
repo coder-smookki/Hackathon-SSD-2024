@@ -161,6 +161,21 @@ class AsyncAPIClient:
         return await self._make_request('GET', f'catalogs/rooms/{id}')
 
     async def create_room(self, params: dict = None, data: dict = None) -> Optional[Any]:
+        data = {
+            "name": "12141241241sdfs",
+            "description": "asdfasdf",
+            "buildingId": 2,
+            "maxParticipants": 2,
+            "isSkitNotified": False,
+            "building": {
+                "name": "string",
+                "description": "string",
+                "id": 0,
+                "address": "г.Ханты-Мансийск ул. Мира д.151",
+                "municipalAreaId": 1
+            }
+        }
+        
         return await self._make_request('POST', 'catalogs/rooms', data=data)
     # }
     
@@ -207,7 +222,8 @@ class AsyncAPIClient:
                             duration_vks: int = None, 
                             participants_count_vks: int = None, 
                             organizer: dict = None,
-                            participants: list[dict] = None) -> Optional[Any]:
+                            participants: list[dict] = None,
+                            means_conducting: str = None) -> Optional[Any]:
         #print(participants.insert(0, organizer), participants)
         
         if custom_data is None:
@@ -232,7 +248,7 @@ class AsyncAPIClient:
                     "recurrenceUpdateType": "only",
                     "isVirtual": False,
                     "state": "booked",
-                    "backend": "cisco",
+                    "backend": means_conducting,
                     "createdUser": {
                         "id": 546,
                         "lastName": "Хантатонов",

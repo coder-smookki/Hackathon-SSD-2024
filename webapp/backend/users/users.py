@@ -33,12 +33,3 @@ async def get_users_jwt_handler(tg_id) -> Union[dict, list]:
             raise HTTPException(status_code=404, detail="User not found")
 
     return {"status": "200 ok", "users": user}
-
-
-# Асинхронная функция для инициализации клиента и выполнения запроса
-async def main():
-    print(get_users_jwt_handler(1241121232))
-
-# Запуск основной асинхронной функции
-if __name__ == "__main__":
-    asyncio.run(main())

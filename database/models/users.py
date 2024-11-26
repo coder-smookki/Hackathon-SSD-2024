@@ -26,8 +26,7 @@ class UserModel(AlchemyBaseModel):
     __tablename__ = "users"
 
     tg_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
-    # login: Mapped[str] = mapped_column(String(MAX_LOGIN_LENGTH), nullable=False)
-    email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), nullable=False)
+    login: Mapped[str] = mapped_column(String(MAX_LOGIN_LENGTH), nullable=False)
     password: Mapped[str] = mapped_column(String(MAX_PASSWORD_LENGTH), nullable=False)
     jwt_token: Mapped[str] = mapped_column(String(), nullable=False)
     events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)  # С id встреч, в которых учавствует человек

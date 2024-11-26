@@ -15,10 +15,11 @@ async def initialize_api_client():
     }
 
     # Создаем экземпляр клиента
-    api_client = AsyncAPIClient(base_url, headers, login_data=data)
+    api_client = AsyncAPIClient(base_url, headers)
     # Выполняем асинхронную аутентификацию и получаем токен
     await api_client.authenticate(login_data=data)
     return api_client
+
 
 
 class AsyncAPIClient:
@@ -26,7 +27,7 @@ class AsyncAPIClient:
     _client: Optional[httpx.AsyncClient] = None
     token: Optional[str] = None
 
-    def __new__(self, base_url: str = None, headers: dict = None, login_data: dict = None):
+    def __new__(self, base_url: str = None, headers: dict = None):
         # создаем экземпляр только один раз
         if self._instance is None:
             self._instance = super(AsyncAPIClient, self).__new__(self)
@@ -35,12 +36,15 @@ class AsyncAPIClient:
             self._instance._client = httpx.AsyncClient(base_url=self._instance.base_url, headers=self._instance.headers)
         return self._instance
 
-    async def authenticate(self, login_data: dict):
+    async def get_token(self, login: str, password: str):
         # Выполним запрос на аутентификацию
-        response = await self._make_request('POST', 'auth/login', data=login_data)
+        response = await self._make_request(
+            'POST',
+            'auth/login', 
+            data={"login": login, "password": password}
+        )
         if response and 'token' in response:
-            self.token = response['token']
-            self.headers['Authorization'] = f'Bearer {self.token}'  # Добавляем токен в заголовок
+            return response['token']
         else:
             raise Exception("Failed to authenticate")
 
@@ -69,9 +73,6 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as e:
             print(f"HTTP error during {method} request to {endpoint}: {e}")
             return None
-        
-    async def get_token(self):
-        return self.token
 
     async def get_users(self, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', 'users')

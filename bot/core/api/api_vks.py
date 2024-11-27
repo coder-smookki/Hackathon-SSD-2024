@@ -1,32 +1,20 @@
-import httpx
 from typing import Optional, Any
+
 import aiohttp
-import asyncio
+import httpx
 
 
-async def initialize_api_client():
-    base_url = "https://test.vcc.uriit.ru/api/"
-    headers = {
-        "Content-Type": "application/json"
-    }
+class AuthorizationException(Exception):
+    ...
 
-    # Данные для авторизации
-    data = {
-        'login': 'Hantaton01',
-        'password': 't6vYHnNhBqN1F4(q',
-    }
-
-    # Создаем экземпляр клиента
-    api_client = AsyncAPIClient(base_url, headers)
-    # Выполняем асинхронную аутентификацию и получаем токен
-    await api_client.authenticate(login_data=data)
-    return api_client
-
-
+class UpdateTokensException(Exception):
+    ...
+    
 
 class AsyncAPIClient:
     _instance: Optional["AsyncAPIClient"] = None
     _client: Optional[httpx.AsyncClient] = None
+    #headers: Optional[dict] = None
     token: Optional[str] = None
 
     def __new__(self, base_url: str = None, headers: dict = None):
@@ -38,17 +26,6 @@ class AsyncAPIClient:
             self._instance._client = httpx.AsyncClient(base_url=self._instance.base_url, headers=self._instance.headers)
         return self._instance
 
-    async def get_token(self, login: str, password: str):
-        # Выполним запрос на аутентификацию
-        response = await self._make_request(
-            'POST',
-            'auth/login', 
-            data={"login": login, "password": password}
-        )
-        if response and 'token' in response:
-            return response['token']
-        else:
-            raise Exception("Failed to authenticate")
 
     # Универсальный метод для создания запросов
     async def _make_request(self, method: str, endpoint: str, params: dict = None, data: dict = None) -> Optional[Any]:
@@ -77,13 +54,8 @@ class AsyncAPIClient:
             return None
             
 
-    # Получение jwt токена для админа
-    async def get_token(self):
-        return self.token
-    
-
     # Получение jwt токена для пользователя
-    async def auth_login(self, login: str = None, password: str = None, params: dict = None) -> Optional[Any]:
+    async def auth_login(self, login: str, password: str, params: dict = None) -> dict[str, Any]:
         data = {  
             "login": login,
             "password": password,
@@ -97,10 +69,27 @@ class AsyncAPIClient:
             async with session.post('https://test.vcc.uriit.ru/api/auth/login', json=data, headers=headers) as response:
                 if response.status == 200:
                     response_data = await response.json()
-                    token = response_data.get('token') 
-                    return token
+                    return response_data # для сохранение в бд нужен не только токен
                 else:
                     print(f"Ошибка: {response.status}")
+                    raise AuthorizationException
+    
+    async def update_token(self, refresh_token: str):
+        headers = {
+            'Content-Type': 'application/json',  # Тип содержимого JSON
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                    'https://test.vcc.uriit.ru/api/auth/refresh-token', 
+                    json={"token": refresh_token}, 
+                    headers=headers
+                ) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    return response_data # для сохранение в бд нужен не только токен
+                else:
+                    print(f"Ошибка: {response.status}")
+                    raise UpdateTokensException
     
     
     # Регистрация пользователя
@@ -152,35 +141,7 @@ class AsyncAPIClient:
     async def get_users_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'users/{id}')
         
-    async def create_user(self,
-                            login: str = None,
-                            password: str = None,
-                            email: str = None,
-                            lastName: str = None,
-                            firstName: str = None,
-                            middleName: str = None,
-                            phone: str = None,
-                            birthday: str = None,
-                            roleId: int = None,
-                            params: dict = None, 
-                            data: dict = None) -> Optional[Any]:
-        data = {
-            "login": login,
-            "password": password,
-            "email": email,
-            "lastName": lastName,
-            "firstName": firstName,
-            "middleName": middleName,
-            "phone": phone,
-            "birthday": birthday,
-            "roleIds": [
-                roleId
-            ],
-            "priority": 3,
-            "departmentId": 1,
-            "isSendEmail": True
-        }
-
+    async def create_user(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', f'users', data=data)
     # }
     
@@ -191,7 +152,6 @@ class AsyncAPIClient:
     async def get_rooms_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'catalogs/rooms/{id}')
 
-    # Не должно работать
     async def create_room(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'catalogs/rooms', data=data)
     # }
@@ -203,7 +163,6 @@ class AsyncAPIClient:
     async def get_events_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'events/{id}')
 
-    # Не должно работать
     async def create_event(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'events', data=data)
     # }
@@ -217,6 +176,18 @@ class AsyncAPIClient:
         }
         
         return await self._make_request('GET', 'meetings', data=data, params=params)
+        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
+
+    async def get_meetings(self, params: dict = None, data: dict = None, toDatetime: str = None, fromDatetime: str = None ) -> Optional[Any]:
+        params = {
+            'state': 'started',
+            'toDatetime': toDatetime,
+            'fromDatetime': fromDatetime,
+        }
+        
+        return await self._make_request('GET', 'meetings', data=data, params=params)
+        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
+
 
     async def get_meetings_by_id(self, id: int, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'meetings/{id}', data=data)
@@ -228,17 +199,14 @@ class AsyncAPIClient:
                             duration_vks: int = None, 
                             participants_count_vks: int = None, 
                             organizer: dict = None,
-                            participants: list[dict] = None, 
-                            room_id: int = None,
-                            means_conducting: str = None) -> Optional[Any]:
+                            participants: list[dict] = None) -> Optional[Any]:
+        #print(participants.insert(0, organizer), participants)
         
         if custom_data is None:
 
             data = { 
                     "name": name_vks,
-                    "roomId": room_id,
                     "comment": "string",
-                    "roomId": room_id,
                     "participantsCount": participants_count_vks,
                     "sendNotificationsAt": date_vks,
                     "startedAt": date_vks,
@@ -256,7 +224,7 @@ class AsyncAPIClient:
                     "recurrenceUpdateType": "only",
                     "isVirtual": False,
                     "state": "booked",
-                    "backend": means_conducting,
+                    "backend": "cisco",
                     "createdUser": {
                         "id": 546,
                         "lastName": "Хантатонов",
@@ -266,9 +234,15 @@ class AsyncAPIClient:
                         "departmentId": 2,
                         "email": "hantaton03.h@mail.ru"
                     },
-                    "organizedBy": {
-                        "id": organizer['id']
-                    }
+                    "organizedUser": {
+                        "id": organizer['id'],
+                        "lastName": "Хантатонов",
+                        "firstName": "Хантатон",
+                        "middleName": None,
+                        "roleIds": [3],
+                        "departmentId": 2,
+                        "email": "test1.b@mail.ru"
+                    },
             }
 
         return await self._make_request('POST', 'meetings', data=data)

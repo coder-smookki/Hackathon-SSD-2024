@@ -6,6 +6,7 @@ from aiogram.types import Message
 from bot.core.utils.enums import SlashCommands, TextCommands
 from bot.handlers.start.formulations import START_TEXT, HELP_TEXT
 from bot.keyboards.start import start_keyboard
+from bot.handlers.profile.profile import cmd_profile
 
 
 router = Router(name=__name__)
@@ -15,14 +16,16 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     token = data.get('token')
     if token:
-        # какого хуя мы даем пользователю его токен
-        await message.answer(f"Ваш токен: {token}")
+        await cmd_profile(
+            message=message,
+            callback=None,
+            is_redirect=True
+        )
     else:
         await message.answer("Токен не найден. Пройдите авторизацию.")
-    # какого хуя если мы уже авторизованы у нас по новой идет авторизация
-    await message.answer(text=START_TEXT,
-                         reply_markup=start_keyboard)
-    await state.clear()
+        await message.answer(text=START_TEXT,
+                            reply_markup=start_keyboard)
+        await state.clear()
 
 
 @router.message(Command(SlashCommands.HELP))

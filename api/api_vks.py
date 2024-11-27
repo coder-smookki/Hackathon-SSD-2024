@@ -26,7 +26,6 @@ async def initialize_api_client():
 class AsyncAPIClient:
     _instance: Optional["AsyncAPIClient"] = None
     _client: Optional[httpx.AsyncClient] = None
-    #headers: Optional[dict] = None
     token: Optional[str] = None
 
     def __new__(self, base_url: str = None, headers: dict = None):
@@ -149,7 +148,35 @@ class AsyncAPIClient:
     async def get_users_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'users/{id}')
         
-    async def create_user(self, params: dict = None, data: dict = None) -> Optional[Any]:
+    async def create_user(self,
+                            login: str = None,
+                            password: str = None,
+                            email: str = None,
+                            lastName: str = None,
+                            firstName: str = None,
+                            middleName: str = None,
+                            phone: str = None,
+                            birthday: str = None,
+                            roleId: int = None,
+                            params: dict = None, 
+                            data: dict = None) -> Optional[Any]:
+        data = {
+            "login": login,
+            "password": password,
+            "email": email,
+            "lastName": lastName,
+            "firstName": firstName,
+            "middleName": middleName,
+            "phone": phone,
+            "birthday": birthday,
+            "roleIds": [
+                roleId
+            ],
+            "priority": 3,
+            "departmentId": 1,
+            "isSendEmail": True
+        }
+
         return await self._make_request('POST', f'users', data=data)
     # }
     
@@ -160,6 +187,7 @@ class AsyncAPIClient:
     async def get_rooms_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'catalogs/rooms/{id}')
 
+    # Не должно работать
     async def create_room(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'catalogs/rooms', data=data)
     # }
@@ -171,6 +199,7 @@ class AsyncAPIClient:
     async def get_events_by_id(self, id: int, params: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'events/{id}')
 
+    # Не должно работать
     async def create_event(self, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('POST', 'events', data=data)
     # }
@@ -184,18 +213,6 @@ class AsyncAPIClient:
         }
         
         return await self._make_request('GET', 'meetings', data=data, params=params)
-        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
-
-    async def get_meetings(self, params: dict = None, data: dict = None, toDatetime: str = None, fromDatetime: str = None ) -> Optional[Any]:
-        params = {
-            'state': 'started',
-            'toDatetime': toDatetime,
-            'fromDatetime': fromDatetime,
-        }
-        
-        return await self._make_request('GET', 'meetings', data=data, params=params)
-        #return await self._make_request('GET', 'meetings?state=started&toDatetime=2024-11-26T23%3A00%3A00.000000&fromDatetime=2024-11-25T00%3A00%3A00.000000', data=data)
-
 
     async def get_meetings_by_id(self, id: int, params: dict = None, data: dict = None) -> Optional[Any]:
         return await self._make_request('GET', f'meetings/{id}', data=data)
@@ -207,14 +224,16 @@ class AsyncAPIClient:
                             duration_vks: int = None, 
                             participants_count_vks: int = None, 
                             organizer: dict = None,
-                            participants: list[dict] = None) -> Optional[Any]:
-        #print(participants.insert(0, organizer), participants)
+                            participants: list[dict] = None, 
+                            room_id: int = None,
+                            means_conducting: str = None) -> Optional[Any]:
         
         if custom_data is None:
 
             data = { 
                     "name": name_vks,
                     "comment": "string",
+                    "roomId": room_id,
                     "participantsCount": participants_count_vks,
                     "sendNotificationsAt": date_vks,
                     "startedAt": date_vks,
@@ -232,7 +251,7 @@ class AsyncAPIClient:
                     "recurrenceUpdateType": "only",
                     "isVirtual": False,
                     "state": "booked",
-                    "backend": "cisco",
+                    "backend": means_conducting,
                     "createdUser": {
                         "id": 546,
                         "lastName": "Хантатонов",

@@ -24,7 +24,7 @@ export default class MeetingService {
             if (userId) {
                 params.userId = userId;
             }
-
+            console.log(params)
             return await $api.get<IMeetingsData>(`/meetings`, { params });
         } catch (error) {
             // Обработка ошибки

@@ -7,7 +7,7 @@ import ProtectedRoute from "@/hoc/ProtectedRoute.tsx";
 import { ThemeProvider } from '@/components/theme-provider.tsx';
 import ProfilePage from "@/pages/ProfilePage.tsx";
 import CreateMeetingPage from "@/pages/CreateMeetingPage.tsx";
-import MeetingDetailsPage from "@/pages/MeetingDetailsPage.tsx";
+import MeetingDetailsPage from "@/pages/DetailsMeetingPage.tsx";
 import UserMeetingsPage from "@/pages/UserMeetingsPage.tsx";
 
 const App: React.FC = () => {

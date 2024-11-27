@@ -49,7 +49,7 @@ const ProfilePage: React.FC = () => {
                     </Alert>
                 </div>
             ) : (
-                <Card className="w-[93vw] max-w-2xl mx-auto">
+                <Card className="w-[93vw] max-w-2xl mx-auto my-8">
                     <CardContent>
                         {profile ? (
                             <>

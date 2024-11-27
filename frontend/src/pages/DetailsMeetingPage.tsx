@@ -27,10 +27,9 @@ const MeetingDetails: React.FC = () => {
                 setLoading(false);
             }
         };
-
         fetchMeeting();
     }, [id]);
-
+    console.log(meeting)
     return (
         <SidebarLayout>
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-3">
@@ -86,14 +85,13 @@ const MeetingDetails: React.FC = () => {
                             <p>
                                 <strong>Платформа:</strong> {meeting.backend}
                             </p>
-                            <hr className={"border-dashed"}/>
-                            <h2 className="text-xl font-semibold">Организатор:</h2>
-                            <p>
-                                <strong>ФИО:</strong> {meeting.organizedUser.firstName} {meeting.organizedUser.middleName}
-                                {meeting.organizedUser.lastName}
-                                <br/>
-                                <strong>Email:</strong> {meeting.organizedUser.email}
-                            </p>
+                            {/*<hr className={"border-dashed"}/>*/}
+                            {/*<h2 className="text-xl font-semibold">Организатор:</h2>*/}
+                            {/*<p>*/}
+                            {/*    <strong>ФИО:</strong> {meeting?.organizedUser?.firstName} {meeting?.organizedUser?.middleName} {meeting?.organizedUser?.lastName}*/}
+                            {/*    <br/>*/}
+                            {/*    <strong>Email:</strong> {meeting?.organizedUser?.email}*/}
+                            {/*</p>*/}
                             <hr className={"border-dashed"}/>
                             <h2 className="text-xl font-semibold">Участники:</h2>
                             <Table>
@@ -125,7 +123,7 @@ const MeetingDetails: React.FC = () => {
                                 {meeting.roomId ? meeting.roomId : "Не указано"}
                             </p>
                             <p>
-                                <strong>Организовано пользователем ID:</strong> {meeting.organizedBy}
+                                <strong>Организовано пользователем ID:</strong> {meeting.organizedBy ? meeting.organizedBy : "Не указано"}
                             </p>
                         </div>
                     </CardContent>
@@ -135,7 +133,7 @@ const MeetingDetails: React.FC = () => {
             )}
 
             <div className="flex justify-center my-8">
-                <Button onClick={() => navigate("/meetings")}>Вернуться</Button>
+                <Button onClick={() => navigate(-1)}>Вернуться</Button>
             </div>
         </SidebarLayout>
     );

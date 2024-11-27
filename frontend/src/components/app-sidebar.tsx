@@ -1,4 +1,4 @@
-import {User, CalendarPlus, CalendarDays, CalendarHeart} from "lucide-react"
+import {User, CalendarPlus, CalendarDays, CalendarHeart, LogOut} from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -62,6 +62,23 @@ export function AppSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link
+                                        to={"/login"}
+                                        onClick={(e) => {
+                                            localStorage.removeItem("token")
+                                            localStorage.removeItem("refreshToken")
+                                            if (location.pathname === "/login") {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                    >
+                                        <LogOut />
+                                        <span>Выйти</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
                             <ModeToggle />
                         </SidebarMenu>
                     </SidebarGroupContent>

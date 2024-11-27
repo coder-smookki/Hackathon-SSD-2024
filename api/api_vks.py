@@ -232,6 +232,7 @@ class AsyncAPIClient:
 
             data = { 
                     "name": name_vks,
+                    "roomId": room_id,
                     "comment": "string",
                     "roomId": room_id,
                     "participantsCount": participants_count_vks,

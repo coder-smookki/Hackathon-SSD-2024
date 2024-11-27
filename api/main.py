@@ -46,7 +46,6 @@ async def main():
                                        room_id=1, means_conducting='cisco'))
     print('\n\n')
 
-
     # Регистрация пользователя и заход с его данными
     print(await client.auth_register(login='bobi', password='string12343', email='bobi@example.com',
                                       lastName='string12343', firstName='string12343', middleName='string12343',

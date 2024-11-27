@@ -262,15 +262,9 @@ class AsyncAPIClient:
                         "departmentId": 2,
                         "email": "hantaton03.h@mail.ru"
                     },
-                    "organizedUser": {
-                        "id": organizer['id'],
-                        "lastName": "Хантатонов",
-                        "firstName": "Хантатон",
-                        "middleName": None,
-                        "roleIds": [3],
-                        "departmentId": 2,
-                        "email": "test1.b@mail.ru"
-                    },
+                    "organizedBy": {
+                        "id": organizer['id']
+                    }
             }
 
         return await self._make_request('POST', 'meetings', data=data)

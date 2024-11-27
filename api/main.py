@@ -41,7 +41,7 @@ async def main():
     print(participants)
 
     print('\n\n')
-    print(await client.create_meeting(name_vks='asdfdasfkekeke', date_vks='2024-11-25T17:33:00.000000',
+    print(await client.create_meeting(name_vks='rororororor', date_vks='2024-11-25T17:33:00.000000',
                                        duration_vks=52, participants_count_vks=3, organizer=organizer, participants=participants,
                                        room_id=1, means_conducting='cisco'))
     print('\n\n')

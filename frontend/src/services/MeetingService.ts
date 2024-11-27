@@ -1,7 +1,7 @@
 import $api from "../http";
 import axios, { AxiosResponse } from "axios";
 import { formatISO } from 'date-fns';
-import { CreateMeetingResponse, IMeetingsData, MeetingFormValues } from "../types/Meetings";
+import {CreateMeetingResponse, GetMeetingResponse, IMeetingsData, MeetingFormValues} from "../types/Meetings";
 import { getDecodedToken } from "@/utils/decodeToken";
 import {IToken} from "@/types/Auth.ts";
 
@@ -10,17 +10,37 @@ export default class MeetingService {
         page: number,
         rowsPerPage: number,
         fromDatetime: string,
-        toDatetime: string
+        toDatetime: string,
+        userId?: number | null
     ): Promise<AxiosResponse<IMeetingsData>> {
         try {
-            return await $api.get<IMeetingsData>(`/meetings`, {
-                params: {
-                    toDatetime,
-                    fromDatetime,
-                    rowsPerPage,
-                    page
-                },
-            });
+            const params: any = {
+                toDatetime,
+                fromDatetime,
+                rowsPerPage,
+                page,
+            };
+
+            if (userId) {
+                params.userId = userId;
+            }
+
+            return await $api.get<IMeetingsData>(`/meetings`, { params });
+        } catch (error) {
+            // Обработка ошибки
+            if (axios.isAxiosError(error)) {
+                console.error('Ошибка при получении мероприятий:', error.response?.data?.message || 'Неизвестная ошибка');
+                throw new Error(error.response?.data?.message || 'Ошибка при получении мероприятий');
+            } else {
+                console.error('Произошла непредвиденная ошибка:', error);
+                throw new Error('Ошибка сети');
+            }
+        }
+    }
+
+    static async fetchOneMeeting(id: number): Promise<AxiosResponse<GetMeetingResponse>> {
+        try {
+            return await $api.get<GetMeetingResponse>(`/meetings/${id}`);
         } catch (error) {
             // Обработка ошибки
             if (axios.isAxiosError(error)) {
@@ -73,7 +93,7 @@ export default class MeetingService {
             state: meeting.state || "booked",
             backend: meeting.backend || "cisco",
             organizedBy: {
-                id: 544,
+                id: tokenData ? tokenData.user.id : 544,
             },
         };
 

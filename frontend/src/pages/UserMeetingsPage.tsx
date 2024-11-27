@@ -6,6 +6,8 @@ import Skeleton from "@/components/Meetings/Skeleton.tsx";
 import SidebarLayout from "@/layout.tsx";
 import MeetingService from "@/services/MeetingService.ts";
 import MeetingFilter from "@/components/Meetings/MeetingFilter.tsx";
+import {IToken} from "@/types/Auth.ts";
+import {getDecodedToken} from "@/utils/decodeToken.ts";
 
 const MeetingsPage: React.FC = () => {
     const [meetings, setMeetings] = useState<IMeeting[]>([]);
@@ -16,11 +18,14 @@ const MeetingsPage: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
 
     // Фильтры
-    const initialStartDate = "2024-11-14T00:23:09";
-    const initialEndDate = "2024-11-14T20:23:09";
+    const initialStartDate = "2022-11-14T00:23:09";
+    const initialEndDate = "2025-11-14T20:00:00";
 
     const [startDate, setStartDate] = useState<string>(initialStartDate);
     const [endDate, setEndDate] = useState<string>(initialEndDate);
+
+    const token = localStorage.getItem("token");
+    let tokenData: IToken | null = null;
 
     // Загрузка данных
     useEffect(() => {
@@ -28,13 +33,20 @@ const MeetingsPage: React.FC = () => {
             setLoading(true);
             setError(null);
 
+
+            if (token) {
+                tokenData = getDecodedToken(token);
+            }
+
             try {
                 const data = await MeetingService.fetchMeetings(
                     page,
                     rowsPerPage,
                     startDate,
                     endDate,
+                    tokenData?.user.id
                 );
+                console.log(tokenData)
                 setMeetings(data.data.data);
 
                 const newTotalPages = Math.ceil(data.data.rowsNumber / rowsPerPage);
@@ -49,16 +61,11 @@ const MeetingsPage: React.FC = () => {
                 setError("Не удалось загрузить мероприятия");
             } finally {
                 setLoading(false);
-                // console.log(startDate, endDate)
             }
         };
 
         fetchMeetingsData();
     }, [page, rowsPerPage, startDate, endDate]);
-
-    // const handleFilterSubmit = () => {
-    //     setPage(1); // Сбрасываем на первую страницу при изменении фильтров
-    // };
 
     const handleResetFilters = () => {
         setStartDate(initialStartDate);
@@ -68,7 +75,7 @@ const MeetingsPage: React.FC = () => {
 
     const header = (
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center">
-            Мероприятия
+            Мои мероприятия
         </h1>
     );
 
@@ -105,8 +112,6 @@ const MeetingsPage: React.FC = () => {
         />
     );
 
-    // console.log(meetings)
-
     return (
         <SidebarLayout>
             <div className="p-10 flex flex-col">
@@ -119,7 +124,7 @@ const MeetingsPage: React.FC = () => {
                     handleResetFilters={handleResetFilters}
                 />
                 {loading && skeletons}
-                {error && errorMessage}
+                {error || !tokenData && errorMessage}
                 {!loading && !error && meetings.length > 0 && (
                     <>
                         {meetingsGrid}

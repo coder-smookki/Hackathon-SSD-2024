@@ -128,3 +128,17 @@ export interface CreateMeetingResponse {
     organizedBy: User;
     recurrenceUpdateType: string | null;
 }
+
+export interface GetMeetingResponse {
+    id: number;
+    name: string;
+    roomId: number | null;
+    room: string | null;
+    startedAt: string; // ISO date string
+    endedAt: string; // ISO date string
+    backend: string;
+    participantsCount: number;
+    organizedBy: number;
+    participants: Participant[];
+    organizedUser: User;
+}

@@ -63,7 +63,7 @@ const CreateApplicationPage: React.FC = () => {
 
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center mt-10">
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10">
                 Создание мероприятия
             </h1>
             <Card className="w-[93vw] max-w-2xl mx-auto mb-5">

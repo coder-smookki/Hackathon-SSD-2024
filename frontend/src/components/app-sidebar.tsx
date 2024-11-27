@@ -1,4 +1,4 @@
-import { User, CalendarPlus, CalendarDays } from "lucide-react"
+import {User, CalendarPlus, CalendarDays, CalendarHeart} from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -22,6 +22,11 @@ const items = [
         title: "Создать мероприятие",
         url: "/create-meeting",
         icon: CalendarPlus,
+    },
+    {
+        title: "Мои мероприятия",
+        url: "/my-meetings",
+        icon: CalendarHeart,
     },
     {
         title: "Профиль",

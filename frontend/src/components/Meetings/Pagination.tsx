@@ -20,7 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, rowsPerPage, 
             <div>
                 <span className="font-semibold">{page}</span> из <span className="font-semibold">{totalPages}</span>
             </div>
-            <Button onClick={onNext} disabled={page === totalPages} aria-label="Следующая страница">
+            <Button onClick={onNext} hidden={page === totalPages} disabled={page === totalPages} aria-label="Следующая страница">
                 Следующая
             </Button>
         </div>

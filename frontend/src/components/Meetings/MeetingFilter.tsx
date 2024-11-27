@@ -53,16 +53,17 @@ const MeetingFilter: React.FC<MeetingFilterProps> = ({
 
     return (
         <Dialog>
-            <DialogTrigger className="mb-5">
-                <Button>Фильтры</Button>
+            <DialogTrigger asChild className="mb-5" >
+                <Button variant="default">Фильтры</Button>
             </DialogTrigger>
             <DialogContent className="w-max rounded-xl">
                 <DialogHeader>
                     <DialogTitle>Фильтры</DialogTitle>
+                </DialogHeader>
                     <DialogDescription className="flex flex-col gap-4">
                         <div>
                             <label
-                                className="block text-sm font-medium text-gray-700 mb-1 text-start"
+                                className="block text-sm font-medium mb-1 text-start"
                                 htmlFor="startDate"
                             >
                                 Начало
@@ -76,7 +77,7 @@ const MeetingFilter: React.FC<MeetingFilterProps> = ({
                         </div>
                         <div>
                             <label
-                                className="block text-sm font-medium text-gray-700 mb-1 text-start"
+                                className="block text-sm font-medium mb-1 text-start"
                                 htmlFor="endDate"
                             >
                                 Конец
@@ -94,7 +95,6 @@ const MeetingFilter: React.FC<MeetingFilterProps> = ({
                             </Button>
                         </div>
                     </DialogDescription>
-                </DialogHeader>
             </DialogContent>
         </Dialog>
     );

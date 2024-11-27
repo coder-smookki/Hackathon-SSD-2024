@@ -1,7 +1,7 @@
 from typing import Any
 
 from database.models.base import AlchemyBaseModel
-from sqlalchemy import BigInteger, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, ForeignKey, Integer, String, ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 #
@@ -25,10 +25,11 @@ MAX_PASSWORD_LENGTH = 64
 class UserModel(AlchemyBaseModel):
     __tablename__ = "users"
 
-
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
-    tg_id: Mapped[int] = mapped_column(BigInteger, nullable=False)  
+    tg_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
+    login: Mapped[str] = mapped_column(String(MAX_LOGIN_LENGTH), nullable=False)
+    password: Mapped[str] = mapped_column(String(MAX_PASSWORD_LENGTH), nullable=False)
     jwt_token: Mapped[str] = mapped_column(String(), nullable=False)
+    events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)  # С id встреч, в которых учавствует человек
 
     # id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
     # login: Mapped[str] = mapped_column(String(MAX_LOGIN_LENGTH), nullable=False)

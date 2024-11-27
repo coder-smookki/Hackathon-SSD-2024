@@ -23,6 +23,7 @@ async def initialize_api_client():
     return api_client
 
 
+
 class AsyncAPIClient:
     _instance: Optional["AsyncAPIClient"] = None
     _client: Optional[httpx.AsyncClient] = None
@@ -37,12 +38,15 @@ class AsyncAPIClient:
             self._instance._client = httpx.AsyncClient(base_url=self._instance.base_url, headers=self._instance.headers)
         return self._instance
 
-    async def authenticate(self, login_data: dict):
+    async def get_token(self, login: str, password: str):
         # Выполним запрос на аутентификацию
-        response = await self._make_request('POST', 'auth/login', data=login_data)
+        response = await self._make_request(
+            'POST',
+            'auth/login', 
+            data={"login": login, "password": password}
+        )
         if response and 'token' in response:
-            self.token = response['token']
-            self.headers['Authorization'] = f'Bearer {self.token}'  # Добавляем токен в заголовок
+            return response['token']
         else:
             raise Exception("Failed to authenticate")
 

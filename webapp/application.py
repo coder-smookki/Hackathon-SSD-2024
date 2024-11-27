@@ -16,6 +16,6 @@ app.add_middleware(
 )
 
 
-@app.get("/api/test")
+@app.get("/test")
 async def connect():
     return {"message": "Hello World"}

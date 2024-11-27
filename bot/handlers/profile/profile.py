@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
-
+from aiogram.types import Message
 from typing import Dict, Any
 from bot.callbacks.profile import ProfileOpen
 from bot.filters.role import EmailExistsFilter

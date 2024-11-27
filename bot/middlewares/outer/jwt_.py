@@ -31,12 +31,12 @@ class JWTMiddleware(BaseMiddleware):
         state_data = await state.get_data()
 
         if user is None:
+            data["token"] = None
             return await handler(event, data)
 
         # если токен еще не истек
         if datetime.now() < user.token_expired_at:
-            print("token 111")
-            data["token"] = user.token_expired_at
+            data["token"] = user.token
             return await handler(event, data)
         
         # Обновление токена
@@ -60,7 +60,7 @@ class JWTMiddleware(BaseMiddleware):
 
             user = await user_repo.update(user)
 
-            data["token"] = user.token_expired_at
+            data["token"] = user.token
             return await handler(event, data)
 
         # заставить юзера прислать пароль

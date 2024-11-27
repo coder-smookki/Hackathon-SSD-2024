@@ -1,29 +1,31 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
+from typing import Dict, Any
 
 from bot.core.utils.enums import SlashCommands, TextCommands
 from bot.handlers.start.formulations import START_TEXT, HELP_TEXT
 from bot.keyboards.start import start_keyboard
 from bot.handlers.profile.profile import cmd_profile
+from bot.utils.utils import extract_username
 
 
 router = Router(name=__name__)
 
 @router.message(CommandStart())
-async def cmd_start(message: Message, state: FSMContext) -> None:
-    data = await state.get_data()
-    token = data.get('token')
+async def cmd_start(message: Message, state: FSMContext, token) -> None:
     if token:
-        await cmd_profile(
+        callback = CallbackQuery(
+            id="start_profile_redirect",
+            from_user=message.from_user,
             message=message,
-            callback=None,
-            is_redirect=True
+            chat_instance="-",
+            data="profile"
         )
+        await cmd_profile(callback=callback)
     else:
-        await message.answer("Токен не найден. Пройдите авторизацию.")
-        await message.answer(text=START_TEXT,
+        await message.answer(text=START_TEXT.format(name=extract_username(message.from_user)),
                             reply_markup=start_keyboard)
         await state.clear()
 

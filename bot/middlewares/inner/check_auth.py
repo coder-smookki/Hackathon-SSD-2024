@@ -30,15 +30,13 @@ class AuthMiddleware(BaseMiddleware):
         bot: Bot = data["bot"]
         event_chat: Chat | None = data.get("event_chat")
         event_router: Router | None = data.get("event_router")
-        state: FSMContext = data["state"]
-        state_data = await state.get_data()
 
         if event_router is not None and \
                 event_router.name in self.exceptions_router:
             return await handler(event, data)
         
-        print(state_data.keys())
-        if state_data.get("confirm_check_data") is not None:
+        print(data.keys())
+        if data.get("token") is not None:
             return await handler(event, data)
 
         await bot.send_message(event_chat.id, "Неизвестный юзер.\nНажмите /start")

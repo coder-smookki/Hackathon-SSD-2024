@@ -22,9 +22,9 @@ class UserModel(AlchemyBaseModel):
     email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), nullable=False)
 
     token: Mapped[str] = mapped_column(String(4000), nullable=False)
-    token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True)
+    token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
     refresh_token: Mapped[str] = mapped_column(String(1000), nullable=False)
-    refresh_token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=True)
+    refresh_token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
 
     events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)  
     # С id встреч, в которых учавствует человек
@@ -43,4 +43,3 @@ class UserModel(AlchemyBaseModel):
     #     self.email = email
     #     self.password = password
     #     self.jwt_token = jwt_token
-

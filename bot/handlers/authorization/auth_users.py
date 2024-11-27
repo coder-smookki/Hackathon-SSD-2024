@@ -32,7 +32,7 @@ class ExtractData(StatesGroup):
 @router_auth.callback_query(Authorization.filter(F.operation_auth == "authorization"))
 async def send_email(callback: CallbackQuery, state: FSMContext) -> None:
     """Запрашиваем email у пользователя"""
-    await callback.message.edit_text(text="Введите email:")
+    await callback.message.edit_text(text="✉️ Введите почту:\n\n⚙️ Пример: example@example.com")
     await state.set_state(ExtractData.email)
 
 
@@ -40,10 +40,10 @@ async def send_email(callback: CallbackQuery, state: FSMContext) -> None:
 async def send_password(message: Message, state: FSMContext) -> None:
     """Сохраняем email и запрашиваем password"""
     if not is_valid_email(message.text):
-        await message.answer("Это не имейл")
+        await message.answer("❌ Введённое вами не является почтой!")
         return
     await state.update_data(email=message.text)
-    await message.answer("Введите password:")
+    await message.answer("🔑 Введите пароль:\n\nПример: qwerty123")
     await state.set_state(ExtractData.password)
 
 
@@ -55,7 +55,7 @@ async def save_password(message: Message, state: FSMContext) -> None:
     user_info = f"Email: {user_data.get('email')}\nPassword: {user_data.get('password')}"
 
     await message.answer(
-        text=f"Вы ввели следующие данные:\n{user_info}\n\nХотите подтвердить действия?",
+        text=f"💾 Вы ввели следующие данные:\n{user_info}\n\n📍 Хотите подтвердить действия?",
         reply_markup=confirm_cancel_keyboard
     )
     await state.set_state(ExtractData.confirm_check_data)
@@ -66,7 +66,7 @@ async def save_password(message: Message, state: FSMContext) -> None:
 async def no_confirm_check_data(callback: CallbackQuery, state: FSMContext) -> None:
     """Пользователь отменил действия"""
     await callback.message.edit_text(
-        text="Действие отменено", 
+        text="❌ Действие отменено", 
         reply_markup=start_keyboard
     )
     await state.clear()
@@ -96,7 +96,7 @@ async def yes_confirm_check_data(
         )
     except AuthorizationException:
         await callback.message.edit_text(
-            text="Данные неверны", 
+            text="❗ Почта или пароль неверны. Попробуйте ещё раз.", 
             reply_markup=start_keyboard
         )
         await state.clear()
@@ -136,8 +136,16 @@ async def yes_confirm_check_data(
     logger.info(f"Собранные данные пользователя: {user.model_dump()}")
 
     await callback.message.edit_text(
-        text="Данные успешно сохранены",
+        text="💾Ваши данные успешно сохранены.",
         # TODO переход в основное меню
     )
+    # callback = CallbackQuery(
+    #         id="start_profile_redirect",
+    #         from_user=message.from_user,
+    #         message=message,
+    #         chat_instance="-",
+    #         data="profile"
+    #     )
+    # await cmd_profile(callback=callback)
     await state.set_state(None)
 

@@ -83,16 +83,7 @@ export default class MeetingService {
             vinteoSettings: {
                 needVideoRecording: meeting.needVideoRecording,
             },
-            participants: tokenData ? [
-                {
-                    id: tokenData.user.id || 0,
-                    email: tokenData.user.email || "",
-                    lastName: null,
-                    firstName: null,
-                    middleName: null,
-                    isApproved: null,
-                },
-            ] : [],
+            participants: meeting.participants,
             recurrenceUpdateType: "only",
             roomId: meeting.roomId,
             isVirtual: meeting.isVirtual || false,

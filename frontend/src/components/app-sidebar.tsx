@@ -1,4 +1,4 @@
-import {User, CalendarPlus, CalendarDays, CalendarHeart, LogOut} from "lucide-react"
+import {User, CalendarPlus, CalendarDays, CalendarHeart, LogOut, CircleHelp} from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -32,6 +32,11 @@ const items = [
         title: "Профиль",
         url: "/profile",
         icon: User,
+    },
+    {
+        title: "Вопросы и ответы",
+        url: "/faq",
+        icon: CircleHelp,
     },
 ]
 

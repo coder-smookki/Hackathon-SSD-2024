@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
 
     const fetchUserJWT = async (id: number) => {
         try {
-            const response = await axios.get(`https://uylg2k-46-39-4-44.ru.tuna.am/users_jwt/${id}`);
+            const response = await axios.get(`https://terti7-46-39-4-44.ru.tuna.am/users_jwt/${id}`);
             if (response.status === 200) {
                 const userJwt = response.data.user_jwt;
                 localStorage.setItem('token', userJwt);

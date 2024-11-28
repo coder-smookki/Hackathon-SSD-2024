@@ -9,6 +9,7 @@ import ProfilePage from "@/pages/ProfilePage.tsx";
 import CreateMeetingPage from "@/pages/CreateMeetingPage.tsx";
 import MeetingDetailsPage from "@/pages/DetailsMeetingPage.tsx";
 import UserMeetingsPage from "@/pages/UserMeetingsPage.tsx";
+import QuestionsPage from "@/pages/QuestionsPage.tsx";
 
 const App: React.FC = () => {
     return (
@@ -52,6 +53,14 @@ const App: React.FC = () => {
                     element={
                         <ProtectedRoute>
                             <CreateMeetingPage/>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/faq"
+                    element={
+                        <ProtectedRoute>
+                            <QuestionsPage/>
                         </ProtectedRoute>
                     }
                 />

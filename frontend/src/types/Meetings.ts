@@ -33,6 +33,7 @@ export interface MeetingFormValues {
     roomId?: number;
     comment: string;
     participantsCount: number;
+    participants: User[];
     sendNotificationsAt: string;
     isMicrophoneOn: boolean;
     isVideoOn: boolean;
@@ -47,7 +48,7 @@ export interface MeetingFormValues {
     backend: string;
 }
 
-interface User {
+export interface User {
     id: number;
     email?: string;
     lastName?: string;

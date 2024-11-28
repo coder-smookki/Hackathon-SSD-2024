@@ -85,7 +85,7 @@ const BuildingsList: React.FC<BuildingsListProps> = ({ selectedBuildingId, onBui
                     <SelectTrigger id="building">
                         <SelectValue placeholder="Выберите здание" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-w-[90vw]">
                         <SelectItem value={null!}>Выберите здание</SelectItem>
                         {buildings.map((building) => (
                             <SelectItem key={building.id} value={building.id.toString()}>
@@ -110,7 +110,7 @@ const BuildingsList: React.FC<BuildingsListProps> = ({ selectedBuildingId, onBui
                     <SelectTrigger id="roomId">
                         <SelectValue placeholder="Выберите комнату" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-w-[90vw]">
                         <SelectItem value={null!}>Выберите комнату</SelectItem>
                         {filteredRooms.map((room) => (
                             <SelectItem key={room.id} value={room.id.toString()}>

@@ -6,6 +6,8 @@ from typing import Dict, Any
 from bot.callbacks.profile import ProfileOpen
 from bot.filters.role import EmailExistsFilter
 from bot.handlers.start.formulations import PROFILE_TEXT
+from bot.core.utils.enums import SlashCommands, TextCommands
+from aiogram.filters import CommandStart, Command
 
 from sqlalchemy import select
 from core.api.api_vks import initialize_api_client
@@ -19,6 +21,7 @@ from bot.keyboards.profile import profile_keyboard
 router = Router(name=__name__)
 
 
+# @router.message(Command(SlashCommands.MENU))
 @router.callback_query(ProfileOpen.filter(F.operation_prof == "profile"), EmailExistsFilter())
 async def cmd_profile(callback: CallbackQuery):
     

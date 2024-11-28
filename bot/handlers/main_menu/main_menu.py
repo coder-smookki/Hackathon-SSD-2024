@@ -14,8 +14,8 @@ from bot.utils.utils import extract_username
 main_menu_router = Router(name=__name__)
 
 
-@main_menu_router.message(Command(SlashCommands.MENU))
 #@main_menu_router.message(F.text == TextCommands.MAIN_MENU)
+@main_menu_router.message(Command(SlashCommands.MENU))
 async def cmd_menu(message: Message, state: FSMContext) -> None:
     await message.answer(text=MAIN_MENU_TEXT.format(name=extract_username(message.from_user)),
                         reply_markup=main_menu_inline_keyboard)

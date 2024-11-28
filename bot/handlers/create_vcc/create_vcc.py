@@ -42,7 +42,7 @@ async def start_create(
     ):
     """ Старт создания, запрос имени """
     await state.set_state(CreateVccState.name)
-    await callback.message.edit_text("start create vcc.\n введите название")
+    await callback.message.edit_text("📋 Введите название ВКС:")
 
 
 @create_vcc_router.message(CreateVccState.name)
@@ -53,7 +53,7 @@ async def get_name(
     """ сохранение имени, запрос даты проведения """
     await state.update_data(name=message.text)
     await state.set_state(CreateVccState.date)
-    await message.answer("введите дату в формате yyyy mm dd hh mm (год месяц день час минута)\n2024 11 28 10 10")
+    await message.answer("⌛ Введите дату в формате (год месяц день час минута):\n\n⚙️ Пример: 2024 11 28 10 10")
 
 
 @create_vcc_router.message(CreateVccState.date)
@@ -65,12 +65,12 @@ async def get_date(
     try:
         update_data = (datetime.strptime(message.text, "%Y %m %d %H %M") - timedelta(hours=5)).isoformat()
     except Exception:
-        await message.answer("неверная дата")
+        await message.answer("❌ Вы ввели неверную дату\n\n⚙️ Пример: 2024 11 28 10 10")
         return
 
     await state.update_data(date=update_data)
     await state.set_state(CreateVccState.duration)
-    await message.answer("введите продолжительность в минутах")
+    await message.answer("⌛ Введите продолжительность ВКС в минутах:")
 
 
 @create_vcc_router.message(CreateVccState.duration)
@@ -82,11 +82,11 @@ async def get_duration(
     try:
         data = int(message.text)
     except ValueError:
-        await message.answer("это не число")
+        await message.answer("❌ Вы ввели не число!")
         return
     await state.update_data(duration=data)
     await state.set_state(CreateVccState.participants_count_vks)
-    await message.answer("введите макс количество людей")
+    await message.answer("🙍 Введите максимальное количество людей в ВКС:")
 
 
 @create_vcc_router.message(CreateVccState.participants_count_vks)
@@ -98,12 +98,12 @@ async def get_participants_count(
     try:
         data = int(message.text)
     except ValueError:
-        await message.answer("это не число")
+        await message.answer("❌ Вы ввели не число!")
         return
     await state.update_data(participants_count=data)
     await state.set_state(CreateVccState.backend)
     await message.answer(
-        "Выберите тип", 
+        "⚙️ Выберите тип ВКС:", 
         reply_markup=choose_backend_keyboard
     )
 
@@ -121,7 +121,7 @@ async def start_get_cisco_settings(
     await state.update_data(backend = "cisco")
     await state.set_state(CiscoSettingsState.is_microphone_on)
     await callback.message.edit_text(
-        text = "Включать ли микрофон обязятально?",
+        text = "📍 Включать ли микрофон обязательно?",
         reply_markup=yes_no_keyboard
     )
 
@@ -138,7 +138,7 @@ async def start_get_cisco_settings(
     await state.update_data(is_microphone_on = callback_data.result=="Да")
     await state.set_state(CiscoSettingsState.is_video_on)
     await callback.message.edit_text(
-        text = "Включать ли видео обязательно?",
+        text = "📍 Включать ли видео обязательно?",
         reply_markup=yes_no_keyboard
     )
 
@@ -155,7 +155,7 @@ async def start_get_cisco_settings(
     await state.update_data(is_video_on = callback_data.result=="Да")
     await state.set_state(CiscoSettingsState.is_waiting_room_enabled)
     await callback.message.edit_text(
-        text = "Включать ли ожидание что-то там?",
+        text = "📍 Включать ли ожидание ВКС?",
         reply_markup=yes_no_keyboard
     )
 
@@ -172,7 +172,7 @@ async def start_get_cisco_settings(
     await state.update_data(is_waiting_room_enabled = callback_data.result=="Да")
     await state.set_state(CiscoSettingsState.need_video_recording)
     await callback.message.edit_text(
-        text = "Включать ли видео запись?",
+        text = "📍 Включать ли видео запись?",
         reply_markup=yes_no_keyboard
     )
 
@@ -197,7 +197,7 @@ async def start_get_cisco_settings(
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])
     await callback.message.answer(
-        "Вводите имейлы пользователей, или нажмайте сансел", 
+        "✉️ Введите email пользователей для добавления в ВКС", 
         reply_markup=cancel_state_keyboard
     )
 
@@ -215,7 +215,7 @@ async def start_get_external_settings(
     await state.update_data(backend = "external")
     await state.set_state(ExternalSettingsState.external_url)
     await callback.message.edit_text(
-        text = "введите ссылку",
+        text = "📎 Введите ссылку:",
     )
 
 @create_vcc_router.message(ExternalSettingsState.external_url)
@@ -231,7 +231,7 @@ async def start_get_external_settings(
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])
     await message.answer(
-        "Вводите имейлы пользователей, или нажмайте сансел", 
+        "✉️ Введите email пользователей для добавления в ВКС", 
         reply_markup=cancel_state_keyboard
     )
 
@@ -249,7 +249,7 @@ async def start_get_external_settings(
     await state.update_data(backend = "vinteo")
     await state.set_state(VinteoSettingsState.need_video_recording)
     await callback.message.edit_text(
-        text = "Видео запись заказывали?",
+        text = "📍 Включать ли видео запись?",
         reply_markup=yes_no_keyboard
     )
 
@@ -269,7 +269,7 @@ async def start_get_external_settings(
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])
     await callback.message.answer(
-        "Вводите имейлы пользователей, или нажмайте сансел", 
+        "✉️ Введите email пользователей для добавления в ВКС", 
         reply_markup=cancel_state_keyboard
     )
     
@@ -284,16 +284,16 @@ async def get_participants(
         token: str
     ):
     if not is_valid_email(message.text):
-        await message.answer("это не имейл", reply_markup=cancel_state_keyboard)
+        await message.answer("❌ Это не email!", reply_markup=cancel_state_keyboard)
         return
     user_data = await api_client.get_user(token, message.text)
     if not user_data["data"]["data"]:
-        await message.answer("этого юзера нету в бд", reply_markup=cancel_state_keyboard)
+        await message.answer("❌ Этого пользователя нету в базе данных", reply_markup=cancel_state_keyboard)
         return
 
     data = await state.get_data()
     data["participants"].append({"id": user_data["data"]["data"][0]["id"]})
-    await message.answer("добавлено", reply_markup=cancel_state_keyboard)
+    await message.answer("✅ Добавлен", reply_markup=cancel_state_keyboard)
 
 
 @create_vcc_router.callback_query(
@@ -306,7 +306,7 @@ async def cancel_participants(
     ):
     await state.set_state(CreateVccState.set_room)
     await callback.message.edit_text(
-        text = "комнату хотим?",
+        text = "🔒 Хотите ли вы указать помещение ВКС?",
         reply_markup=yes_no_keyboard
     )
 
@@ -337,7 +337,7 @@ async def no_set_room(
         settings=state_data["settings"]
     )
     await callback.message.edit_text(
-        text = "данные корректны? \n" + str(data),  # TODO сунуть данные для проверка
+        text = "⚙️ Данные корректны? \n" + str(data),  # TODO сунуть данные для проверка
         reply_markup=yes_no_keyboard
     )
     
@@ -355,7 +355,7 @@ async def yes_set_room(
     await state.set_state(CreateVccState.building)
     data = await api_client.get_buildings(token)
     await callback.message.edit_text(
-        "Выберите здание", 
+        "🔒 Выберите здание, где будет ВКС.", 
         reply_markup=create_choose_building_keyboard(data["data"]["data"])
     )
 
@@ -374,7 +374,7 @@ async def get_building(
     await state.set_state(CreateVccState.room)
     data = await api_client.get_rooms(token, callback_data.id)
     await callback.message.edit_text(
-        "Выберите комнату", 
+        "🔒 Выберите комнату для ВКС.", 
         reply_markup=create_choose_room_keyboard(data["data"]["data"])
     )
 
@@ -405,7 +405,7 @@ async def get_room(
         place=callback_data.id
     )
     await callback.message.edit_text(
-        text = "данные корректны? \n" + str(data),  # TODO сунуть данные для проверка
+        text = "⚙️ Данные корректны? \n" + str(data),  # TODO сунуть данные для проверка
         reply_markup=yes_no_keyboard
     )
     
@@ -450,6 +450,6 @@ async def yes_check_data(
         settings=state_data["settings"]
     )
     if data["status"] != 201:
-        await callback.message.edit_text("не получилось "+str(data["data"]))
+        await callback.message.edit_text("❌ Произошла ошибка. Попробуйте ещё раз."+str(data["data"]))
     else:
-        await callback.message.edit_text("Все круттттттаааааааа "+str(data["data"]))
+        await callback.message.edit_text("✅ ВКС создана. \n"+str(data["data"]))

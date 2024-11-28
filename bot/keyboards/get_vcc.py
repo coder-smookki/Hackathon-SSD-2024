@@ -17,11 +17,11 @@ def get_filters_keyboard(
         page: int
     ):
     back_button = InlineKeyboardButton(
-        text="Назад список;", 
+        text="◀️ Назад", 
         callback_data=PagionationVccData(value=-1).pack()
     ),
     forward_button = InlineKeyboardButton(
-        text="Дальше список;", 
+        text="Дальше ▶️", 
         callback_data=PagionationVccData(value=1).pack()
     ),
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
@@ -54,17 +54,17 @@ def get_filters_keyboard(
         ],
         [
             InlineKeyboardButton(
-                text="Приоритет;", 
+                text="Приоритет", 
                 callback_data=FilterVcc(name="priority").pack()
             ),
             InlineKeyboardButton(
-                text="Депортамент;", 
+                text="Департамент", 
                 callback_data=FilterVcc(name="department").pack()
             ),
         ],
         [
             InlineKeyboardButton(
-                text="Организатор;", 
+                text="Организатор", 
                 callback_data=FilterVcc(name="user").pack()
             ),
         ],
@@ -73,7 +73,7 @@ def get_filters_keyboard(
         ],
         [
             InlineKeyboardButton(
-                text="Главное меню;", # TODO
+                text="Главное меню", # TODO
                 callback_data=StateVcc(name="menu").pack()
             ),
         ],
@@ -87,13 +87,13 @@ def get_filters_keyboard(
 
 cancel_name_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(
-        text="сбос фильтра",
+        text="🗑️ Сбросить фильтр",
         callback_data=CancelFilterDataVcc(filter_="filter").pack()
     )]
 ])
 cancel_user_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(
-        text="сбос фильтра",
+        text="🗑️ Сбросить фильтр",
         callback_data=CancelFilterDataVcc(filter_="userId").pack()
     )]
 ])
@@ -112,7 +112,7 @@ priority_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         ),
     ],
     [InlineKeyboardButton(
-        text="сбос фильтра",
+        text="🗑️ Сбросить фильтр",
         callback_data=CancelFilterDataVcc(filter_="priority").pack()
     )]
 ])
@@ -121,7 +121,7 @@ priority_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 def create_choose_department_keyboard(departmens: list[dict]):
 
     mass = [[InlineKeyboardButton(
-        text="сбос фильтра",
+        text="🗑️ Сбросить фильтр",
         callback_data=CancelFilterDataVcc(filter_="departmentId").pack()
     )]]
     for departmen in departmens:

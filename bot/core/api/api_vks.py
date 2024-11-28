@@ -33,6 +33,7 @@ class AsyncAPIClient:
 
     # Универсальный метод для создания запросов
     async def _make_request(self, method: str, endpoint: str, params: dict = None, data: dict = None) -> Optional[Any]:
+
         try:
             if method.upper() == 'GET':
                 response = await self._client.get(endpoint, params=params, headers=self.headers)
@@ -135,6 +136,8 @@ class AsyncAPIClient:
                 else:
                     print(f"Ошибка: {response.status}")
 
+    async def auth_logout(self, token: str = None, params: dict = None):      
+        return await self._make_request('POST', '/auth/logout', data=token) 
 
     # requests users {
     async def get_users(self, params: dict = None) -> Optional[Any]:

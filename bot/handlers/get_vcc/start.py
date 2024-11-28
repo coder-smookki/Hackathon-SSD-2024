@@ -30,10 +30,7 @@ async def start_get(
     """ Старт создания, запрос даты от """
     await state.set_state(GetVccState.date_from)
     await callback.message.answer(
-        "start get vcc.\n \
-        введите дату НАЧАЛА в формате yyyy mm dd hh mm \
-        (год месяц день час минута)\n \
-        2024 11 28 10 10"
+        "Введите дату НАЧАЛА в формате yyyy mm dd hh mm (год месяц день час минута)\n 2024 11 28 10 10"
     )
 
 
@@ -52,9 +49,7 @@ async def get_date(
     
     await state.set_state(GetVccState.date_to)
     await message.answer(
-        "введите дату КОНЦА в формате yyyy mm dd hh mm \
-        (год месяц день час минута)\n \
-        2024 11 28 10 10"
+        "Введите дату КОНЦА в формате yyyy mm dd hh mm (год месяц день час минута) \n2024 11 28 10 10"
     )
 
 @start_router.message(GetVccState.date_to)
@@ -68,7 +63,7 @@ async def get_date(
     try:
         update_data = (datetime.strptime(message.text, "%Y %m %d %H %M") - timedelta(hours=5)).isoformat()
     except Exception:
-        await message.answer("неверная дата")
+        await message.answer("Неверная дата")
         return
     await state.update_data(
         date_to=update_data,

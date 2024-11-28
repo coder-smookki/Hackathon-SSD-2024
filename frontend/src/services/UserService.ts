@@ -1,53 +1,38 @@
 import $api from "../http";
 import axios, {AxiosResponse} from "axios";
-import {IUser} from "@/types/User.ts";
+import { ICheckUserResponse, IUser} from "@/types/User.ts";
 import {User} from "@/types/Meetings.ts";
-
-interface checkUserResponse {
-    rowsPerPage: number;
-    page: number;
-    rowsNumber: number;
-    showDeleted: boolean;
-    data: User[];
-    sortBy: string;
-}
 
 export default class UserService {
     static async fetchProfile(): Promise<AxiosResponse<IUser>> {
         try {
             return await $api.get<IUser>(`/account/user-info`);
         } catch (error) {
-            // Обработка ошибки
             if (axios.isAxiosError(error)) {
-                // Обработка ошибки, возвращенной сервером
-                console.error('Ошибка получения профиля:', error.response?.data?.message || 'Unknown error');
-                throw new Error(error.response?.data?.message || 'Login failed');
+                console.error('Ошибка получения профиля:', error.response?.data?.message || 'Неизвестная ошибка');
+                throw new Error(error.response?.data?.message || 'Произошла ошибка при получении профиля');
             } else {
-                // Обработка других ошибок (например, проблемы с сетью)
-                console.error('An unexpected error occurred:', error);
-                throw new Error('Login failed due to a network error');
+                console.error('Произошла непредвиденная ошибка:', error);
+                throw new Error('Ошибка сети');
             }
         }
     }
 
     static async checkParticipant(email: string): Promise<User | null> {
         try {
-            const response = await $api.get<checkUserResponse>(`/users?email=${email}`);
-            if (response.data.data.length === 0) {
+            const response = await $api.get<ICheckUserResponse>(`/users?email=${email}`);
+            const participants = response.data.data;
+            if (participants.length === 0) {
                 return null;
             }
-
-            return response.data.data[0];
+            return participants[0];
         } catch (error) {
-            // Обработка ошибки
             if (axios.isAxiosError(error)) {
-                // Обработка ошибки, возвращенной сервером
-                console.error('Ошибка получения профиля:', error.response?.data?.message || 'Unknown error');
-                throw new Error(error.response?.data?.message || 'Login failed');
+                console.error('Ошибка проверки участника:', error.response?.data?.message || 'Неизвестная ошибка');
+                throw new Error(error.response?.data?.message || 'Произошла ошибка при проверке участника');
             } else {
-                // Обработка других ошибок (например, проблемы с сетью)
-                console.error('An unexpected error occurred:', error);
-                throw new Error('Login failed due to a network error');
+                console.error('Произошла непредвиденная ошибка:', error);
+                throw new Error('Ошибка сети');
             }
         }
     }

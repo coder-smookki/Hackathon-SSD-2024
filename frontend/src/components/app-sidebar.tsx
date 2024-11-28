@@ -9,8 +9,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "./ui/sidebar.tsx"
-import {ModeToggle} from "./mode-toggle.tsx";
 import {Link, useLocation} from "react-router";
+import ModeToggle from "@/components/mode-toggle.tsx";
 
 const items = [
     {

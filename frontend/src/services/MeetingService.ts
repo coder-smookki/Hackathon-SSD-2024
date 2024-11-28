@@ -1,9 +1,8 @@
 import $api from "../http";
 import axios, { AxiosResponse } from "axios";
 import { formatISO } from 'date-fns';
-import {CreateMeetingResponse, GetMeetingResponse, IMeetingsData, MeetingFormValues} from "../types/Meetings";
-import { getDecodedToken } from "@/utils/decodeToken";
-import {IToken} from "@/types/Auth.ts";
+import { CreateMeetingResponse, GetMeetingResponse, IMeetingsData, MeetingFormValues } from "../types/Meetings";
+import { getUserIdFromToken } from "@/utils/decodeToken";
 
 export default class MeetingService {
     static async fetchMeetings(
@@ -29,10 +28,8 @@ export default class MeetingService {
             if (state) {
                 params.state = state;
             }
-            console.log(params)
             return await $api.get<IMeetingsData>(`/meetings`, { params });
         } catch (error) {
-            // Обработка ошибки
             if (axios.isAxiosError(error)) {
                 console.error('Ошибка при получении мероприятий:', error.response?.data?.message || 'Неизвестная ошибка');
                 throw new Error(error.response?.data?.message || 'Ошибка при получении мероприятий');
@@ -47,10 +44,9 @@ export default class MeetingService {
         try {
             return await $api.get<GetMeetingResponse>(`/meetings/${id}`);
         } catch (error) {
-            // Обработка ошибки
             if (axios.isAxiosError(error)) {
-                console.error('Ошибка при получении мероприятий:', error.response?.data?.message || 'Неизвестная ошибка');
-                throw new Error(error.response?.data?.message || 'Ошибка при получении мероприятий');
+                console.error('Ошибка при получении мероприятия:', error.response?.data?.message || 'Неизвестная ошибка');
+                throw new Error(error.response?.data?.message || 'Ошибка при получении мероприятия');
             } else {
                 console.error('Произошла непредвиденная ошибка:', error);
                 throw new Error('Ошибка сети');
@@ -59,12 +55,7 @@ export default class MeetingService {
     }
 
     static async createMeeting(meeting: MeetingFormValues): Promise<AxiosResponse<CreateMeetingResponse>> {
-        const token = localStorage.getItem("token");
-        let tokenData: IToken | null = null;
-
-        if (token) {
-            tokenData = getDecodedToken(token);
-        }
+        const userId = getUserIdFromToken();
 
         const normalizedData = {
             name: meeting.name,
@@ -88,17 +79,13 @@ export default class MeetingService {
             roomId: meeting.roomId,
             isVirtual: meeting.isVirtual || false,
             state: meeting.state || "booked",
-            backend: meeting.backend || "cisco",
-            organizedBy: {
-                id: tokenData ? tokenData.user.id : 544,
-            },
+            backend: "cisco",
+            organizedBy: { id: userId }
         };
 
-        console.log(normalizedData);
         try {
             return await $api.post<CreateMeetingResponse>(`/meetings`, normalizedData);
         } catch (error) {
-            // Обработка ошибки
             if (axios.isAxiosError(error)) {
                 console.error('Ошибка при создании мероприятия:', error.response?.data?.message || 'Неизвестная ошибка');
                 throw new Error(error.response?.data?.message || 'Ошибка при создании мероприятия');

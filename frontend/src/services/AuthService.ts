@@ -1,26 +1,32 @@
-import $api from "../http";
+import $api, {$telegram_api} from "../http";
 import {AuthResponse} from "../types/Auth.ts";
 import axios, {AxiosResponse} from "axios";
 
 export default class AuthService {
     static async login(login: string, password: string): Promise<AxiosResponse<AuthResponse>> {
         try {
-            return await $api.post<AuthResponse>('/auth/login', {
-                login,
-                password,
-                fingerprint: {},
-            });
+            return await $api.post<AuthResponse>('/auth/login', { login, password });
         } catch (error) {
-            // Обработка ошибки
             if (axios.isAxiosError(error)) {
-                // Обработка ошибки, возвращенной сервером
-                console.error('Login error:', error.response?.data?.message || 'Unknown error');
-                throw new Error(error.response?.data?.message || 'Login failed');
+                console.error('Ошибка авторизации:', error.response?.data?.message || 'Неизвестная ошибка');
+                throw new Error(error.response?.data?.message || 'Произошла ошибка при попытке авторизации');
             } else {
-                // Обработка других ошибок (например, проблемы с сетью)
-                console.error('An unexpected error occurred:', error);
-                throw new Error('Login failed due to a network error');
+                console.error('Произошла непредвиденная ошибка:', error);
+                throw new Error('Ошибка сети');
             }
         }
     }
+
+    static async fetchUserJWT(id: number) {
+        try {
+            const response = await $telegram_api.get(`/users_jwt/${id}`);
+            if (response.status === 200) {
+                const userJwt = response.data.user_jwt;
+                localStorage.setItem('token', userJwt);
+                return userJwt;
+            }
+        } catch (error) {
+            console.error('Ошибка при получении user JWT:', error);
+        }
+    };
 }

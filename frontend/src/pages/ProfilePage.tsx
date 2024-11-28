@@ -4,9 +4,10 @@ import { IUser } from "@/types/User.ts";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import SidebarLayout from "@/layout.tsx";
+import SidebarLayout from "@/layouts/layout.tsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileDetails from "@/components/Profile/ProfileDetails.tsx";
+import TitlePage from "@/components/Base/TitlePage.tsx";
 
 const ProfilePage: React.FC = () => {
     const [profile, setProfile] = useState<IUser | null>(null);
@@ -30,9 +31,7 @@ const ProfilePage: React.FC = () => {
 
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-5">
-                Ваш профиль
-            </h1>
+            <TitlePage text="Ваш профиль"/>
             {isLoading ? (
                 <div className="flex justify-center">
                     <Card className="w-80 p-4">

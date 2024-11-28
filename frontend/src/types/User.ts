@@ -1,3 +1,6 @@
+import {User} from "@/types/Meetings.ts";
+import {BaseData} from "@/types/Base.ts";
+
 export interface IUser {
     id: number;
     departmentId: number;
@@ -32,3 +35,5 @@ export interface IDepartment {
     id: number;
     ldapName: null | string;
 }
+
+export interface ICheckUserResponse extends BaseData<User> {}

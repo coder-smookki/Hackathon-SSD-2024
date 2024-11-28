@@ -18,3 +18,14 @@ export const getDecodedToken = (token: string): IToken | null => {
         return null;
     }
 }
+
+export const getUserIdFromToken = (): number | null => {
+    const token = localStorage.getItem("token");
+    let tokenData: IToken | null = null;
+
+    if (token) {
+        tokenData = getDecodedToken(token);
+    }
+
+    return tokenData ? tokenData.user.id : null;
+};

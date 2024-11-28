@@ -3,9 +3,14 @@ import { AuthResponse } from '../types/Auth.ts';
 import {getRefreshToken} from "../utils/decodeToken.ts";
 
 export const API_URL = 'https://test.vcc.uriit.ru/api';
+export const TELEGRAM_API_URL = 'http://localhost:80';
 
 const $api = axios.create({
     baseURL: API_URL,
+});
+
+export const $telegram_api = axios.create({
+    baseURL: TELEGRAM_API_URL,
 });
 
 $api.interceptors.request.use((config) => {

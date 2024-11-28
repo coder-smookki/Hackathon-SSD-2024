@@ -9,7 +9,7 @@ import {
 } from "./ui/dropdown-menu.tsx"
 import { useTheme } from "./theme-provider.tsx"
 
-export function ModeToggle() {
+const ModeToggle = () => {
     const { setTheme } = useTheme()
 
     return (
@@ -35,3 +35,5 @@ export function ModeToggle() {
         </DropdownMenu>
     );
 }
+
+export default ModeToggle;

@@ -1,24 +1,30 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent } from "@/components/ui/card";
-import SidebarLayout from "@/layout";
+import React, {useState} from "react";
+import {useForm} from "react-hook-form";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Card, CardContent} from "@/components/ui/card";
+import SidebarLayout from "@/layouts/layout.tsx";
 import {MeetingFormValues} from "@/types/Meetings.ts";
 import MeetingService from "@/services/MeetingService.ts";
 import {toast} from "sonner";
 import BuildingsList from "@/components/Filter/BuildingsList.tsx";
 import UserService from "@/services/UserService.ts";
+import TitlePage from "@/components/Base/TitlePage.tsx";
+
+const showToastError = (message: string) => {
+    toast("Ошибка при создании мероприятия!", {
+        description: message,
+        action: {
+            label: "Понятно",
+            onClick: () => console.log("Понятно"),
+        },
+    });
+};
 
 const CreateApplicationPage: React.FC = () => {
-    const {
-        register,
-        formState: { errors },
-        handleSubmit,
-        reset,
-    } = useForm<MeetingFormValues>({
+    const {register, formState: {errors}, handleSubmit, reset} = useForm<MeetingFormValues>({
         defaultValues: {
             isMicrophoneOn: true,
             isVideoOn: true,
@@ -30,7 +36,6 @@ const CreateApplicationPage: React.FC = () => {
     const [selectedBuilding, setSelectedBuilding] = useState<number | null>(null);
     const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
     const [participants, setParticipants] = useState<string[]>([""]);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -44,8 +49,9 @@ const CreateApplicationPage: React.FC = () => {
     };
 
     const onParticipantChange = (value: string, index: number) => {
-        const updatedParticipants = [...participants];
-        updatedParticipants[index] = value;
+        const updatedParticipants = participants.map((participant, i) =>
+            i === index ? value : participant
+        );
         setParticipants(updatedParticipants);
     };
 
@@ -57,23 +63,11 @@ const CreateApplicationPage: React.FC = () => {
         try {
             if (selectedBuilding && !selectedRoom) {
                 setError("Выберите комнату для выбранного строения.");
-                toast("Ошибка при создании мероприятия!", {
-                    description: "Пожалуйста, выберите комнату для выбранного строения.",
-                    action: {
-                        label: "Понятно",
-                        onClick: () => console.log("Понятно"),
-                    },
-                });
+                showToastError("Пожалуйста, выберите комнату для выбранного строения.");
                 return;
             } else if (participants.length === 0) {
                 setError("Необходимо добавить хотя бы одного участника!");
-                toast("Ошибка при создании мероприятия!", {
-                    description: "Пожалуйста, добавьте участников.",
-                    action: {
-                        label: "Понятно",
-                        onClick: () => console.log("Понятно"),
-                    },
-                });
+                showToastError("Пожалуйста, добавьте участников.");
                 return;
             }
 
@@ -87,36 +81,21 @@ const CreateApplicationPage: React.FC = () => {
 
             for (const email of participants) {
                 if (!email.trim()) {
-                    toast("Ошибка при создании мероприятия!", {
-                        description: "Email не может быть пустым!.",
-                        action: {
-                            label: "Понятно",
-                            onClick: () => console.log("Понятно"),
-                        },
-                    });
+                    showToastError("Поле email не может быть пустым!");
                     return;
                 }
 
                 const userResponse = await UserService.checkParticipant(email);
 
                 if (userResponse) {
-                    const user = userResponse;
-                    console.log(user, user.id, user.email)
-                    data.participants.push(user);
+                    data.participants.push(userResponse);
                 } else {
-                    toast("Ошибка при создании мероприятия!", {
-                        description: `Участник с email ${email} не найден!`,
-                        action: {
-                            label: "Понятно",
-                            onClick: () => console.log("Понятно"),
-                        },
-                    });
+                    showToastError(`Участник с email ${email} не найден!`);
                     return;
                 }
             }
+            await MeetingService.createMeeting(data);
 
-            const response = await MeetingService.createMeeting(data);
-            console.log("ВКС:", response);
             setSuccess("Мероприятие успешно создано!");
             toast("Мероприятие успешно создано!", {
                 description: 'Вы можете посмотреть свои мероприятия в разделе "Мои мероприятия".',
@@ -125,28 +104,21 @@ const CreateApplicationPage: React.FC = () => {
                     onClick: () => console.log("Понятно"),
                 },
             })
-            reset(); // Очистка полей формы
+
+            // Очистка полей формы
+            reset();
         } catch (err) {
             console.error(err);
             setError("Не удалось создать мероприятие. Перепроверьте все даты.");
-            toast("Не удалось создать мероприятие!", {
-                description: 'Проверьте, указали ли Вы все необходимые поля для создания заявки.',
-                action: {
-                    label: "Понятно",
-                    onClick: () => console.log("Понятно"),
-                },
-            })
+            showToastError("Проверьте, указали ли Вы все необходимые поля для создания заявки.");
         } finally {
             setLoading(false);
         }
     };
 
-
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-5">
-                Создание мероприятия
-            </h1>
+            <TitlePage text="Создание мероприятия"/>
             <Card className="w-[93vw] max-w-2xl mx-auto mb-5">
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -235,8 +207,8 @@ const CreateApplicationPage: React.FC = () => {
                             {participants.map((participant, index) => (
                                 <div key={index} className="flex items-center gap-2 mt-2">
                                     <Input
-                                        type="text"
-                                        placeholder={`Участник ${index + 1}`}
+                                        type="email"
+                                        placeholder={`Email ${index + 1}`}
                                         value={participant}
                                         onChange={(e) => onParticipantChange(e.target.value, index)}
                                     />

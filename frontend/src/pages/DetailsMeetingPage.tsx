@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { GetMeetingResponse } from "@/types/Meetings.ts";
-import SidebarLayout from "@/layout.tsx";
+import SidebarLayout from "@/layouts/layout.tsx";
 import MeetingService from "@/services/MeetingService.ts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import TitlePage from "@/components/Base/TitlePage.tsx";
 
 const MeetingDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -29,13 +30,10 @@ const MeetingDetails: React.FC = () => {
         };
         fetchMeeting();
     }, [id]);
-    console.log(meeting)
+
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-3">
-                Детали мероприятия
-            </h1>
-
+            <TitlePage text="Детали мероприятия"/>
             {loading ? (
                 <div className="flex justify-center">
                     <Card className="w-[93vw] max-w-2xl mx-auto my-8 p-6">
@@ -85,13 +83,19 @@ const MeetingDetails: React.FC = () => {
                             <p>
                                 <strong>Платформа:</strong> {meeting.backend}
                             </p>
-                            {/*<hr className={"border-dashed"}/>*/}
-                            {/*<h2 className="text-xl font-semibold">Организатор:</h2>*/}
-                            {/*<p>*/}
-                            {/*    <strong>ФИО:</strong> {meeting?.organizedUser?.firstName} {meeting?.organizedUser?.middleName} {meeting?.organizedUser?.lastName}*/}
-                            {/*    <br/>*/}
-                            {/*    <strong>Email:</strong> {meeting?.organizedUser?.email}*/}
-                            {/*</p>*/}
+                            {
+                                meeting?.organizedUser && meeting?.organizedUser?.firstName && meeting?.organizedUser?.middleName && (
+                                    <>
+                                        <hr className={"border-dashed"}/>
+                                        <h2 className="text-xl font-semibold">Организатор:</h2>
+                                        <p>
+                                        <strong>ФИО:</strong> {meeting?.organizedUser?.firstName} {meeting?.organizedUser?.middleName} {meeting?.organizedUser?.lastName}
+                                            <br/>
+                                            <strong>Email:</strong> {meeting?.organizedUser?.email}
+                                        </p>
+                                    </>
+                                )
+                            }
                             <hr className={"border-dashed"}/>
                             <h2 className="text-xl font-semibold">Участники:</h2>
                             <Table>
@@ -123,7 +127,7 @@ const MeetingDetails: React.FC = () => {
                                 {meeting.roomId ? meeting.roomId : "Не указано"}
                             </p>
                             <p>
-                                <strong>Организовано пользователем
+                                <strong>Организовано пользователем с
                                     ID:</strong> {meeting.organizedBy ? meeting.organizedBy : "Не указано"}
                             </p>
                             { meeting.permalink && (

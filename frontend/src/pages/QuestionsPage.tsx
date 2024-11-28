@@ -4,15 +4,14 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import SidebarLayout from "@/layout.tsx";
+import SidebarLayout from "@/layouts/layout.tsx";
 import React from "react";
+import TitlePage from "@/components/Base/TitlePage.tsx";
 
 const QuestionsPage: React.FC = () => {
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-5">
-                Часто задаваемые вопросы
-            </h1>
+            <TitlePage text="Часто задаваемые вопросы"/>
             <Accordion type="single" collapsible className="w-[85vw] max-w-2xl mx-auto mb-5">
                 <AccordionItem value="item-1">
                     <AccordionTrigger>Как зарегистрироваться и авторизоваться в боте и на сайте?</AccordionTrigger>

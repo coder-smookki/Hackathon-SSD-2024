@@ -17,7 +17,7 @@ import { AuthResponse } from "@/types/Auth.ts";
 import { useNavigate } from "react-router";
 import { getRefreshToken } from "@/utils/decodeToken.ts";
 import AuthService from "@/services/AuthService.ts";
-import axios from 'axios'; // Импортируем axios для HTTP-запросов
+import TitlePage from "@/components/Base/TitlePage.tsx"; // Импортируем axios для HTTP-запросов
 
 const formSchema = z.object({
     login: z.string().email({
@@ -41,25 +41,12 @@ const LoginPage: React.FC = () => {
     });
 
 
+
     // Тестовые сервис входа через телеграм-бота
     const initData = window.Telegram.WebApp.initData;
     const userParam = new URLSearchParams(initData).get('user');
     let userId = 0;
 
-    const fetchUserJWT = async (id: number) => {
-        try {
-            const response = await axios.get(`https://terti7-46-39-4-44.ru.tuna.am/users_jwt/${id}`);
-            if (response.status === 200) {
-                const userJwt = response.data.user_jwt;
-                localStorage.setItem('token', userJwt);
-                navigate("/meetings");
-                return userJwt;
-            }
-        } catch (error) {
-            console.error('Ошибка при получении user JWT:', error);
-        }
-    };
-    // конец теста
 
 
     React.useEffect(() => {
@@ -69,13 +56,16 @@ const LoginPage: React.FC = () => {
                     const user = JSON.parse(userParam);
                     userId = user.id;
                     if (userId) {
-                        await fetchUserJWT(userId);
+                        const response = await AuthService.fetchUserJWT(userId);
+                        if (response) {
+                            navigate("/meetings")
+                        }
                     }
                 } catch (error) {
                     console.error('Не удалось получить userId:', error);
                 }
             } else {
-                console.error('Не существует параметра userData.');
+                console.log('Запущено вне telegram web-app.');
             }
         };
 
@@ -89,7 +79,6 @@ const LoginPage: React.FC = () => {
             const authData: AuthResponse = response.data;
             localStorage.setItem('token', authData.token);
             localStorage.setItem('refreshToken', getRefreshToken(authData.token));
-
             navigate("/meetings");
         } catch (error) {
             console.error('Ошибка:', error);
@@ -101,9 +90,7 @@ const LoginPage: React.FC = () => {
 
     return (
         <div className={"h-screen flex flex-col justify-center items-center"}>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center">
-                Вход в систему
-            </h1>
+            <TitlePage text="Вход в систему"/>
 
             <Form {...form}>
                 <form

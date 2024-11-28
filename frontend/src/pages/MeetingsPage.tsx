@@ -3,9 +3,10 @@ import { IMeeting } from "@/types/Meetings.ts";
 import MeetingCard from "@/components/Meetings/MeetingCard.tsx";
 import Pagination from "@/components/Meetings/Pagination.tsx";
 import Skeleton from "@/components/Meetings/Skeleton.tsx";
-import SidebarLayout from "@/layout.tsx";
+import SidebarLayout from "@/layouts/layout.tsx";
 import MeetingService from "@/services/MeetingService.ts";
 import MeetingFilter from "@/components/Meetings/MeetingFilter.tsx";
+import TitlePage from "@/components/Base/TitlePage.tsx";
 
 const MeetingsPage: React.FC = () => {
     const [meetings, setMeetings] = useState<IMeeting[]>([]);
@@ -37,13 +38,20 @@ const MeetingsPage: React.FC = () => {
                     endDate,
                     state,
                 );
-                let fetched_meetings = data.data.data;
+                let fetchedMeetings = data.data.data;
 
                 if (state != "") {
-                    fetched_meetings = data.data.data.filter(meeting => meeting.state === state);
+                    fetchedMeetings = data.data.data.filter(meeting => meeting.state === state);
                 }
 
-                setMeetings(fetched_meetings);
+                const uniqueMeetings = Object.values(
+                    fetchedMeetings.reduce((acc, meeting) => {
+                        acc[meeting.id] = meeting; // перезаписывает, сохраняя последний
+                        return acc;
+                    }, {} as Record<string, IMeeting>)
+                );
+
+                setMeetings(uniqueMeetings);
 
                 const newTotalPages = Math.ceil(data.data.rowsNumber / rowsPerPage);
                 setTotalPages(newTotalPages);
@@ -59,7 +67,6 @@ const MeetingsPage: React.FC = () => {
                 setPage(1);
             } finally {
                 setLoading(false);
-                console.log(meetings)
             }
         };
 
@@ -72,12 +79,6 @@ const MeetingsPage: React.FC = () => {
         setState("")
         setPage(1);
     };
-
-    const header = (
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center">
-            Мероприятия
-        </h1>
-    );
 
     const skeletons = (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -114,8 +115,8 @@ const MeetingsPage: React.FC = () => {
 
     return (
         <SidebarLayout>
-            <div className="p-10 flex flex-col">
-                {header}
+            <div className="p-10 pt-0 flex flex-col">
+                <TitlePage text="Мероприятия"/>
                 <MeetingFilter
                     startDate={startDate}
                     endDate={endDate}

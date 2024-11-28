@@ -1,31 +1,24 @@
+import {BaseData} from "@/types/Base.ts";
+
 export interface IMeeting {
     permalinkId: string;
     permalink: string;
     id: number;
     name: string;
-    roomId?: number;
+    roomId: number | null;
     participantsCount: number;
     sendNotificationsAt: string;
     startedAt: string;
     endedAt: string;
-    duration?: number;
+    duration: number | null;
     isGovernorPresents: boolean;
     createdAt: string;
-    closedAt?: string;
+    closedAt: string | null;
     state: string;
     organizedBy: number;
     createdBy: number;
     isNotifyAccepted: boolean;
     isVirtual: boolean;
-}
-
-export interface IMeetingsData {
-    rowsPerPage: number;
-    rowsNumber: number;
-    page: number;
-    showDeleted: boolean;
-    data: IMeeting[];
-    sortBy: string;
 }
 
 export interface MeetingFormValues {
@@ -45,7 +38,6 @@ export interface MeetingFormValues {
     isNotifyAccepted: boolean;
     isVirtual: boolean;
     state: string;
-    backend: string;
 }
 
 export interface User {
@@ -56,6 +48,15 @@ export interface User {
     middleName?: string | null;
     roleIds?: number[];
     departmentId?: number;
+}
+
+interface Participant {
+    id: number;
+    email: string | null;
+    lastName: string | null;
+    firstName: string | null;
+    middleName: string | null;
+    isApproved: boolean | null;
 }
 
 interface CiscoSettings {
@@ -75,15 +76,6 @@ interface Event {
     endedAt: string;
     duration: number;
     id: number;
-}
-
-interface Participant {
-    id: number;
-    email: string | null;
-    lastName: string | null;
-    firstName: string | null;
-    middleName: string | null;
-    isApproved: boolean | null;
 }
 
 export interface CreateMeetingResponse {
@@ -140,3 +132,5 @@ export interface GetMeetingResponse {
     organizedUser: User;
     permalink: string;
 }
+
+export interface IMeetingsData extends BaseData<IMeeting> {}

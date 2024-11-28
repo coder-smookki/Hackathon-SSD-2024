@@ -6,7 +6,7 @@ from bot.callbacks.get_vcc import PagionationVccData
 from bot.handlers.get_vcc.formulations import SHOWING_VKS
 from bot.core.api.api_vks import MEETINGS_ON_PAGE, AsyncAPIClient
 from bot.handlers.get_vcc.state import FiltersState
-from bot.handlers.get_vcc.utils import refactor_meetings, refactor_meeting
+from bot.utils.get_vcc.utils import refactor_meetings, refactor_meeting
 from bot.keyboards.get_vcc import (
     get_filters_keyboard, 
     priority_keyboard, 

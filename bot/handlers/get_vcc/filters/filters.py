@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from bot.handlers.get_vcc.state import FiltersState
-from bot.handlers.get_vcc.utils import refactor_meeting, refactor_meetings
+from bot.utils.get_vcc.utils import refactor_meeting, refactor_meetings
 from bot.core.utils.utils import is_valid_email
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.keyboards.get_vcc import (

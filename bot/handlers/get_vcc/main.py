@@ -1,8 +1,8 @@
 from aiogram import Router
 
 from bot.handlers.get_vcc.start import start_router
-from bot.handlers.get_vcc.filters import filter_router
-from bot.handlers.get_vcc.pagination import pagination_router
+from bot.handlers.get_vcc.filters.filters import filter_router
+from bot.handlers.get_vcc.pagination.pagination import pagination_router
 
 
 

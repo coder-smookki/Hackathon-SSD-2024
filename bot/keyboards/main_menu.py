@@ -31,7 +31,7 @@ main_menu_inline_keyboard = InlineKeyboardMarkup(
                 text=TextCommands.PROFILE,
                 callback_data=ProfileOpen(operation_prof=Operation.PROFILE).pack()
             )
-        ],
+        ]
         # [
         #     InlineKeyboardButton(
         #         text=TextCommands.LOGOUT,

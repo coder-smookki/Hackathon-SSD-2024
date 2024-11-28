@@ -15,9 +15,9 @@ from bot.callbacks.back_menu import BackMenu
 back_menu_router = Router(name=__name__)
 
 
-@back_menu_router.message(BackMenu.filter(F.back_menu == "back_menu"))
-async def cmd_back_menu(message: Message, state: FSMContext) -> None:
-    await message.edit_text(text=MAIN_MENU_TEXT.format(name=extract_username(message.from_user)))
+@back_menu_router.callback_query(BackMenu.filter(F.back_menu == "back_menu"))
+async def cmd_back_menu(callback: CallbackQuery, state: FSMContext) -> None:
+    await callback.message.edit_text(text=MAIN_MENU_TEXT.format(name=extract_username(callback.message.from_user)))
     
-    await message.edit_reply_markup(reply_markup=main_menu_inline_keyboard)
+    await callback.message.edit_reply_markup(reply_markup=main_menu_inline_keyboard)
     await state.clear()

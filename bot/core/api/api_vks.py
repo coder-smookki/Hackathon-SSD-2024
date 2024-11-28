@@ -220,6 +220,28 @@ class AsyncAPIClient:
     # }
     
     # requests meetings {
+    async def get_user_meetings_by_userid(self, params: dict = None, data: dict = None,
+                                           toDatetime: str = None, fromDatetime: str = None,
+                                           state: str = None, user_id: int = None) -> Optional[Any]:
+        
+        if state is None:
+            params = {
+                'toDatetime': toDatetime,
+                'fromDatetime': fromDatetime,
+                'userId': user_id,
+                'userParticipant': user_id
+            }
+        else:
+            params = {
+                'state': state,
+                'toDatetime': toDatetime,
+                'fromDatetime': fromDatetime,
+                'userId': user_id,
+                'userParticipant': user_id
+            }       
+        
+        return await self._make_request('GET', 'meetings', data=data, params=params)
+
     async def get_meetings(self, params: dict = None, data: dict = None, toDatetime: str = None, fromDatetime: str = None ) -> Optional[Any]:
         params = {
             'state': 'booked',

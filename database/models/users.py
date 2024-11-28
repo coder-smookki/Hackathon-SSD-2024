@@ -1,41 +1,40 @@
 from typing import Any
+from datetime import date, datetime
 
-from database.models.base import AlchemyBaseModel
-from sqlalchemy import BigInteger, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, DateTime, Integer, String, ARRAY, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-#
-# from typing import TYPE_CHECKING
-#
-# from core.models.user import (
-#     MAX_TG_NAME_LENGTH,
-#     MAX_USER_DESCRIPTION_LENGTH,
-#     MAX_USER_NAME_LENGTH,
-# )
-#
-# if TYPE_CHECKING:
-#     from database.models.city import CityModel
-#     from database.models.country import CountryModel
+from database.models.base import AlchemyBaseModel
+
 
 MAX_LOGIN_LENGTH = 128
 MAX_EMAIL_LENGTH = 254
 MAX_PASSWORD_LENGTH = 64
+MAX_NAME_LENGTH = 64
+MAX_PHONE_LENGTH = 32
 
 
 class UserModel(AlchemyBaseModel):
     __tablename__ = "users"
 
+    tg_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
+    login: Mapped[str] = mapped_column(String(MAX_LOGIN_LENGTH), nullable=False)
+    email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), nullable=False)
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
-    tg_id: Mapped[int] = mapped_column(BigInteger, nullable=False)  
-    jwt_token: Mapped[str] = mapped_column(String(), nullable=False)
+    token: Mapped[str] = mapped_column(String(4000), nullable=False)
+    token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
+    refresh_token: Mapped[str] = mapped_column(String(1000), nullable=False)
+    refresh_token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
 
-    # id: Mapped[int] = mapped_column(BigInteger, primary_key=True, nullable=False)
-    # login: Mapped[str] = mapped_column(String(MAX_LOGIN_LENGTH), nullable=False)
-    # email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), nullable=False)
-    # password: Mapped[str] = mapped_column(String(MAX_PASSWORD_LENGTH), nullable=False)
-    # jwt_token: Mapped[str] = mapped_column(String(), nullable=False)
-    # tg_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)  
+    # С id встреч, в которых учавствует человек
+
+    vcc_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    first_name: Mapped[str] = mapped_column(String(MAX_NAME_LENGTH), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(MAX_NAME_LENGTH), nullable=False)
+    midle_name: Mapped[str] = mapped_column(String(MAX_NAME_LENGTH), nullable=True)
+    birthday: Mapped[date] = mapped_column(Date(), nullable=True)
+    phone: Mapped[str] = mapped_column(String(MAX_PHONE_LENGTH), nullable=True)
 
     # def __init__(self, tg_id, login, email, password, jwt_token, **kw: Any):
     #     super().__init__(**kw)
@@ -44,4 +43,3 @@ class UserModel(AlchemyBaseModel):
     #     self.email = email
     #     self.password = password
     #     self.jwt_token = jwt_token
-

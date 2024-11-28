@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import os, sys
+sys.path.insert(1, os.getcwd())
+
 from webapp.backend import all_routers
 
 app = FastAPI()

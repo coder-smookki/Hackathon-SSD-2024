@@ -21,7 +21,7 @@ main_menu_inline_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text=TextCommands.VIEW_VKS,
                 #callback_data=''
-                callback_data=Authorization(operation_auth=Operation.AUTHORIZATIONS).pack()
+                callback_data=ViewVKS(operation_view_vks=Operation.VIEW_VKS).pack()
             )
         ],
         [

@@ -8,6 +8,7 @@ from bot.core.utils.enums import SlashCommands, TextCommands
 from bot.handlers.start.formulations import START_TEXT, HELP_TEXT
 from bot.keyboards.start import start_keyboard
 from bot.handlers.profile.profile import cmd_profile
+from bot.handlers.main_menu.main_menu import cmd_menu
 from bot.utils.utils import extract_username
 
 
@@ -16,14 +17,18 @@ router = Router(name=__name__)
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext, token) -> None:
     if token:
-        callback = CallbackQuery(
-            id="start_profile_redirect",
-            from_user=message.from_user,
-            message=message,
-            chat_instance="-",
-            data="profile"
-        )
-        await cmd_profile(callback=callback)
+        # callback = CallbackQuery(
+        #     id="start_profile_redirect",
+        #     from_user=message.from_user,
+        #     message=message,
+        #     chat_instance="-",
+        #     data="profile"
+        # )
+        # await cmd_profile(callback=callback)
+
+        await message.reply('Вы уже авторизованы')
+
+        await cmd_menu(message=message, state=state)
     else:
         await message.answer(text=START_TEXT.format(name=extract_username(message.from_user)),
                             reply_markup=start_keyboard)

@@ -11,6 +11,7 @@ export default class MeetingService {
         rowsPerPage: number,
         fromDatetime: string,
         toDatetime: string,
+        state?: string,
         userId?: number | null
     ): Promise<AxiosResponse<IMeetingsData>> {
         try {
@@ -23,6 +24,10 @@ export default class MeetingService {
 
             if (userId) {
                 params.userId = userId;
+                params.userParticipant = userId;
+            }
+            if (state) {
+                params.state = state;
             }
             console.log(params)
             return await $api.get<IMeetingsData>(`/meetings`, { params });

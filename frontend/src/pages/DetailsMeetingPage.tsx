@@ -56,7 +56,7 @@ const MeetingDetails: React.FC = () => {
             ) : meeting ? (
                 <Card className="w-[93vw] max-w-2xl mx-auto my-8">
                     <CardHeader>
-                        <CardTitle className="text-center text-3xl font-extrabold tracking-tight lg:text-5xl">
+                        <CardTitle className="text-center text-3xl font-extrabold tracking-tight lg:text-4xl">
                             {meeting.name}
                         </CardTitle>
                     </CardHeader>
@@ -123,8 +123,15 @@ const MeetingDetails: React.FC = () => {
                                 {meeting.roomId ? meeting.roomId : "Не указано"}
                             </p>
                             <p>
-                                <strong>Организовано пользователем ID:</strong> {meeting.organizedBy ? meeting.organizedBy : "Не указано"}
+                                <strong>Организовано пользователем
+                                    ID:</strong> {meeting.organizedBy ? meeting.organizedBy : "Не указано"}
                             </p>
+                            { meeting.permalink && (
+                                <p>
+                                    <strong>Ссылка для подключения:</strong> <a className="underline" href={meeting.permalink} target="_blank"
+                                                                                rel="noopener noreferrer">{meeting.permalink}</a>
+                                </p>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

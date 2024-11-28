@@ -16,11 +16,12 @@ const MeetingsPage: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
 
     // Фильтры
-    const initialStartDate = "2024-11-14T00:23:09";
+    const initialStartDate = "2022-11-14T00:23:09";
     const initialEndDate = "2024-11-14T20:23:09";
 
     const [startDate, setStartDate] = useState<string>(initialStartDate);
     const [endDate, setEndDate] = useState<string>(initialEndDate);
+    const [state, setState] = useState<string>("");
 
     // Загрузка данных
     useEffect(() => {
@@ -34,8 +35,15 @@ const MeetingsPage: React.FC = () => {
                     rowsPerPage,
                     startDate,
                     endDate,
+                    state,
                 );
-                setMeetings(data.data.data);
+                let fetched_meetings = data.data.data;
+
+                if (state != "") {
+                    fetched_meetings = data.data.data.filter(meeting => meeting.state === state);
+                }
+
+                setMeetings(fetched_meetings);
 
                 const newTotalPages = Math.ceil(data.data.rowsNumber / rowsPerPage);
                 setTotalPages(newTotalPages);
@@ -47,22 +55,21 @@ const MeetingsPage: React.FC = () => {
             } catch (err) {
                 console.error(err);
                 setError("Не удалось загрузить мероприятия");
+                setState("");
+                setPage(1);
             } finally {
                 setLoading(false);
-                // console.log(startDate, endDate)
+                console.log(meetings)
             }
         };
 
         fetchMeetingsData();
-    }, [page, rowsPerPage, startDate, endDate]);
-
-    // const handleFilterSubmit = () => {
-    //     setPage(1); // Сбрасываем на первую страницу при изменении фильтров
-    // };
+    }, [page, rowsPerPage, startDate, endDate, state]);
 
     const handleResetFilters = () => {
         setStartDate(initialStartDate);
         setEndDate(initialEndDate);
+        setState("")
         setPage(1);
     };
 
@@ -105,8 +112,6 @@ const MeetingsPage: React.FC = () => {
         />
     );
 
-    // console.log(meetings)
-
     return (
         <SidebarLayout>
             <div className="p-10 flex flex-col">
@@ -117,6 +122,8 @@ const MeetingsPage: React.FC = () => {
                     setStartDate={setStartDate}
                     setEndDate={setEndDate}
                     handleResetFilters={handleResetFilters}
+                    selectedState={state}
+                    setSelectedState={setState}
                 />
                 {loading && skeletons}
                 {error && errorMessage}

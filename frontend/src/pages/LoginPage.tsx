@@ -1,7 +1,7 @@
 import React from 'react';
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useForm} from 'react-hook-form';
-import {z} from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from 'react-hook-form';
+import { z } from "zod";
 import {
     Form,
     FormControl,
@@ -11,21 +11,22 @@ import {
     FormLabel,
     FormMessage
 } from "../components/ui/form.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {AuthResponse} from "@/types/Auth.ts";
-import {useNavigate} from "react-router";
-import {getRefreshToken} from "@/utils/decodeToken.ts";
+import { Button } from "@/components/ui/button.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { AuthResponse } from "@/types/Auth.ts";
+import { useNavigate } from "react-router";
+import { getRefreshToken } from "@/utils/decodeToken.ts";
 import AuthService from "@/services/AuthService.ts";
+import axios from 'axios'; // Импортируем axios для HTTP-запросов
 
 const formSchema = z.object({
-    login: z.string().min(2, {
-        message: "Логин должен состоять как минимум из 2 символов.",
+    login: z.string().email({
+        message: "Введите корректный адрес электронной почты.",
     }),
     password: z.string().min(2, {
         message: "Пароль должен состоять как минимум из 2 символов.",
     }),
-})
+});
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -39,6 +40,46 @@ const LoginPage: React.FC = () => {
         },
     });
 
+
+    // Тестовые сервис входа через телеграм-бота
+    const initData = window.Telegram.WebApp.initData;
+    const userParam = new URLSearchParams(initData).get('user');
+    let userId = 0;
+
+    const fetchUserJWT = async (id: number) => {
+        try {
+            const response = await axios.get(`https://uylg2k-46-39-4-44.ru.tuna.am/users_jwt/${id}`);
+            if (response.status === 200) {
+                const userJwt = response.data.user_jwt;
+                localStorage.setItem('token', userJwt); // Сохраняем токен в localStorage
+                navigate("/meetings"); // Перенаправляем на страницу meetings
+                return userJwt; // Возвращаем токен
+            }
+        } catch (error) {
+            console.error('Ошибка при получении user JWT:', error);
+        }
+    };
+
+    React.useEffect(() => {
+        const initializeUser = async () => {
+            if (userParam) {
+                try {
+                    const user = JSON.parse(userParam);
+                    userId = user.id;
+                    if (userId) {
+                        await fetchUserJWT(userId);
+                    }
+                } catch (error) {
+                    console.error('Не удалось получить userId:', error);
+                }
+            } else {
+                console.error('Не существует параметра userData.');
+            }
+        };
+
+        initializeUser();
+    }, [userParam]);
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
@@ -46,10 +87,11 @@ const LoginPage: React.FC = () => {
             const authData: AuthResponse = response.data;
             localStorage.setItem('token', authData.token);
             localStorage.setItem('refreshToken', getRefreshToken(authData.token));
+
             navigate("/meetings");
         } catch (error) {
             console.error('Ошибка:', error);
-            form.setError('login', {message: 'Неверный логин или пароль!'});
+            form.setError('login', { message: 'Неверная почта или пароль!' });
         } finally {
             setLoading(false);
         }
@@ -69,32 +111,32 @@ const LoginPage: React.FC = () => {
                     <FormField
                         control={form.control}
                         name="login"
-                        render={({field}) => (
+                        render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Логин</FormLabel>
+                                <FormLabel>Почта</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Логин" {...field} />
+                                    <Input placeholder="Почта" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    Тестовый логин Hantaton01
+                                    Тестовая почта hantaton10.h@mail.ru
                                 </FormDescription>
-                                <FormMessage/>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
                     <FormField
                         control={form.control}
                         name="password"
-                        render={({field}) => (
+                        render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Пароль</FormLabel>
                                 <FormControl>
                                     <Input type={"password"} placeholder="Пароль" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    Тестовый пароль t6vYHnNhBqN1F4(q
+                                    Тестовый пароль 14Jiuqnr1sWWvo6G
                                 </FormDescription>
-                                <FormMessage/>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />

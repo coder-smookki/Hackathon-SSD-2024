@@ -41,7 +41,6 @@ export interface MeetingFormValues {
     startedAt: string;
     endedAt: string;
     duration: number;
-    // isGovernorPresents: boolean;
     isNotifyAccepted: boolean;
     isVirtual: boolean;
     state: string;
@@ -101,8 +100,6 @@ export interface CreateMeetingResponse {
     createdAt?: string;
     closedAt?: string | null;
     state: string;
-    // organizedBy: number;
-    // createdBy: number;
     isNotifyAccepted?: boolean;
     isVirtual: boolean;
     organizerPermalinkId?: string;
@@ -124,7 +121,6 @@ export interface CreateMeetingResponse {
     eventId?: number;
     updatedAt?: string;
     backend: string;
-    // createdUser: User;
     organizedBy: User;
     recurrenceUpdateType: string | null;
 }
@@ -134,11 +130,12 @@ export interface GetMeetingResponse {
     name: string;
     roomId: number | null;
     room: string | null;
-    startedAt: string; // ISO date string
-    endedAt: string; // ISO date string
+    startedAt: string;
+    endedAt: string;
     backend: string;
     participantsCount: number;
     organizedBy: number;
     participants: Participant[];
     organizedUser: User;
+    permalink: string;
 }

@@ -30,7 +30,7 @@ const ProfilePage: React.FC = () => {
 
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-10 text-center mt-10">
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-5">
                 Ваш профиль
             </h1>
             {isLoading ? (

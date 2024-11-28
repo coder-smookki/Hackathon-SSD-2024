@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import SidebarLayout from "@/layout";
 import {MeetingFormValues} from "@/types/Meetings.ts";
 import MeetingService from "@/services/MeetingService.ts";
+import {toast} from "sonner";
 
 const CreateApplicationPage: React.FC = () => {
     const {
@@ -21,7 +22,6 @@ const CreateApplicationPage: React.FC = () => {
             isVideoOn: true,
             isWaitingRoomEnabled: true,
             needVideoRecording: false,
-            // isGovernorPresents: false,
             isNotifyAccepted: false,
         },
     });
@@ -30,19 +30,7 @@ const CreateApplicationPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    // Функция для замены пустых строк на null
-    // const normalizeFormData = (data: MeetingFormValues) => {
-    //     return Object.fromEntries(
-    //         Object.entries(data).map(([key, value]) => [
-    //             key,
-    //             value === "" ? null : value,
-    //         ])
-    //     ) as MeetingFormValues;
-    // };
-
     const onSubmit = async (data: MeetingFormValues) => {
-        console.log("Raw Form Data:", data);
-
         setLoading(true);
         setError(null);
         setSuccess(null);
@@ -51,10 +39,24 @@ const CreateApplicationPage: React.FC = () => {
             const response = await MeetingService.createMeeting(data);
             console.log("Response:", response);
             setSuccess("Мероприятие успешно создано!");
+            toast("Мероприятие успешно создано!", {
+                description: 'Вы можете посмотреть свои мероприятия в разделе "Мои мероприятия".',
+                action: {
+                    label: "Понятно",
+                    onClick: () => console.log("Понятно"),
+                },
+            })
             reset(); // Очистка полей формы
         } catch (err) {
             console.error(err);
             setError("Не удалось создать мероприятие. Перепроверьте все даты.");
+            toast("Не удалось создать мероприятие!", {
+                description: 'Проверьте, указали ли Вы все необходимые поля для создания заявки.',
+                action: {
+                    label: "Понятно",
+                    onClick: () => console.log("Понятно"),
+                },
+            })
         } finally {
             setLoading(false);
         }
@@ -63,7 +65,7 @@ const CreateApplicationPage: React.FC = () => {
 
     return (
         <SidebarLayout>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10">
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center my-10 mx-5">
                 Создание мероприятия
             </h1>
             <Card className="w-[93vw] max-w-2xl mx-auto mb-5">
@@ -148,12 +150,14 @@ const CreateApplicationPage: React.FC = () => {
 
                         {/* Поле sendNotificationsAt */}
                         <div>
-                            <Label htmlFor="sendNotificationsAt">Время уведомлений <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="sendNotificationsAt">Время уведомлений <span
+                                className="text-red-500">*</span></Label>
                             <Input
                                 id="sendNotificationsAt"
                                 type="datetime-local"
-                                {...register("sendNotificationsAt", { required: "Это поле обязательно" })}
+                                {...register("sendNotificationsAt", {required: "Это поле обязательно"})}
                             />
+                            <p className="text-sm text-gray-300 mt-1 ml-2">Должно быть раньше времени начала мероприятия</p>
                             {errors.sendNotificationsAt && (
                                 <p className="text-sm text-red-500">{errors.sendNotificationsAt.message}</p>
                             )}
@@ -222,15 +226,6 @@ const CreateApplicationPage: React.FC = () => {
                                 <p className="text-sm text-red-500">{errors.comment.message}</p>
                             )}
                         </div>
-
-                        {/* Поле isGovernorPresents */}
-                        {/*<div className="flex items-center gap-2">*/}
-                        {/*    <Checkbox*/}
-                        {/*        id="isGovernorPresents"*/}
-                        {/*        {...register("isGovernorPresents")}*/}
-                        {/*    />*/}
-                        {/*    <Label htmlFor="isGovernorPresents">Присутствует губернатор</Label>*/}
-                        {/*</div>*/}
 
                         {/* Поле isNotifyAccepted */}
                         <div className="flex items-center gap-2">

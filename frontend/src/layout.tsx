@@ -2,18 +2,13 @@ import React from "react";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar.tsx";
 import {AppSidebar} from "@/components/app-sidebar.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    // BreadcrumbLink,
-    BreadcrumbList, BreadcrumbPage,
-    BreadcrumbSeparator
-} from "@/components/ui/breadcrumb.tsx";
+import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage} from "@/components/ui/breadcrumb.tsx";
+import {Toaster} from "sonner";
 
-export default function SidebarLayout({ children }: { children: React.ReactNode }) {
+export default function SidebarLayout({children}: { children: React.ReactNode }) {
     return (
-        <SidebarProvider >
-            <AppSidebar />
+        <SidebarProvider>
+            <AppSidebar/>
             <SidebarInset>
                 <header className="fixed w-full flex h-16 bg-background shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1"/>
@@ -21,11 +16,11 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                     <Breadcrumb>
                         <BreadcrumbList>
                             {/*<BreadcrumbItem className="hidden md:block">*/}
-                            {/*    <BreadcrumbLink href="/events">*/}
+                            {/*    <BreadcrumbLink href="/meetings">*/}
                             {/*        Building Your Application*/}
                             {/*    </BreadcrumbLink>*/}
                             {/*</BreadcrumbItem>*/}
-                            <BreadcrumbSeparator className="hidden md:block"/>
+                            {/*<BreadcrumbSeparator className="hidden md:block"/>*/}
                             <BreadcrumbItem>
                                 <BreadcrumbPage>{location.pathname.toString().split("/")[1].toUpperCase()}</BreadcrumbPage>
                             </BreadcrumbItem>
@@ -35,6 +30,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
                 <div className="pt-16">
                     {children}
                 </div>
+                <Toaster/>
             </SidebarInset>
         </SidebarProvider>
     );

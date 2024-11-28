@@ -35,7 +35,6 @@ class AuthMiddleware(BaseMiddleware):
                 event_router.name in self.exceptions_router:
             return await handler(event, data)
         
-        print(data.keys())
         if data.get("token") is not None:
             return await handler(event, data)
 

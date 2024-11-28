@@ -43,3 +43,4 @@ class UserModel(AlchemyBaseModel):
     #     self.email = email
     #     self.password = password
     #     self.jwt_token = jwt_token
+

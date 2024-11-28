@@ -1,5 +1,5 @@
 from typing import Callable, Dict, Any
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import TelegramObject, Chat
@@ -41,8 +41,9 @@ class JWTMiddleware(BaseMiddleware):
         
         # Обновление токена
         if datetime.now() < user.refresh_token_expired_at:
-            new_data = await api_client.update_token(user.refresh_token) # TODO rename
+            new_data = await api_client.update_token(user.refresh_token)
             token_data = parse_token(new_data["token"])
+            user.token = new_data["token"]
             user.token_expired_at = get_expired_time_token(new_data["token"])
             user.refresh_token = token_data["refresh_token"]
             user.refresh_token_expired_at = get_expired_time_token(user.refresh_token)

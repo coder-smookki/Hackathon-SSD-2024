@@ -23,7 +23,6 @@ class ServiceDIMiddleware(BaseMiddleware):
         user_repo = UserAlchemyRepo(session)
 
         api_client = AsyncAPIClient()
-        print(api_client, "API CLIENT"*5)
 
         data.update(
             user_repo=user_repo,

@@ -16,6 +16,7 @@ const App: React.FC = () => {
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
             <Routes>
                 <Route path="/login" element={<LoginPage/>} />
+                <Route path="/" element={<LoginPage/>} />
                 <Route
                     path="/meetings"
                     element={

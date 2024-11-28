@@ -3,7 +3,7 @@ import { AuthResponse } from '../types/Auth.ts';
 import {getRefreshToken} from "../utils/decodeToken.ts";
 
 export const API_URL = 'https://test.vcc.uriit.ru/api';
-export const TELEGRAM_API_URL = 'http://localhost:80';
+export const TELEGRAM_API_URL = 'https://cfzt49-46-39-4-44.ru.tuna.am';
 
 const $api = axios.create({
     baseURL: API_URL,

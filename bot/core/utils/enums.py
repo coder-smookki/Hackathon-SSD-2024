@@ -44,7 +44,7 @@ class Operation(str, Enum):
     PROFILE = "profile"
     MENU = "menu"
     BACK_MENU = "back_menu"
-    VIEW_VKS = "view_vks"
+    START_GET_VCC = "start_get_vcc"
     GET_VCC = "get_vcc"
     AUTHORIZATIONS = "authorization"
     CANCEL = "cancel"

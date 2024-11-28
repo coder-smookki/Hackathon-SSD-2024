@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from bot.handlers.get_vcc.state import FiltersState
-from bot.handlers.get_vcc.utils import refactor_meeting
+from bot.handlers.get_vcc.utils import refactor_meeting, refactor_meetings
 from bot.core.utils.utils import is_valid_email
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.keyboards.get_vcc import (
@@ -53,9 +53,10 @@ async def filter_state_date(
         callback_data.name,
         data["filter"]
     )
-    result = [refactor_meeting(meeting) for meeting in meetings]
+    #result = [refactor_meeting(meeting) for meeting in meetings]
     await callback.message.edit_text(
-        str(result), 
+        #str(result), 
+        refactor_meetings(meetings), 
         reply_markup=get_filters_keyboard(meetings_count, 1))
 
 
@@ -90,7 +91,8 @@ async def get_filter_state_date(
         data["state"],
         data["filter"])
     await message.answer(
-        str([refactor_meeting(meeting) for meeting in meetings]), 
+        #str([refactor_meeting(meeting) for meeting in meetings]), 
+        refactor_meetings(meetings),
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )
 
@@ -134,7 +136,8 @@ async def filter_priority_date(
         data["state"],
         data["filter"])
     await callback.message.edit_text(
-        str([refactor_meeting(meeting) for meeting in meetings]), 
+        #str([refactor_meeting(meeting) for meeting in meetings]), 
+        refactor_meetings(meetings),
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )
 
@@ -176,7 +179,8 @@ async def get_filter_user_date(
         data["state"],
         data["filter"])
     await message.answer(
-        str([refactor_meeting(meeting) for meeting in meetings]), 
+        #str([refactor_meeting(meeting) for meeting in meetings]), 
+        refactor_meetings(meetings),
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )
 
@@ -221,7 +225,7 @@ async def get_filter_department_data(
         data["state"],
         data["filter"])
     await callback.message.edit_text(
-        str([refactor_meeting(meeting) for meeting in meetings]), 
+        refactor_meetings(meetings), 
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )
 
@@ -248,7 +252,7 @@ async def cancel_filter(
         data["state"],
         data["filter"])
     await callback.message.edit_text(
-        str([refactor_meeting(meeting) for meeting in meetings]), 
+        refactor_meetings(meetings),
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )
 

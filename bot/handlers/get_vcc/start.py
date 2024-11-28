@@ -5,10 +5,11 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from bot.handlers.get_vcc.state import GetVccState, FiltersState
-from bot.handlers.get_vcc.utils import refactor_meeting
+from bot.handlers.get_vcc.utils import refactor_meeting, refactor_meetings
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.keyboards.get_vcc import get_filters_keyboard
 from bot.callbacks.get_vcc import StartGetVcc
+from bot.handlers.get_vcc.formulations import SHOWING_VKS
 
 
 
@@ -20,14 +21,15 @@ from bot.callbacks.get_vcc import StartGetVcc
 
 start_router = Router(name=__name__)
 
-@start_router.callback_query(StartGetVcc.filter(F.back_menu == "start_create_vcc"))
+@start_router.callback_query(StartGetVcc.filter(F.name == "start_get_vcc"))
 async def start_get(
-        message: Message, 
+        #message: Message, 
+        callback: CallbackQuery, 
         state: FSMContext,
     ):
     """ Старт создания, запрос даты от """
     await state.set_state(GetVccState.date_from)
-    await message.answer(
+    await callback.message.answer(
         "start get vcc.\n \
         введите дату НАЧАЛА в формате yyyy mm dd hh mm \
         (год месяц день час минута)\n \
@@ -83,10 +85,12 @@ async def get_date(
         "booked"
     )
     print(meetings, meetings_count)
-    result = [refactor_meeting(meeting) for meeting in meetings]
+    #result = [refactor_meeting(meeting) for meeting in meetings]
     keyboard = get_filters_keyboard 
+
     await message.answer(
-        str(result), 
+        #refactor_meeting(meetings), 
+        refactor_meetings(meetings), 
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )
     await state.set_state(FiltersState.base)

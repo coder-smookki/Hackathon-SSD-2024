@@ -28,6 +28,7 @@ from bot.core.utils.enums import Operation
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.core.utils.utils import is_valid_email
 from database.models import UserModel
+from bot.handlers.create_vcc.formulations import CREATION_VKS, END_CREATION_VKS
 
 
 create_vcc_router = Router(name=__name__)
@@ -37,8 +38,8 @@ create_vcc_router = Router(name=__name__)
 async def start_create(
         callback: CallbackQuery, 
         state: FSMContext,
-        api_client: AsyncAPIClient,
-        token: str
+        api_client: AsyncAPIClient = None,
+        token: str = None
     ):
     """ Старт создания, запрос имени """
     await state.set_state(CreateVccState.name)
@@ -337,7 +338,13 @@ async def no_set_room(
         settings=state_data["settings"]
     )
     await callback.message.edit_text(
-        text = "⚙️ Данные корректны? \n" + str(data),  # TODO сунуть данные для проверка
+        text=CREATION_VKS.format(name=data['name_vks'], participantsCount=data['participants_count_vks'],
+                                 startedAt=data['date_vks'], duration=data['duration_vks'],
+                                 backend=data['backend'], 
+                                 isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
+                                 isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
+                                 isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
+                                 needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'),
         reply_markup=yes_no_keyboard
     )
     
@@ -405,7 +412,13 @@ async def get_room(
         place=callback_data.id
     )
     await callback.message.edit_text(
-        text = "⚙️ Данные корректны? \n" + str(data),  # TODO сунуть данные для проверка
+        text=CREATION_VKS.format(name=data['name_vks'], participantsCount=data['participants_count_vks'],
+                                 startedAt=data['date_vks'], duration=data['duration_vks'],
+                                 backend=data['backend'], 
+                                 isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
+                                 isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
+                                 isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
+                                 needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'),
         reply_markup=yes_no_keyboard
     )
     
@@ -450,6 +463,7 @@ async def yes_check_data(
         settings=state_data["settings"]
     )
     if data["status"] != 201:
-        await callback.message.edit_text("❌ Произошла ошибка. Попробуйте ещё раз."+str(data["data"]))
+        await callback.message.edit_text("❌ Произошла ошибка. Попробуйте ещё раз.\n" + "Детали: " + str(data["data"]['detail']))
     else:
-        await callback.message.edit_text("✅ ВКС создана. \n"+str(data["data"]))
+        await callback.message.edit_text(END_CREATION_VKS.format(permalink=data["data"]['permalink'],
+                                 participants=[participant['email'] for participant in data["data"]['participants']]))

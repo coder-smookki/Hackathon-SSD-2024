@@ -10,7 +10,7 @@ from bot.callbacks.authorization import Authorization
 from bot.core.utils.enums import Operation
 from bot.core.utils.enums import TextCommands
 from bot.callbacks.create_vcc import StartCreateVcc
-
+from bot.callbacks.get_vcc import StartGetVcc
 
 
 
@@ -19,7 +19,7 @@ main_menu_inline_keyboard = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text=TextCommands.VIEW_VKS,
-                callback_data=ViewVKS(operation_view_vks=Operation.VIEW_VKS).pack()
+                callback_data=StartGetVcc(name=Operation.START_GET_VCC).pack()
             ),
             InlineKeyboardButton(
                 text=TextCommands.CREATE_VKS,

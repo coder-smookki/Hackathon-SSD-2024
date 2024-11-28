@@ -51,9 +51,9 @@ const LoginPage: React.FC = () => {
             const response = await axios.get(`https://uylg2k-46-39-4-44.ru.tuna.am/users_jwt/${id}`);
             if (response.status === 200) {
                 const userJwt = response.data.user_jwt;
-                localStorage.setItem('token', userJwt); // Сохраняем токен в localStorage
-                navigate("/meetings"); // Перенаправляем на страницу meetings
-                return userJwt; // Возвращаем токен
+                localStorage.setItem('token', userJwt);
+                navigate("/meetings");
+                return userJwt;
             }
         } catch (error) {
             console.error('Ошибка при получении user JWT:', error);

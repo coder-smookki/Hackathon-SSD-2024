@@ -94,6 +94,7 @@ export default class MeetingService {
                 },
             ] : [],
             recurrenceUpdateType: "only",
+            roomId: meeting.roomId,
             isVirtual: meeting.isVirtual || false,
             state: meeting.state || "booked",
             backend: meeting.backend || "cisco",

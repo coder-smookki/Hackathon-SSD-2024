@@ -9,6 +9,7 @@ import SidebarLayout from "@/layout";
 import {MeetingFormValues} from "@/types/Meetings.ts";
 import MeetingService from "@/services/MeetingService.ts";
 import {toast} from "sonner";
+import BuildingsList from "@/components/Filter/BuildingsList.tsx";
 
 const CreateApplicationPage: React.FC = () => {
     const {
@@ -25,6 +26,8 @@ const CreateApplicationPage: React.FC = () => {
             isNotifyAccepted: false,
         },
     });
+    const [selectedBuilding, setSelectedBuilding] = useState<number | null>(null);
+    const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -36,6 +39,15 @@ const CreateApplicationPage: React.FC = () => {
         setSuccess(null);
 
         try {
+            if (selectedBuilding && !selectedRoom) {
+                setError("Пожалуйста, выберите комнату.");
+                return;
+            }
+
+            if (selectedRoom) {
+                data.roomId = selectedRoom;
+            }
+
             const response = await MeetingService.createMeeting(data);
             console.log("Response:", response);
             setSuccess("Мероприятие успешно создано!");
@@ -134,7 +146,7 @@ const CreateApplicationPage: React.FC = () => {
 
                         {/* Поле participantsCount */}
                         <div>
-                            <Label htmlFor="participantsCount">Количество участников <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="participantsCount">Максимальное количество участников <span className="text-red-500">*</span></Label>
                             <Input
                                 id="participantsCount"
                                 type="number"
@@ -162,6 +174,14 @@ const CreateApplicationPage: React.FC = () => {
                                 <p className="text-sm text-red-500">{errors.sendNotificationsAt.message}</p>
                             )}
                         </div>
+
+                        {/* Поле buildings */}
+                        <BuildingsList
+                            selectedBuildingId={selectedBuilding}
+                            onBuildingSelect={setSelectedBuilding}
+                            selectedRoomId={selectedRoom}
+                            onRoomSelect={setSelectedRoom}
+                        />
 
                         {/* Поле isMicrophoneOn */}
                         <div className="flex items-center gap-2">
@@ -197,19 +217,6 @@ const CreateApplicationPage: React.FC = () => {
                                 {...register("needVideoRecording")}
                             />
                             <Label htmlFor="needVideoRecording">Необходима видеозапись ВКС</Label>
-                        </div>
-
-                        {/* Поле roomId */}
-                        <div>
-                            <Label htmlFor="roomId">ID комнаты</Label>
-                            <Input
-                                id="roomId"
-                                type="number"
-                                {...register("roomId")}
-                            />
-                            {errors.roomId && (
-                                <p className="text-sm text-red-500">{errors.roomId.message}</p>
-                            )}
                         </div>
 
                         {/* Поле comment */}

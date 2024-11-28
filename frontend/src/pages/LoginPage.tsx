@@ -59,6 +59,8 @@ const LoginPage: React.FC = () => {
             console.error('Ошибка при получении user JWT:', error);
         }
     };
+    // конец теста
+
 
     React.useEffect(() => {
         const initializeUser = async () => {

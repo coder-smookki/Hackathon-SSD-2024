@@ -21,6 +21,7 @@ class ProfileField(StrEnum, ValuesEnum):
 class SlashCommands(str, Enum):
     START = "start"
     MENU = "menu"
+    #BACK_MENU = "back_menu"
     HELP = "help"
     PROFILE = "profile"
     AUTHORIZATIONS = "authorization"
@@ -30,6 +31,7 @@ class TextCommands(str, Enum):
     HELP = 'Помощь'
     PROFILE = 'Профиль'
     MAIN_MENU = 'Главное меню'
+    BACK_MENU = 'Вернуться в меню'
     VIEW_VKS = 'Просмотр ВКС'
     LOGOUT = 'Выйти из аккаунта'
     AUTHORIZATIONS = "Авторизация"
@@ -40,6 +42,7 @@ class Operation(str, Enum):
 
     PROFILE = "profile"
     MENU = "menu"
+    BACK_MENU = "back_menu"
     VIEW_VKS = "view_vks"
     AUTHORIZATIONS = "authorization"
     CANCEL = "cancel"

@@ -13,6 +13,7 @@ from core.api.api_vks import initialize_api_client
 from database.models import UserModel
 from database.session import database_init
 from database.settings import get_settings
+from bot.keyboards.profile import profile_keyboard
 
 
 router = Router(name=__name__)
@@ -34,12 +35,13 @@ async def cmd_profile(callback: CallbackQuery):
         await session.commit()
         await session.close()
 
+
         await callback.message.edit_text(text=PROFILE_TEXT.format(first_name=user.first_name,
                                                                   last_name=user.last_name,
                                                                   midle_name=user.midle_name,
                                                                   login=user.login,
                                                                   email=user.email,
-                                                                  ))
+                                                                  ), reply_markup=profile_keyboard)
 
 
     #await callback.message.edit_text("Профиль")

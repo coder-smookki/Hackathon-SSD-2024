@@ -101,6 +101,7 @@ async def yes_confirm_check_data(
         )
         await state.clear()
         return
+    print(auth_data)
     vcc_user = auth_data["user"]
 
     # сброс данных

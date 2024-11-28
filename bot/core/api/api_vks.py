@@ -102,8 +102,9 @@ class AsyncAPIClient:
             async with session.post('https://test.vcc.uriit.ru/api/auth/login', json=data, headers=headers) as response:
                 if response.status == 200:
                     response_data = await response.json()
-                    token = response_data.get('token') 
-                    return token
+                    # token = response_data.get('token') 
+                    # return token
+                    return response_data
                 else:
                     print(f"Ошибка: {response.status}")
     

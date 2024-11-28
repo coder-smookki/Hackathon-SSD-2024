@@ -14,6 +14,8 @@ services:
             PYTHONDONTWRITEBYTECODE: 1
         links:
             - database
+        depends_on:
+            - database
   
     # backend:
     #     image: ssd-backend-image
@@ -54,18 +56,15 @@ services:
     #         - app-network
 
     database:
-        image: postgres:16.2-alpine3.19
+        image: postgres:15.4-alpine
         container_name: ssd-database
         restart: unless-stopped
-        volumes:
-            - "/var/prod/ssd-bot/db:/var/lib/postgresql/data"
         ports:
             - "5432:5432"
         environment:
             POSTGRES_DB: ssd_db
             POSTGRES_USER: ssd
             POSTGRES_PASSWORD: ssd
-            PGDATA: "/var/lib/postgresql/data/pgdata"
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U ssd -d ssd_db"]
             interval: 10s

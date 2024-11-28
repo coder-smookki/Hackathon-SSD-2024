@@ -4,7 +4,8 @@ import contextlib
 import aiohttp
 
 from dotenv import load_dotenv
-import os
+import os, sys
+sys.path.insert(1, os.getcwd())
 
 from database.session import database_init
 from bot.middlewares import setup_global_middlewares

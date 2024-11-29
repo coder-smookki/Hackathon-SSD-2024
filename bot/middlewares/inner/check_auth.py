@@ -28,35 +28,14 @@ class AuthMiddleware(BaseMiddleware):
         """
         # TODO 
         bot: Bot = data["bot"]
-        user: dict | None = data.get("user_info")
         event_chat: Chat | None = data.get("event_chat")
         event_router: Router | None = data.get("event_router")
-        state: FSMContext = data["state"]
-        state_data = await state.get_data()
 
-        # если процесс авторизации еще идет
         if event_router is not None and \
                 event_router.name in self.exceptions_router:
             return await handler(event, data)
+        
+        if data.get("token") is not None:
+            return await handler(event, data)
 
-        # если хуй без токена
-        if state_data.get("token") is None:
-            await bot.send_message(event_chat.id, "Нажмите /start")
-            return
-        
-        # если токен еще не истек
-        if state_data["expired_time"] > datetime.now():
-            data["token"] = state_data["token"]
-            return await handler(event, data)
-        
-        if state_data.get("confirm_save_data"):
-            token = await AsyncAPIClient().get_token(
-                state_data["login"], state_data["password"]
-            )
-            await state.update_data("token", token)
-            data["token"] = token
-            return await handler(event, data)
-        else:
-            await state.clear()
-            # нужен откат до авторизации
-            await bot.send_message(event_chat.id, "Нажмите /start")
+        await bot.send_message(event_chat.id, "Неизвестный юзер.\nНажмите /start")

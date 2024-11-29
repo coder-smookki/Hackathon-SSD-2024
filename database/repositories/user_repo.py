@@ -1,5 +1,7 @@
 from typing import Optional, cast
-from sqlalchemy import delete, select
+from datetime import datetime
+
+from sqlalchemy import delete, select, update
 
 from bot.core.models.user import User
 from bot.core.repositories.user import UserRepo
@@ -7,7 +9,7 @@ from database.models.users import UserModel
 from database.repositories.base import BaseAlchemyRepo
 
 
-class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):
+class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):        
     async def create(self, instance: User) -> User:
         """
         Создание пользователя в базе данных.
@@ -24,44 +26,41 @@ class UserAlchemyRepo(UserRepo, BaseAlchemyRepo):
         model = cast(UserModel, await self.get(instance.tg_id))
         return model  # Возвращаем модель User, без обертки UserExtended
 
-    async def delete(self, id: int) -> None:
+    async def delete(self, tg_id: int) -> None:
         """
         Удаление пользователя по ID.
 
         :param tg_id:  ID пользователя, которого нужно удалить.
         """
-        query = delete(UserModel).where(UserModel.id == id)
+        query = delete(UserModel).where(UserModel.tg_id == tg_id)
         await self.session.execute(query)
         await self.session.commit()
 
-    async def get(self, id: int) -> Optional[UserModel]:
+    async def get(self, tg_id: int) -> Optional[UserModel]:
         """
         Получение пользователя по ID.
 
         :param tg_id: ID пользователя.
         :return: Экземпляр модели UserModel или None, если не найден.
         """
-        query = select(UserModel).where(UserModel.id == id)
+        query = select(UserModel).where(UserModel.tg_id == tg_id)
         model = await self.session.scalar(query)  # Получаем один результат
         return model  # Возвращаем саму модель UserModel или None, если пользователь не найден
 
-    async def update(self, id: int, instance: User) -> UserModel:
+    async def update(self, model: UserModel) -> UserModel:
         """
         Обновление данных пользователя.
 
-        :param tg_id: ID пользователя.
-        :param instance: Экземпляр User с обновленными данными.
+        :param model: Экземпляр User с обновленными данными.
         :return: Обновленная модель UserModel.
         """
-        instance.id = id  # Устанавливаем ID на объекте
-        model = UserModel(**instance.model_dump())  # Преобразуем в модель базы данных
         await self.session.merge(model)  # Мержим изменения с базой данных
         await self.session.commit()
 
-        updated_model = await self.get(id)  # Получаем обновленную модель из базы данных
+        updated_model = await self.get(model.tg_id)  # Получаем обновленную модель из базы данных
         return updated_model  # Возвращаем обновленную модель UserModel
 
-      
+    
     async def compare(self, tg_id: int, email: str, password: str) -> Optional[UserModel]:
         query = select(UserModel).where(UserModel.email == email)
 

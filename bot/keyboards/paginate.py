@@ -5,6 +5,7 @@ from aiogram.utils.keyboard import ButtonType, InlineKeyboardBuilder
 
 from bot.callbacks import Paginator
 
+
 PAGE_BACK = "⬅️ Назад"
 PAGE_FORWARD = "➡️ Вперёд"
 

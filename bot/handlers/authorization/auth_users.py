@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import logging
 
 from aiogram import Router, F
@@ -10,138 +10,139 @@ from bot.keyboards.universal import confirm_cancel_keyboard
 from bot.keyboards.start import start_keyboard
 from bot.callbacks.authorization import Authorization
 from bot.callbacks.state import InStateData
+from bot.core.utils.jwt import get_expired_time_token, parse_token
 from bot.core.utils.enums import Operation
-from bot.core.api.api_vks import AsyncAPIClient
+from bot.core.utils.utils import is_valid_email
+from bot.core.api.api_vks import AsyncAPIClient, AuthorizationException
+from bot.core.models import User
+from database.repositories import UserAlchemyRepo
+from bot.handlers.menu.main_menu import cmd_menu
+
 
 
 logger = logging.getLogger(__name__)
-router_auth = Router(name=__name__)
+auth_router = Router(name=__name__)
 
 
 class ExtractData(StatesGroup):
     """Установление состояний: login, password, confirm"""
-    login = State()
+    email = State()
     password = State()
     confirm_check_data = State() # Согласие на достоверность данных
-    confirm_save_data = State() # Согласие на сохранение данных
 
 
-@router_auth.callback_query(Authorization.filter(F.operation_auth == "authorization"))
+@auth_router.callback_query(Authorization.filter(F.operation_auth == "authorization"))
 async def send_email(callback: CallbackQuery, state: FSMContext) -> None:
     """Запрашиваем email у пользователя"""
-    await callback.message.edit_text(text="Введите login:")
-    await state.set_state(ExtractData.login)
+    await callback.message.edit_text(text="✉️ Введите почту:\n\n⚙️ Пример: hantaton10.h@mail.ru")
+    await state.set_state(ExtractData.email)
 
 
-@router_auth.message(ExtractData.login)
+@auth_router.message(ExtractData.email)
 async def send_password(message: Message, state: FSMContext) -> None:
-    """Сохраняем login и запрашиваем password"""
-    await state.update_data(login=message.text)
-    await message.answer("Введите password:")
+    """Сохраняем email и запрашиваем password"""
+    if not is_valid_email(message.text):
+        await message.answer("❌ Это не email!")
+        return
+    await state.update_data(email=message.text)
+    await message.answer("🔑 Введите пароль:\n\n⚙️ Пароль: 14Jiuqnr1sWWvo6G")
     await state.set_state(ExtractData.password)
 
 
-@router_auth.message(ExtractData.password)
+@auth_router.message(ExtractData.password)
 async def save_password(message: Message, state: FSMContext) -> None:
     """Сохраняем password и предлагаем подтвердить действия"""
     await state.update_data(password=message.text)
     user_data = await state.get_data()
-    user_info = f"Дogin: {user_data.get('login')}\nPassword: {user_data.get('password')}"
+    user_info = f"✉️ Почта: {user_data.get('email')}\n🔑 Пароль: {user_data.get('password')}"
 
     await message.answer(
-        text=f"Вы ввели следующие данные:\n{user_info}\n\nХотите подтвердить действия?",
+        text=f"💾 Вы ввели следующие данные:\n\n{user_info}\n\n❗ Хотите подтвердить действия?",
         reply_markup=confirm_cancel_keyboard
     )
     await state.set_state(ExtractData.confirm_check_data)
 
 
-@router_auth.callback_query(ExtractData.confirm_check_data,
+@auth_router.callback_query(ExtractData.confirm_check_data,
                             InStateData.filter(F.action == Operation.CANCEL))
 async def no_confirm_check_data(callback: CallbackQuery, state: FSMContext) -> None:
     """Пользователь отменил действия"""
     await callback.message.edit_text(
-        text="Действие отменено", 
+        text="❗ Действие отменено.", 
         reply_markup=start_keyboard
     )
     await state.clear()
 
 
-@router_auth.callback_query(ExtractData.confirm_check_data,
-                     InStateData.filter(F.action == Operation.CONFIRM))
-async def confirm_save_data(callback: CallbackQuery, state: FSMContext) -> None:
-    """Спрашиваем сохранить ли данные"""
-    await state.update_data(confirm_check_data=True)
-
-    await callback.message.edit_text(
-        text=f"Хотите ли вы, сохранить данные в боте, для удобной авторизации?",
-        reply_markup=confirm_cancel_keyboard
-    )
-    await state.set_state(ExtractData.confirm_save_data)
-
-
-# нижнии функции можно объединить
-@router_auth.callback_query(ExtractData.confirm_save_data,
-                            InStateData.filter(F.action == Operation.CONFIRM))
-async def yes_confirm_save_data(callback: CallbackQuery, state: FSMContext) -> None:
-    """Пользователь согласился сохранить данные"""
-    await state.update_data(confirm_save_data=True)
-    user_data = await state.get_data()
-    user_info = {
-        "login": user_data.get("login"),
-        "password": user_data.get("password"),
-        "confirm_check_data": user_data.get("confirm_check_data"),
-        "confirm_save_data": user_data.get("confirm_save_data")
-    }
-    try:
-        token = await AsyncAPIClient().get_token(user_info["login"], user_info["password"])
-    except Exception:
-        await callback.message.edit_text(
-            text="Данные неверны", 
-            reply_markup=start_keyboard
-        )
-        await state.clear()
-        return
-    await state.update_data(token=token)
+@auth_router.callback_query(ExtractData.confirm_check_data, InStateData.filter())
+async def yes_confirm_check_data(
+        callback: CallbackQuery, 
+        state: FSMContext,
+        callback_data: InStateData,
+        session
+    ) -> None:
+    """Финальный этап, получение токена, сохранение данных с него в бд"""
     await state.update_data(
-        expired_time=datetime.now()+timedelta(hours=3, minutes=45)
-    ) # сдвиг в 15 минут, чтобы мы были уверены что токен свежий
-    logger.info(f"Собранные данные пользователя: {user_info}")
-    
-    await callback.message.edit_text(text=f"Данные успешно сохранены: {user_info}")
-    await state.set_state(None)
-
-
-@router_auth.callback_query(ExtractData.confirm_save_data,
-                            InStateData.filter(F.action == Operation.CANCEL))
-async def no_confirm_save_data(callback: CallbackQuery, state: FSMContext) -> None:
-    """Пользователь согласился сохранить данные"""
-    await state.update_data(confirm_save_data=False)
+        confirm_check_data=callback_data.action == Operation.CONFIRM
+    )
     user_data = await state.get_data()
     user_info = {
-        "login": user_data.get("login"),
-        "password": user_data.get("password"),
-        "confirm_check_data": user_data.get("confirm_check_data"),
-        "confirm_save_data": user_data.get("confirm_save_data")
+        "email": user_data.get("email"),
+        "confirm_check_data": user_data.get("confirm_check_data")
     }
 
     try:
-        token = await AsyncAPIClient().get_token(user_info["login"], user_info["password"])
-    except Exception:
+        auth_data = await AsyncAPIClient().auth_login(
+            user_data["email"], 
+            user_data["password"]
+        )
+    except AuthorizationException:
         await callback.message.edit_text(
-            text="Данные неверны", 
+            text="❌ Данные неверны!", 
             reply_markup=start_keyboard
         )
         await state.clear()
         return
-    await state.update_data(token=token)
-    await state.update_data( # TODO сунуть имя куда-то
-        expired_time=datetime.now()+timedelta(hours=3, minutes=45)
-    ) # сдвиг в 15 минут, чтобы мы были уверены что токен свежий
+    vcc_user = auth_data["user"]
 
-    logger.info(f"Собранные данные пользователя: {user_info}")
-    
+    # сброс данных
+    await state.update_data(email="*")
+    await state.update_data(password="*")
+
+    token_data = parse_token(auth_data["token"])
+    token_expired_at = get_expired_time_token(auth_data["token"])
+    refresh_token = token_data["refresh_token"]
+    refresh_token_expired_at = get_expired_time_token(refresh_token)
+
+    if vcc_user["birthday"] is not None:
+        user_birthday = datetime.strptime(vcc_user["birthday"], "%Y-%m-%d").date()
+    else: 
+        user_birthday = None
+    user = User(
+        tg_id=callback.from_user.id,
+        login=vcc_user["login"],
+        email=user_info["email"],
+        token=auth_data["token"],
+        token_expired_at=token_expired_at,
+        refresh_token=refresh_token,
+        refresh_token_expired_at=refresh_token_expired_at,
+        vcc_id=vcc_user["id"],
+        first_name=vcc_user["firstName"],
+        last_name=vcc_user["lastName"],
+        midle_name=vcc_user["middleName"],
+        birthday=user_birthday,
+        phone=vcc_user["phone"],
+    )
+    await UserAlchemyRepo(session).create(user)
+
+    logger.info(f"📎 Собранные данные пользователя: {user.model_dump()}")
+
     await callback.message.edit_text(
-        text=f"Данные успешно сохранены: {user_info}",
-        # TODO сделать клаву
+        text="✅ Данные успешно сохранены.",
+    )
+    await cmd_menu(
+        message=callback.message, 
+        state=state              
     )
     await state.set_state(None)
+

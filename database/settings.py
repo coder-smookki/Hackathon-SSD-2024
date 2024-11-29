@@ -12,7 +12,7 @@ class DBSettings(BaseModel):
     user: str
     password: str
 
-
+        
 class Settings(BaseModel):
     """Сборник настроек :)."""
 

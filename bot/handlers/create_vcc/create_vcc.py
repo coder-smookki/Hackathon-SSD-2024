@@ -50,6 +50,7 @@ async def start_create(
     """ Старт создания, запрос имени """
     await state.set_state(CreateVccState.name)
     await callback.message.edit_text("📋 Введите название ВКС:")
+    await callback.message.edit_reply_markup(reply_markup=back_menu_keyboard)
 
 
 @create_vcc_router.message(CreateVccState.name)
@@ -60,7 +61,8 @@ async def get_name(
     """ сохранение имени, запрос даты проведения """
     await state.update_data(name=message.text)
     await state.set_state(CreateVccState.date)
-    await message.answer("⌛ Введите дату в формате ДД ММ ГГГГ ЧЧ ММ (год месяц день час минута):\n\n⚙️ Пример: 28 11 2024 10 10")
+    await message.answer("⌛ Введите дату в формате ДД ММ ГГГГ ЧЧ ММ (год месяц день час минута):\n\n⚙️ Пример: 28 11 2024 10 10",
+        reply_markup=back_menu_keyboard)
 
 @create_vcc_router.message(CreateVccState.date)
 async def get_date(
@@ -71,12 +73,14 @@ async def get_date(
     try:
         update_data = parse_datetime(message.text)
     except Exception:
-        await message.answer("❌ Вы ввели неверную дату\n\n⚙️ Пример: 28 11 2024 10 10")
+        await message.answer("❌ Вы ввели неверную дату\n\n⚙️ Пример: 28 11 2024 10 10",
+        reply_markup=back_menu_keyboard)
         return
 
     await state.update_data(date=update_data)
     await state.set_state(CreateVccState.duration)
-    await message.answer("⌛ Введите продолжительность ВКС в минутах:")
+    await message.answer("⌛ Введите продолжительность ВКС в минутах:",
+        reply_markup=back_menu_keyboard)
 
 
 @create_vcc_router.message(CreateVccState.duration)
@@ -92,7 +96,8 @@ async def get_duration(
         return
     await state.update_data(duration=data)
     await state.set_state(CreateVccState.participants_count_vks)
-    await message.answer("🙍 Введите максимальное количество людей в ВКС:")
+    await message.answer("🙍 Введите максимальное количество людей в ВКС:",
+        reply_markup=back_menu_keyboard)
 
 
 @create_vcc_router.message(CreateVccState.participants_count_vks)

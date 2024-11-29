@@ -8,6 +8,7 @@ from bot.core.api.api_vks import AsyncAPIClient
 from bot.core.utils.utils import parse_datetime
 from bot.keyboards.get_vcc import get_filters_keyboard
 from bot.callbacks.get_vcc import StartGetVcc
+from bot.keyboards.universal import back_menu_keyboard
 
 
 """ 
@@ -24,7 +25,8 @@ async def start_get(
     """ Старт создания, запрос даты от """
     await state.set_state(GetVccState.date_from)
     await callback.message.edit_text(
-        "Введите дату НАЧАЛА в формате ДД ММ ГГГГ ЧЧ ММ (день месяц год час минута)\n 28 11 2024 10 10"
+        "Введите дату НАЧАЛА в формате ДД ММ ГГГГ ЧЧ ММ (день месяц год час минута)\n 28 11 2024 10 10",
+        reply_markup=back_menu_keyboard
     )
 
 
@@ -43,7 +45,8 @@ async def get_date(
     
     await state.set_state(GetVccState.date_to)
     await message.answer(
-        "Введите дату КОНЦА в формате ДД ММ ГГГГ ЧЧ ММ (день месяц год час минута) \n 28 11 2024 10 10"
+        "Введите дату КОНЦА в формате ДД ММ ГГГГ ЧЧ ММ (день месяц год час минута) \n 28 11 2024 10 10",
+        reply_markup=back_menu_keyboard
     )
 
 @start_router.message(GetVccState.date_to)

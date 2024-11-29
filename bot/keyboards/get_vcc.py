@@ -1,4 +1,7 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from bot.core.utils.enums import TextCommands
+from bot.core.utils.enums import Operation
+from bot.callbacks.back_menu import BackMenu
 
 from bot.callbacks.get_vcc import (
     FilterVcc, 
@@ -27,11 +30,7 @@ def get_filters_keyboard(
     ),
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text="Состояние:", callback_data="None"),
-            InlineKeyboardButton(
-                text="Забронированные", 
-                callback_data=StateVcc(name="booked").pack()
-            ),
+            InlineKeyboardButton(text="👀Состояние:", callback_data="None"),
         ],
         [
             InlineKeyboardButton(
@@ -45,12 +44,25 @@ def get_filters_keyboard(
         ],    
         [
             InlineKeyboardButton(
+                text="Забронированные", 
+                callback_data=StateVcc(name="booked").pack()
+            ),            
+            InlineKeyboardButton(
                 text="Отмененные", 
                 callback_data=StateVcc(name="cancelled").pack()
             ),
+        ],   
+        [
+            InlineKeyboardButton(text="🔍Остальные фильтры:", callback_data="None"),
+        ],
+        [
             InlineKeyboardButton(
-                text="Наименование;", 
+                text="Наименование", 
                 callback_data=FilterVcc(name="name").pack()
+            ),
+            InlineKeyboardButton(
+                text="Организатор", 
+                callback_data=FilterVcc(name="user").pack()
             ),
         ],
         [
@@ -64,16 +76,14 @@ def get_filters_keyboard(
             ),
         ],
         [
-            InlineKeyboardButton(
-                text="Организатор", 
-                callback_data=FilterVcc(name="user").pack()
-            ),
-        ],
-        [
 
         ],
         [
-            back_menu_button
+            InlineKeyboardButton(
+                text=TextCommands.BACK_MENU,
+                #callback_data=StateVcc(name="menu").pack()
+                callback_data=BackMenu(back_menu=Operation.BACK_MENU).pack()
+            ),
         ],
     ])
     if page != 1:
@@ -81,6 +91,7 @@ def get_filters_keyboard(
     if page*MEETINGS_ON_PAGE < meetings_count:
         keyboard.inline_keyboard[-2] += forward_button
     return keyboard
+
 
 
 cancel_name_keyboard = InlineKeyboardMarkup(inline_keyboard=[

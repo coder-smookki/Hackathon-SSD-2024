@@ -8,7 +8,8 @@ from bot.middlewares.outer import (
     JWTMiddleware,
     LoggingMiddleware,
     ServiceDIMiddleware,
-    UserContextMiddleware
+    UserContextMiddleware,
+    ThrottlingMiddleware
 )
 
 
@@ -52,4 +53,6 @@ def setup_outer_middlewares(
     dp.update.outer_middleware(ServiceDIMiddleware())
     dp.update.outer_middleware(UserContextMiddleware())
     dp.update.outer_middleware(JWTMiddleware())
+    dp.update.outer_middleware(ThrottlingMiddleware())
+
 

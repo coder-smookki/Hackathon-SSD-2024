@@ -5,6 +5,8 @@ from bot.callbacks.state import InStateData
 from bot.callbacks.universal import YesNo
 from bot.callbacks.back_menu import BackMenu
 from bot.core.utils.enums import Operation
+from bot.callbacks.back_menu import BackMenu
+from bot.core.utils.enums import TextCommands
 
 
 
@@ -38,8 +40,8 @@ yes_no_keyboard = InlineKeyboardMarkup(
 
 
 back_menu_button = InlineKeyboardButton(
-    text="Главное меню",
-    callback_data=BackMenu(back_menu="back_menu").pack()
+    text=TextCommands.BACK_MENU,
+    callback_data=BackMenu(back_menu=Operation.BACK_MENU).pack()
 )
 
 back_menu_keyboard = InlineKeyboardMarkup(inline_keyboard=[[back_menu_button]])

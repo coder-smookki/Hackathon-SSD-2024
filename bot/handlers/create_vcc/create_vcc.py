@@ -25,13 +25,18 @@ from bot.keyboards.create_vcc import (
     create_choose_building_keyboard,
     create_choose_room_keyboard
 )
-from bot.keyboards.universal import yes_no_keyboard
+from bot.keyboards.universal import yes_no_keyboard, back_menu_keyboard
 from bot.core.utils.enums import Operation
 from bot.core.utils.utils import parse_datetime
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.core.utils.utils import is_valid_email
 from database.models import UserModel
-from bot.handlers.create_vcc.formulations import CREATION_VKS, END_CREATION_VKS
+from bot.handlers.create_vcc.formulations import (
+    CREATION_VKS_CISCO, 
+    CREATION_VKS_EXTERNAL,
+    CREATION_VKS_VINTEO,
+    END_CREATION_VKS
+)
 
 
 create_vcc_router = Router(name=__name__)
@@ -338,16 +343,37 @@ async def no_set_room(
         backend=state_data["backend"],
         settings=state_data["settings"]
     )
+    if state_data["backend"] == "cisco":
+        result = CREATION_VKS_CISCO.format(
+            name=data['name_vks'], participantsCount=data['participants_count_vks'],
+            startedAt=data['date_vks'], duration=data['duration_vks'],
+            backend=data['backend'], 
+            isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
+            isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
+            isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
+            needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'
+        )
+    elif state_data["backend"] == "external":
+        result = CREATION_VKS_EXTERNAL.format(
+            name=data['name_vks'], participantsCount=data['participants_count_vks'],
+            startedAt=data['date_vks'], duration=data['duration_vks'],
+            backend=data['backend'], 
+            externalUrl=data['settings']['externalUrl']
+        )
+    if state_data["backend"] == "vinteo":
+        result = CREATION_VKS_VINTEO.format(
+            name=data['name_vks'], participantsCount=data['participants_count_vks'],
+            startedAt=data['date_vks'], duration=data['duration_vks'],
+            backend=data['backend'], 
+            needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'
+        )
     await callback.message.edit_text(
-        text=CREATION_VKS.format(name=data['name_vks'], participantsCount=data['participants_count_vks'],
-                                 startedAt=data['date_vks'], duration=data['duration_vks'],
-                                 backend=data['backend'], 
-                                 isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
-                                 isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
-                                 isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
-                                 needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'),
+        text=result,
         reply_markup=yes_no_keyboard
     )
+
+
+    
     
 @create_vcc_router.callback_query(
         CreateVccState.set_room,
@@ -410,18 +436,35 @@ async def get_room(
         settings=state_data["settings"],
         place=callback_data.id
     )
+    if state_data["backend"] == "cisco":
+        result = CREATION_VKS_CISCO.format(
+            name=data['name_vks'], participantsCount=data['participants_count_vks'],
+            startedAt=data['date_vks'], duration=data['duration_vks'],
+            backend=data['backend'], 
+            isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
+            isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
+            isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
+            needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'
+        )
+    elif state_data["backend"] == "external":
+        result = CREATION_VKS_EXTERNAL.format(
+            name=data['name_vks'], participantsCount=data['participants_count_vks'],
+            startedAt=data['date_vks'], duration=data['duration_vks'],
+            backend=data['backend'], 
+            externalUrl=data['settings']['externalUrl']
+        )
+    if state_data["backend"] == "vinteo":
+        result = CREATION_VKS_VINTEO.format(
+            name=data['name_vks'], participantsCount=data['participants_count_vks'],
+            startedAt=data['date_vks'], duration=data['duration_vks'],
+            backend=data['backend'], 
+            needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'
+        )
     await callback.message.edit_text(
-        text=CREATION_VKS.format(name=data['name_vks'], participantsCount=data['participants_count_vks'],
-                                 startedAt=data['date_vks'], duration=data['duration_vks'],
-                                 backend=data['backend'], 
-                                 isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
-                                 isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
-                                 isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
-                                 needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'),
+        text=result,
         reply_markup=yes_no_keyboard
     )
     
-
 
 
 
@@ -462,7 +505,13 @@ async def yes_check_data(
         settings=state_data["settings"]
     )
     if data["status"] != 201:
-        await callback.message.edit_text("❌ Произошла ошибка. Попробуйте ещё раз.\n" + "Детали: " + str(data["data"]['detail']))
+        await callback.message.edit_text(
+            "❌ Произошла ошибка. Попробуйте ещё раз.\n" + "Детали: " + str(data["data"]['detail']),
+            reply_markup=back_menu_keyboard
+        )
     else:
-        await callback.message.edit_text(END_CREATION_VKS.format(permalink=data["data"]['permalink'],
-                                 participants=[participant['email'] for participant in data["data"]['participants']]))
+        await callback.message.edit_text(
+            END_CREATION_VKS.format(permalink=data["data"]['permalink'],
+                participants=[participant['email'] for participant in data["data"]['participants']]),
+            reply_markup=back_menu_keyboard
+            )

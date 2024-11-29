@@ -3,6 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.callbacks.state import InStateData
 from bot.callbacks.universal import YesNo
+from bot.callbacks.back_menu import BackMenu
 from bot.core.utils.enums import Operation
 
 
@@ -34,3 +35,11 @@ yes_no_keyboard = InlineKeyboardMarkup(
         InlineKeyboardButton(text=NO, callback_data=YesNo(result=NO).pack())
     ]]
 )
+
+
+back_menu_button = InlineKeyboardButton(
+    text="Главное меню",
+    callback_data=BackMenu(back_menu="back_menu").pack()
+)
+
+back_menu_keyboard = InlineKeyboardMarkup(inline_keyboard=[[back_menu_button]])

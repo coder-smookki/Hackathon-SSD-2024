@@ -111,7 +111,11 @@ class AsyncAPIClient:
         if place is not None:
             data["roomId"] = place
         async with self.session.post('https://test.vcc.uriit.ru/api/meetings', json=data, headers=headers) as response:
-            return {"data": await response.json(), "status": response.status}
+            try:
+                data = await response.json()
+            except Exception:
+                data = {"detail": "Неизвестная ошибка сервера"}
+            return {"data": data, "status": response.status}
 
 
     async def get_buildings(self, jwt_token: str):

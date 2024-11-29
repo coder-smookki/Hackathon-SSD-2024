@@ -6,7 +6,7 @@ def refactor_meetings(meetings: list) -> str:
     result_text = '\n\n'.join([SHOWING_VKS.format(
         vks_id=str(meeting["id"]),
         name=meeting["name"],
-        startedAt=meeting["startedAt"]
+        startedAt=meeting["startedAt"].replace("T", " ")
     ) for meeting in meetings])
 
     return result_text

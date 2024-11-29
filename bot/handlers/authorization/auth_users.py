@@ -4,7 +4,6 @@ import logging
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.state import StatesGroup, State
 
 from bot.keyboards.universal import confirm_cancel_keyboard
 from bot.keyboards.start import start_keyboard
@@ -15,6 +14,7 @@ from bot.core.utils.enums import Operation
 from bot.core.utils.utils import is_valid_email
 from bot.core.api.api_vks import AsyncAPIClient, AuthorizationException
 from bot.core.models import User
+from bot.core.states.auth import ExtractData
 from database.repositories import UserAlchemyRepo
 from bot.handlers.menu.main_menu import cmd_menu
 
@@ -22,13 +22,6 @@ from bot.handlers.menu.main_menu import cmd_menu
 
 logger = logging.getLogger(__name__)
 auth_router = Router(name=__name__)
-
-
-class ExtractData(StatesGroup):
-    """Установление состояний: login, password, confirm"""
-    email = State()
-    password = State()
-    confirm_check_data = State() # Согласие на достоверность данных
 
 
 @auth_router.callback_query(Authorization.filter(F.operation_auth == "authorization"))
@@ -79,7 +72,8 @@ async def yes_confirm_check_data(
         callback: CallbackQuery, 
         state: FSMContext,
         callback_data: InStateData,
-        session
+        user_repo: UserAlchemyRepo,
+        api_client: AsyncAPIClient
     ) -> None:
     """Финальный этап, получение токена, сохранение данных с него в бд"""
     await state.update_data(
@@ -92,7 +86,7 @@ async def yes_confirm_check_data(
     }
 
     try:
-        auth_data = await AsyncAPIClient().auth_login(
+        auth_data = await api_client.auth_login(
             user_data["email"], 
             user_data["password"]
         )
@@ -133,7 +127,7 @@ async def yes_confirm_check_data(
         birthday=user_birthday,
         phone=vcc_user["phone"],
     )
-    await UserAlchemyRepo(session).create(user)
+    await user_repo.create(user)
 
     logger.info(f"📎 Собранные данные пользователя: {user.model_dump()}")
 

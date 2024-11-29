@@ -8,8 +8,8 @@ from bot.callbacks.get_vcc import (
     PagionationVccData,
     CancelFilterDataVcc
 )
-from bot.callbacks.back_menu import BackMenu
 from bot.core.api.api_vks import MEETINGS_ON_PAGE
+from bot.keyboards.universal import back_menu_button
 
 
 
@@ -73,10 +73,7 @@ def get_filters_keyboard(
 
         ],
         [
-            InlineKeyboardButton(
-                text="Главное меню",
-                callback_data=BackMenu(back_menu="back_menu").pack()
-            ),
+            back_menu_button
         ],
     ])
     if page != 1:

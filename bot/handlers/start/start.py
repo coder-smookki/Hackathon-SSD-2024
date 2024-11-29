@@ -6,6 +6,7 @@ from aiogram.types import Message
 from bot.core.utils.enums import SlashCommands, TextCommands
 from bot.handlers.start.formulations import START_TEXT, HELP_TEXT
 from bot.keyboards.start import start_keyboard
+from bot.keyboards.universal import back_menu_keyboard
 from bot.core.utils.utils import extract_username
 from bot.handlers.menu.main_menu import cmd_menu
 
@@ -26,8 +27,19 @@ async def cmd_start(message: Message, state: FSMContext, token) -> None:
 
 @start_router.message(Command(SlashCommands.HELP))
 @start_router.message(F.text == TextCommands.HELP)
-async def cmd_help(message: Message, state: FSMContext) -> None:
+async def cmd_help(
+        message: Message, 
+        state: FSMContext,
+        token
+    ) -> None:
     await state.clear()
-
-    await message.answer(text=HELP_TEXT, 
-                         reply_markup=start_keyboard)
+    if token:
+        await message.answer(
+            text=HELP_TEXT, 
+            reply_markup=back_menu_keyboard
+        )
+    else:
+        await message.answer(
+            text=HELP_TEXT,
+            reply_markup=start_keyboard
+        )

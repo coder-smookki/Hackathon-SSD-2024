@@ -9,10 +9,10 @@ from database.models import UserModel
 from bot.keyboards.profile import profile_keyboard
 
 
-router = Router(name=__name__)
+profile_router = Router(name=__name__)
 
 
-@router.callback_query(ProfileOpen.filter(F.operation_prof == "profile"), EmailExistsFilter())
+@profile_router.callback_query(ProfileOpen.filter(F.operation_prof == "profile"), EmailExistsFilter())
 async def cmd_profile(
         callback: CallbackQuery,
         user: UserModel

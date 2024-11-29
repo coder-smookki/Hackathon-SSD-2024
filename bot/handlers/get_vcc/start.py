@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from bot.handlers.get_vcc.state import GetVccState, FiltersState
+from bot.core.states.get_vcc import FiltersState, GetVccState
 from bot.core.utils.get_vcc import refactor_meetings
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.core.utils.utils import parse_datetime
@@ -67,13 +67,14 @@ async def get_date(
         filter={}
     )
     data = await state.get_data()
+    print(data)
     meetings, meetings_count = await api_client.get_meetings(
         token, data["page"], 
         data["date_from"], 
         data["date_to"], 
         "booked"
     )
-
+    print(meetings)
     await message.answer(
         refactor_meetings(meetings), 
         reply_markup=get_filters_keyboard(meetings_count, 1)

@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot.callbacks.get_vcc import PagionationVccData
 from bot.core.api.api_vks import AsyncAPIClient
-from bot.handlers.get_vcc.state import FiltersState
+from bot.core.states.get_vcc import FiltersState
 from bot.core.utils.get_vcc import refactor_meetings
 from bot.keyboards.get_vcc import get_filters_keyboard
 

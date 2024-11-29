@@ -27,7 +27,9 @@ async def cmd_menu(message: Message, state: FSMContext):
 
 @back_menu_router.callback_query(BackMenu.filter(F.back_menu == "back_menu"))
 async def cmd_back_menu(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.message.edit_text(text=MENU_TEXT.format(name=extract_username(callback.message.from_user)))
+    await callback.message.edit_text(
+        text=MENU_TEXT.format(name=extract_username(callback.message.from_user)),
+        reply_markup=main_menu_inline_keyboard
+    )
     
-    await callback.message.edit_reply_markup(reply_markup=main_menu_inline_keyboard)
     await state.clear()

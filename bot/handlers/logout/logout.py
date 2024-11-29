@@ -7,6 +7,7 @@ from bot.callbacks.logout import Logout
 from bot.core.api.api_vks import AsyncAPIClient
 from database.models import UserModel
 from database.repositories import UserAlchemyRepo
+from bot.keyboards.start import start_keyboard
 
 
 logout_router = Router(name=__name__)
@@ -23,7 +24,8 @@ async def cmd_logout(
     await api_client.auth_logout(token=token)
     await state.clear()
     await user_repo.delete(user.tg_id)
-    await callback.message.edit_text("Вы успешно вышли из системы.")
+    await callback.message.edit_text(text="Вы успешно вышли из системы.", 
+                                     reply_markup=start_keyboard)
 
 
 

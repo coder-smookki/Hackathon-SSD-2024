@@ -1,0 +1,79 @@
+services:
+    bot:
+        image: ssd-bot-image
+        container_name: ssd-bot
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./bot/Dockerfile
+        volumes:
+            - "/volumes/ssd-bot/logs:/app/logs"
+        env_file: .env
+        environment:
+            PYTHONUNBUFFERED: 1
+            PYTHONDONTWRITEBYTECODE: 1
+        links:
+            - database
+        depends_on:
+            - database
+  
+    backend:
+        image: ssd-backend-image
+        container_name: ssd-backend
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./webapp/backend/Dockerfile
+        ports:
+            - "8001:8001"
+        networks:
+            - app-network
+
+    frontend:
+        image: ssd-frontend-image
+        container_name: ssd-frontend
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./webapp/frontend/Dockerfile
+        ports:
+            - "1234:1234"
+        networks:
+            - app-network
+
+    database:
+        image: postgres:15.4-alpine
+        container_name: ssd-database
+        restart: unless-stopped
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: ssd_db
+            POSTGRES_USER: ssd
+            POSTGRES_PASSWORD: ssd
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ssd -d ssd_db"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 5s
+
+    # scheduler:
+    #     image: ssd-scheduler-image
+    #     container_name: ssd-scheduler
+    #     restart: unless-stopped
+    #     build:
+    #         context: .
+    #         dockerfile: ./scheduler/Dockerfile
+    #     volumes:
+    #         - "/volumes/ssd-bot/logs:/app/logs"
+    #     env_file: .env
+    #     environment:
+    #         PYTHONUNBUFFERED: 1
+    #         PYTHONDONTWRITEBYTECODE: 1
+    #     links:
+    #         - database
+
+networks:
+  app-network:
+    driver: bridge

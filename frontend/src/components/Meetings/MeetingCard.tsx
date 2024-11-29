@@ -1,6 +1,6 @@
 import React from "react";
 import {Card, CardContent, CardHeader, CardTitle} from "../ui/card.tsx";
-import {IMeeting} from "@/types/Meetings.ts";
+import {IMeeting} from "@/types/meetings/Meetings.ts";
 import {useNavigate} from "react-router";
 
 interface MeetingCardProps {

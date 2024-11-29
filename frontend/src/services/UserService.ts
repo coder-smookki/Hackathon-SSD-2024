@@ -1,7 +1,7 @@
 import $api from "../http";
 import axios, {AxiosResponse} from "axios";
-import { ICheckUserResponse, IUser} from "@/types/User.ts";
-import {User} from "@/types/Meetings.ts";
+import { ICheckUserResponse, IUser} from "@/types/user/User.ts";
+import {User} from "@/types/meetings/Meetings.ts";
 
 export default class UserService {
     static async fetchProfile(): Promise<AxiosResponse<IUser>> {

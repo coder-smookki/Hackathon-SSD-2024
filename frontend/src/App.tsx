@@ -1,14 +1,14 @@
 import React from 'react';
-import LoginPage from "@/pages/LoginPage.tsx";
+import LoginPage from "@/pages/auth/LoginPage.tsx";
 import {Route, Routes} from "react-router";
 import NotFoundPage from "@/pages/NotFoundPage.tsx";
-import MeetingsPage from "@/pages/MeetingsPage.tsx";
-import ProtectedRoute from "@/hoc/ProtectedRoute.tsx";
+import MeetingsPage from "@/pages/meetings/MeetingsPage.tsx";
+import ProtectedRoute from "@/guards/ProtectedRoute.tsx";
 import { ThemeProvider } from '@/components/theme-provider.tsx';
-import ProfilePage from "@/pages/ProfilePage.tsx";
-import CreateMeetingPage from "@/pages/CreateMeetingPage.tsx";
-import MeetingDetailsPage from "@/pages/DetailsMeetingPage.tsx";
-import UserMeetingsPage from "@/pages/UserMeetingsPage.tsx";
+import ProfilePage from "@/pages/profile/ProfilePage.tsx";
+import CreateMeetingPage from "@/pages/meetings/CreateMeetingPage.tsx";
+import MeetingDetailsPage from "@/pages/meetings/DetailsMeetingPage.tsx";
+import UserMeetingsPage from "@/pages/meetings/UserMeetingsPage.tsx";
 import QuestionsPage from "@/pages/QuestionsPage.tsx";
 
 const App: React.FC = () => {

@@ -1,4 +1,4 @@
-import {IUser} from "@/types/User.ts";
+import {IUser} from "@/types/user/User.ts";
 
 export interface AuthResponse {
     token: string;

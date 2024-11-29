@@ -1,5 +1,5 @@
 import React from "react";
-import { IUser } from "@/types/User";
+import { IUser } from "@/types/user/User.ts";
 
 interface ProfileDetailsProps {
     profile: IUser;

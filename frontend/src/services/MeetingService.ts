@@ -1,8 +1,35 @@
 import $api from "../http";
 import axios, { AxiosResponse } from "axios";
 import { formatISO } from 'date-fns';
-import { CreateMeetingResponse, GetMeetingResponse, IMeetingsData, MeetingFormValues } from "../types/Meetings";
-import { getUserIdFromToken } from "@/utils/decodeToken";
+import { CreateMeetingResponse, GetMeetingResponse, IMeetingsData, MeetingFormValues } from "../types/meetings/Meetings.ts";
+import { getUserIdFromToken } from "@/helpers/jwtHelpers.ts";
+
+// export const fetchMeetings = async (
+//     page: number,
+//     rowsPerPage: number,
+//     fromDatetime: string,
+//     toDatetime: string,
+//     state?: string,
+//     userId?: number | null
+// ): Promise<{data: IMeetingsData}> => {
+//     const params: any = {
+//         toDatetime,
+//         fromDatetime,
+//         rowsPerPage,
+//         page,
+//     };
+//
+//     if (userId) {
+//         params.userId = userId;
+//         params.userParticipant = userId;
+//     }
+//
+//     if (state) {
+//         params.state = state;
+//     }
+//
+//     return await $api.get('/meetings', { params });
+// };
 
 export default class MeetingService {
     static async fetchMeetings(

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import UserService from "@/services/UserService";
-import { IUser } from "@/types/User.ts";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import SidebarLayout from "@/layouts/layout.tsx";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import UserService from "@/services/UserService.ts";
+import { IUser } from "@/types/user/User.ts";
+import { Card, CardContent } from "@/components/ui/card.tsx";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
+import SidebarLayout from "@/layouts/MainLayout.tsx";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
 import ProfileDetails from "@/components/Profile/ProfileDetails.tsx";
 import TitlePage from "@/components/Base/TitlePage.tsx";
 

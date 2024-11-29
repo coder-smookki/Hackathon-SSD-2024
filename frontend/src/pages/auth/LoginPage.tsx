@@ -10,12 +10,12 @@ import {
     FormItem,
     FormLabel,
     FormMessage
-} from "../components/ui/form.tsx";
+} from "../../components/ui/form.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { AuthResponse } from "@/types/Auth.ts";
+import { AuthResponse } from "@/types/auth/Auth.ts";
 import { useNavigate } from "react-router";
-import { getRefreshToken } from "@/utils/decodeToken.ts";
+import { getRefreshToken } from "@/helpers/jwtHelpers.ts";
 import AuthService from "@/services/AuthService.ts";
 import TitlePage from "@/components/Base/TitlePage.tsx"; // Импортируем axios для HTTP-запросов
 

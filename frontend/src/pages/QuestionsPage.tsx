@@ -4,7 +4,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import SidebarLayout from "@/layouts/layout.tsx";
+import SidebarLayout from "@/layouts/MainLayout.tsx";
 import React from "react";
 import TitlePage from "@/components/Base/TitlePage.tsx";
 

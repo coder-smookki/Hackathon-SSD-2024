@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Card, CardContent} from "@/components/ui/card";
-import SidebarLayout from "@/layouts/layout.tsx";
-import {MeetingFormValues} from "@/types/Meetings.ts";
+import {Button} from "@/components/ui/button.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {Label} from "@/components/ui/label.tsx";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {Card, CardContent} from "@/components/ui/card.tsx";
+import SidebarLayout from "@/layouts/MainLayout.tsx";
+import {MeetingFormValues} from "@/types/meetings/Meetings.ts";
 import MeetingService from "@/services/MeetingService.ts";
 import {toast} from "sonner";
 import BuildingsList from "@/components/Filter/BuildingsList.tsx";
@@ -35,7 +35,7 @@ const CreateApplicationPage: React.FC = () => {
     });
     const [selectedBuilding, setSelectedBuilding] = useState<number | null>(null);
     const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
-    const [participants, setParticipants] = useState<string[]>([""]);
+    const [participants, setParticipants] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -107,6 +107,7 @@ const CreateApplicationPage: React.FC = () => {
 
             // Очистка полей формы
             reset();
+            setParticipants([]);
         } catch (err) {
             console.error(err);
             setError("Не удалось создать мероприятие. Перепроверьте все даты.");

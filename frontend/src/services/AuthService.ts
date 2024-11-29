@@ -1,5 +1,5 @@
 import $api, {$telegram_api} from "../http";
-import {AuthResponse} from "../types/Auth.ts";
+import {AuthResponse} from "../types/auth/Auth.ts";
 import axios, {AxiosResponse} from "axios";
 
 export default class AuthService {

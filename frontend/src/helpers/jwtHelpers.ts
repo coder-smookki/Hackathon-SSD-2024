@@ -1,4 +1,4 @@
-import {IToken} from "../types/Auth.ts";
+import {IToken} from "../types/auth/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 
 export const getRefreshToken = (token: string) => {

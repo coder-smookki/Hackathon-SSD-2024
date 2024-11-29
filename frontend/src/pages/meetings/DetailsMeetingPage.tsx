@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { GetMeetingResponse } from "@/types/Meetings.ts";
-import SidebarLayout from "@/layouts/layout.tsx";
+import { GetMeetingResponse } from "@/types/meetings/Meetings.ts";
+import SidebarLayout from "@/layouts/MainLayout.tsx";
 import MeetingService from "@/services/MeetingService.ts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
 import TitlePage from "@/components/Base/TitlePage.tsx";
 
 const MeetingDetails: React.FC = () => {

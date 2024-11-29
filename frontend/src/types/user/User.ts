@@ -1,4 +1,4 @@
-import {User} from "@/types/Meetings.ts";
+import {User} from "@/types/meetings/Meetings.ts";
 import {BaseData} from "@/types/Base.ts";
 
 export interface IUser {

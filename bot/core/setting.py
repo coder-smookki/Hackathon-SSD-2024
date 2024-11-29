@@ -14,7 +14,6 @@ class DBSettings(BaseModel):
     password: str
 
 
-
 class BotSettings(BaseModel):
     """Настройки телеграм-бота."""
 
@@ -46,7 +45,5 @@ def get_settings() -> Settings:
     bot = BotSettings(
         token=os.environ["BOT_TOKEN"],
     )
-
-
 
     return Settings(db=db, bot=bot)

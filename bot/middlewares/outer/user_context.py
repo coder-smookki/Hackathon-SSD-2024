@@ -1,12 +1,10 @@
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from aiogram import BaseMiddleware
 from aiogram.types import Update
 from aiogram.types import User as TGUser
-from aiogram import BaseMiddleware
 
-from bot.core.models import User
-from database.models import UserModel
 from database.repositories import UserAlchemyRepo
 
 

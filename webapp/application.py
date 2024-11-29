@@ -8,7 +8,6 @@ sys.path.insert(1, os.getcwd())
 
 from webapp.backend import all_routers
 
-
 app = FastAPI()
 [app.include_router(r) for r in all_routers]
 

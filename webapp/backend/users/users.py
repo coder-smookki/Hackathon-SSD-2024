@@ -2,11 +2,7 @@ import os
 import sys
 from typing import Union
 
-<<<<<<< HEAD
-import os, sys
 sys.path.insert(1, os.getcwd())
-=======
->>>>>>> 161edae91ea397ee91c27637176e92985429beac
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
@@ -20,13 +16,8 @@ load_dotenv()
 users_router = APIRouter()
 
 
-<<<<<<< HEAD
 @users_router.get("/api/users_jwt/{tg_id}", response_model=Union[dict, str])
-async def get_users_jwt_handler(tg_id) -> Union[dict, list]:
-=======
-@users_router.get("/users_jwt/{tg_id}", response_model=Union[dict, str])
 async def get_users_jwt_handler(tg_id) -> dict | list:
->>>>>>> 3263c7a457beb35da22ab05e0d6c86030d8af645
 
     if not tg_id.isdigit():
         return {"status": "400 bad request", "messages": []}

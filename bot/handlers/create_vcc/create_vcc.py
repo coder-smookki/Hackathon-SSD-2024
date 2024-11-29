@@ -8,7 +8,8 @@ from bot.callbacks.create_vcc import (
     StartCreateVcc, 
     ChooseBackendVcc,
     ChooseBuilding,
-    ChooseRoom
+    ChooseRoom,
+    StopAddUser
 )
 from bot.callbacks.universal import YesNo
 from bot.callbacks.state import InStateData
@@ -20,11 +21,13 @@ from bot.handlers.create_vcc.state import (
 )
 from bot.keyboards.create_vcc import (
     choose_backend_keyboard, 
+    stop_add_users,
     create_choose_building_keyboard,
     create_choose_room_keyboard
 )
-from bot.keyboards.universal import yes_no_keyboard, cancel_state_keyboard
+from bot.keyboards.universal import yes_no_keyboard
 from bot.core.utils.enums import Operation
+from bot.core.utils.utils import parse_datetime
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.core.utils.utils import is_valid_email
 from database.models import UserModel
@@ -38,8 +41,6 @@ create_vcc_router = Router(name=__name__)
 async def start_create(
         callback: CallbackQuery, 
         state: FSMContext,
-        api_client: AsyncAPIClient = None,
-        token: str = None
     ):
     """ Старт создания, запрос имени """
     await state.set_state(CreateVccState.name)
@@ -54,8 +55,7 @@ async def get_name(
     """ сохранение имени, запрос даты проведения """
     await state.update_data(name=message.text)
     await state.set_state(CreateVccState.date)
-    await message.answer("⌛ Введите дату в формате (год месяц день час минута):\n\n⚙️ Пример: 2024 11 28 10 10")
-
+    await message.answer("⌛ Введите дату в формате ДД ММ ГГГГ ЧЧ ММ (год месяц день час минута):\n\n⚙️ Пример: 28 11 2024 10 10")
 
 @create_vcc_router.message(CreateVccState.date)
 async def get_date(
@@ -64,9 +64,9 @@ async def get_date(
     ):
     """ сохранение запрос даты проведения, запрос времени мероприятия """
     try:
-        update_data = (datetime.strptime(message.text, "%Y %m %d %H %M") - timedelta(hours=5)).isoformat()
+        update_data = parse_datetime(message.text)
     except Exception:
-        await message.answer("❌ Вы ввели неверную дату\n\n⚙️ Пример: 2024 11 28 10 10")
+        await message.answer("❌ Вы ввели неверную дату\n\n⚙️ Пример: 28 11 2024 10 10")
         return
 
     await state.update_data(date=update_data)
@@ -197,9 +197,9 @@ async def start_get_cisco_settings(
 
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])
-    await callback.message.answer(
+    await callback.message.edit_text(
         "✉️ Введите email пользователей для добавления в ВКС", 
-        reply_markup=cancel_state_keyboard
+        reply_markup=stop_add_users
     )
 
 
@@ -233,7 +233,7 @@ async def start_get_external_settings(
     await state.update_data(participants=[])
     await message.answer(
         "✉️ Введите email пользователей для добавления в ВКС", 
-        reply_markup=cancel_state_keyboard
+        reply_markup=stop_add_users
     )
 
 
@@ -269,9 +269,9 @@ async def start_get_external_settings(
     })
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])
-    await callback.message.answer(
+    await callback.message.edit_text(
         "✉️ Введите email пользователей для добавления в ВКС", 
-        reply_markup=cancel_state_keyboard
+        reply_markup=stop_add_users
     )
     
 
@@ -285,21 +285,23 @@ async def get_participants(
         token: str
     ):
     if not is_valid_email(message.text):
-        await message.answer("❌ Это не email!", reply_markup=cancel_state_keyboard)
+        await message.answer("❌ Это не email!", reply_markup=stop_add_users)
         return
     user_data = await api_client.get_user(token, message.text)
     if not user_data["data"]["data"]:
-        await message.answer("❌ Этого пользователя нету в базе данных", reply_markup=cancel_state_keyboard)
+        await message.answer("❌ Этого пользователя нету", reply_markup=stop_add_users)
         return
-
     data = await state.get_data()
+    if {"id": user_data["data"]["data"][0]["id"]} in data["participants"]:
+        await message.answer("❌ Этот пользователь уже добавлен", reply_markup=stop_add_users)
+        return
     data["participants"].append({"id": user_data["data"]["data"][0]["id"]})
-    await message.answer("✅ Добавлен", reply_markup=cancel_state_keyboard)
+    await message.answer("✅ Добавлен", reply_markup=stop_add_users)
 
 
 @create_vcc_router.callback_query(
         CreateVccState.participants, 
-        InStateData.filter(F.action == Operation.CANCEL)
+        StopAddUser.filter()
 )
 async def cancel_participants(
         callback: CallbackQuery, 
@@ -320,7 +322,6 @@ async def cancel_participants(
 async def no_set_room(
         callback: CallbackQuery, 
         state: FSMContext,
-        api_client: AsyncAPIClient,
         token: str,
         user: UserModel
     ): 
@@ -357,7 +358,6 @@ async def yes_set_room(
         state: FSMContext,
         api_client: AsyncAPIClient,
         token: str,
-        user: UserModel
     ):
     await state.set_state(CreateVccState.building)
     data = await api_client.get_buildings(token)
@@ -376,7 +376,6 @@ async def get_building(
         state: FSMContext,
         api_client: AsyncAPIClient,
         token: str,
-        user: UserModel
     ):
     await state.set_state(CreateVccState.room)
     data = await api_client.get_rooms(token, callback_data.id)
@@ -451,7 +450,7 @@ async def yes_check_data(
     ):
     """ Делаем запрос на создание """
     state_data = await state.get_data()
-    data = await api_client._create_meeting(
+    data = await api_client.create_meeting(
         jwt_token=token,
         organizer_id=user.vcc_id,
         name_vks=state_data["name"],

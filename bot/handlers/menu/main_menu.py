@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot.callbacks.create_vcc import StartCreateVcc
 from bot.handlers.menu.formulations import MENU_TEXT
-from bot.utils.utils import extract_username
+from bot.core.utils.utils import extract_username
 from bot.core.utils.enums import SlashCommands, TextCommands
 from bot.keyboards.main_menu import main_menu_inline_keyboard
 from bot.handlers.menu.formulations import MENU_TEXT

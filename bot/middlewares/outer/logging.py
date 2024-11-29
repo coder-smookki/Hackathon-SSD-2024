@@ -5,7 +5,7 @@ from aiogram import BaseMiddleware
 from loguru import logger
 from aiogram.types import User
 
-from bot.utils.utils import extract_username, extract_chat_id
+from bot.core.utils.utils import extract_username, extract_chat_id
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable

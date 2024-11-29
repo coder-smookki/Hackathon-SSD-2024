@@ -1,11 +1,9 @@
-from datetime import datetime, timedelta
-
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from bot.handlers.get_vcc.state import FiltersState
-from bot.utils.get_vcc.utils import refactor_meeting, refactor_meetings
+from bot.core.utils.get_vcc import refactor_meetings
 from bot.core.utils.utils import is_valid_email
 from bot.core.api.api_vks import AsyncAPIClient
 from bot.keyboards.get_vcc import (
@@ -22,7 +20,6 @@ from bot.callbacks.get_vcc import (
     DepartmenVcc, 
     CancelFilterDataVcc
 )
-from bot.callbacks.state import InStateData
 
 
 """ 

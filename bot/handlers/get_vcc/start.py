@@ -1,36 +1,30 @@
-from datetime import datetime, timedelta
-
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from bot.handlers.get_vcc.state import GetVccState, FiltersState
-from bot.utils.get_vcc.utils import refactor_meeting, refactor_meetings
+from bot.core.utils.get_vcc import refactor_meetings
 from bot.core.api.api_vks import AsyncAPIClient
+from bot.core.utils.utils import parse_datetime
 from bot.keyboards.get_vcc import get_filters_keyboard
 from bot.callbacks.get_vcc import StartGetVcc
-from bot.handlers.get_vcc.formulations import SHOWING_VKS
-
 
 
 """ 
-здесь происходит старт и береться все необходимое для запроса
-(Промежуток дат)
-(datetime.strptime(message.text, "%Y %m %d %H %M") - timedelta(hours=5)).isoformat()
+здесь происходит старт и береться промежуток дат для запроса
 """
 
 start_router = Router(name=__name__)
 
-@start_router.callback_query(StartGetVcc.filter(F.name == "start_get_vcc"))
+@start_router.callback_query(StartGetVcc.filter())
 async def start_get(
-        #message: Message, 
         callback: CallbackQuery, 
         state: FSMContext,
     ):
     """ Старт создания, запрос даты от """
     await state.set_state(GetVccState.date_from)
-    await callback.message.answer(
-        "Введите дату НАЧАЛА в формате yyyy mm dd hh mm (год месяц день час минута)\n 2024 11 28 10 10"
+    await callback.message.edit_text(
+        "Введите дату НАЧАЛА в формате ДД ММ ГГГГ ЧЧ ММ (день месяц год час минута)\n 28 11 2024 10 10"
     )
 
 
@@ -41,7 +35,7 @@ async def get_date(
     ):
     """ сохранение даты от, запрос даты до """
     try:
-        update_data = (datetime.strptime(message.text, "%Y %m %d %H %M") - timedelta(hours=5)).isoformat()
+        update_data = parse_datetime(message.text)
     except Exception:
         await message.answer("неверная дата")
         return
@@ -49,7 +43,7 @@ async def get_date(
     
     await state.set_state(GetVccState.date_to)
     await message.answer(
-        "Введите дату КОНЦА в формате yyyy mm dd hh mm (год месяц день час минута) \n2024 11 28 10 10"
+        "Введите дату КОНЦА в формате ДД ММ ГГГГ ЧЧ ММ (день месяц год час минута) \n 28 11 2024 10 10"
     )
 
 @start_router.message(GetVccState.date_to)
@@ -61,17 +55,17 @@ async def get_date(
     ):
     """ сохранение даты до, перенос в меню фильтров """
     try:
-        update_data = (datetime.strptime(message.text, "%Y %m %d %H %M") - timedelta(hours=5)).isoformat()
+        update_data = parse_datetime(message.text)
     except Exception:
         await message.answer("Неверная дата")
         return
+    
     await state.update_data(
         date_to=update_data,
         state="booked",
         page=1,
         filter={}
     )
-
     data = await state.get_data()
     meetings, meetings_count = await api_client.get_meetings(
         token, data["page"], 
@@ -79,12 +73,8 @@ async def get_date(
         data["date_to"], 
         "booked"
     )
-    print(meetings, meetings_count)
-    #result = [refactor_meeting(meeting) for meeting in meetings]
-    keyboard = get_filters_keyboard 
 
     await message.answer(
-        #refactor_meeting(meetings), 
         refactor_meetings(meetings), 
         reply_markup=get_filters_keyboard(meetings_count, 1)
     )

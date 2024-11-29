@@ -5,6 +5,10 @@ class StartCreateVcc(CallbackData, prefix="start_create_vcc"):
     ...
 
 
+class StopAddUser(CallbackData, prefix="stop_add_user"):
+    ...
+
+
 class ChooseBackendVcc(CallbackData, prefix="choose_backend_for_create_vcc"):
     name: str
 

@@ -1,7 +1,7 @@
 from typing import Union
 
 import os, sys
-sys.path.insert(1, os.getcwd())
+
 from dotenv import load_dotenv
 
 from fastapi import APIRouter, HTTPException
@@ -13,7 +13,7 @@ from database.settings import get_settings
 
 
 load_dotenv()
-
+sys.path.insert(1, os.getcwd())
 users_router = APIRouter()
 
 

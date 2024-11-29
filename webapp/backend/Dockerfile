@@ -10,7 +10,8 @@ RUN poetry config virtualenvs.create false && \
     poetry install --no-root --no-cache
 
 COPY webapp/backend/ ./
+COPY ./database ./database
 
 EXPOSE 8001
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["poetry", "run", "uvicorn", "application:app", "--host", "0.0.0.0", "--port", "8001"]

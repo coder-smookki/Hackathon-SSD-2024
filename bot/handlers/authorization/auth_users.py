@@ -21,7 +21,7 @@ from bot.handlers.menu.main_menu import cmd_menu
 
 
 logger = logging.getLogger(__name__)
-router_auth = Router(name=__name__)
+auth_router = Router(name=__name__)
 
 
 class ExtractData(StatesGroup):
@@ -31,14 +31,14 @@ class ExtractData(StatesGroup):
     confirm_check_data = State() # Согласие на достоверность данных
 
 
-@router_auth.callback_query(Authorization.filter(F.operation_auth == "authorization"))
+@auth_router.callback_query(Authorization.filter(F.operation_auth == "authorization"))
 async def send_email(callback: CallbackQuery, state: FSMContext) -> None:
     """Запрашиваем email у пользователя"""
     await callback.message.edit_text(text="✉️ Введите почту:\n\n⚙️ Пример: hantaton10.h@mail.ru")
     await state.set_state(ExtractData.email)
 
 
-@router_auth.message(ExtractData.email)
+@auth_router.message(ExtractData.email)
 async def send_password(message: Message, state: FSMContext) -> None:
     """Сохраняем email и запрашиваем password"""
     if not is_valid_email(message.text):
@@ -49,7 +49,7 @@ async def send_password(message: Message, state: FSMContext) -> None:
     await state.set_state(ExtractData.password)
 
 
-@router_auth.message(ExtractData.password)
+@auth_router.message(ExtractData.password)
 async def save_password(message: Message, state: FSMContext) -> None:
     """Сохраняем password и предлагаем подтвердить действия"""
     await state.update_data(password=message.text)
@@ -63,7 +63,7 @@ async def save_password(message: Message, state: FSMContext) -> None:
     await state.set_state(ExtractData.confirm_check_data)
 
 
-@router_auth.callback_query(ExtractData.confirm_check_data,
+@auth_router.callback_query(ExtractData.confirm_check_data,
                             InStateData.filter(F.action == Operation.CANCEL))
 async def no_confirm_check_data(callback: CallbackQuery, state: FSMContext) -> None:
     """Пользователь отменил действия"""
@@ -74,7 +74,7 @@ async def no_confirm_check_data(callback: CallbackQuery, state: FSMContext) -> N
     await state.clear()
 
 
-@router_auth.callback_query(ExtractData.confirm_check_data, InStateData.filter())
+@auth_router.callback_query(ExtractData.confirm_check_data, InStateData.filter())
 async def yes_confirm_check_data(
         callback: CallbackQuery, 
         state: FSMContext,
@@ -132,7 +132,7 @@ async def yes_confirm_check_data(
         midle_name=vcc_user["middleName"],
         birthday=user_birthday,
         phone=vcc_user["phone"],
-    ) # TODO а если он уже там есть?
+    )
     await UserAlchemyRepo(session).create(user)
 
     logger.info(f"📎 Собранные данные пользователя: {user.model_dump()}")

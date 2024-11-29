@@ -2,7 +2,7 @@ from aiogram.filters.callback_data import CallbackData
 
 
 class StartGetVcc(CallbackData, prefix="start_get_vcc"):
-    name: str
+    ...
 
 class FilterVcc(CallbackData, prefix="filter_vcc"):
     name: str

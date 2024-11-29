@@ -1,6 +1,11 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from bot.callbacks.create_vcc import ChooseBackendVcc, ChooseBuilding, ChooseRoom
+from bot.callbacks.create_vcc import (
+    ChooseBackendVcc, 
+    ChooseBuilding, 
+    ChooseRoom,
+    StopAddUser
+)
 
 
 choose_backend_keyboard = InlineKeyboardMarkup(
@@ -15,6 +20,14 @@ choose_backend_keyboard = InlineKeyboardMarkup(
             text="vinteo", callback_data=ChooseBackendVcc(name="vinteo").pack()
         )],
     ]
+)
+
+stop_add_users = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(
+            text="Прекратить добавлять людей", callback_data=StopAddUser().pack()
+        )
+    ]]
 )
 
 def create_choose_building_keyboard(buildings: list[dict]):

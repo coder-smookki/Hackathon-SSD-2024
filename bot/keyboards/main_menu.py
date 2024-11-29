@@ -19,7 +19,7 @@ main_menu_inline_keyboard = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text=TextCommands.VIEW_VKS,
-                callback_data=StartGetVcc(name=Operation.START_GET_VCC).pack()
+                callback_data=StartGetVcc().pack()
             ),
             InlineKeyboardButton(
                 text=TextCommands.CREATE_VKS,
@@ -31,13 +31,13 @@ main_menu_inline_keyboard = InlineKeyboardMarkup(
                 text=TextCommands.PROFILE,
                 callback_data=ProfileOpen(operation_prof=Operation.PROFILE).pack()
             )
+        ],
+        [
+            InlineKeyboardButton(
+                text=TextCommands.LOGOUT,
+                callback_data=Logout().pack()
+            )
         ]
-        # [
-        #     InlineKeyboardButton(
-        #         text=TextCommands.LOGOUT,
-        #         callback_data=Logout(operation_logout=Operation.LOGOUT).pack()
-        #     )
-        # ]
     ]
 )
 

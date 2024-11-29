@@ -1,48 +1,30 @@
+
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
-
-from aiogram.types import Message
-from typing import Dict, Any
+from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
+
 from bot.callbacks.logout import Logout
-from bot.filters.role import EmailExistsFilter
-
-from sqlalchemy import select
 from bot.core.api.api_vks import AsyncAPIClient
-
 from database.models import UserModel
-from database.session import database_init
-from database.settings import get_settings
-
+from database.repositories import UserAlchemyRepo
 
 
 logout_router = Router(name=__name__)
 
-@logout_router.callback_query(Logout.filter(F.operation_logout == "logout"))
-async def cmd_logout(callback: CallbackQuery, state: FSMContext):
+@logout_router.callback_query(Logout.filter())
+async def cmd_logout(
+        callback: CallbackQuery, 
+        state: FSMContext,
+        api_client: AsyncAPIClient,
+        user_repo: UserAlchemyRepo,
+        user: UserModel,
+        token: str
+    ):            
+    await api_client.auth_logout(token=token)
+    await state.clear()
+    await user_repo.delete(user.tg_id)
+    await callback.message.edit_text("Вы успешно вышли из системы.")
 
-    settings = get_settings()
-    session_maker = await database_init(settings.db)
-
-    async with session_maker() as session:
-        await session.commit()
-
-        result = await session.execute(select(UserModel).filter(UserModel.tg_id == callback.from_user.id))
-
-        user = result.scalar_one_or_none()
-                
-        response = await AsyncAPIClient().auth_logout(token=user.token)
-
-        print(f'Logout response: {response}')
-
-        if  response['Status'] == 'ok':
-            await session.commit()
-            await session.close()
-            await state.clear()
-
-            await callback.message.edit_text("Вы успешно вышли из системы.")
-        else:
-            await callback.message.edit_text("Пользователь не найден в системе.")
 
 
 

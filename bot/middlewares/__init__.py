@@ -37,16 +37,16 @@ def setup_inner_middlewares(dp: "Dispatcher") -> None:
             [
                 "bot.handlers.authorization.auth_users",
                 "bot.handlers.start.start",
-            ]
-        )
+            ],
+        ),
     )
     dp.callback_query.middleware(
         AuthMiddleware(
             [
                 "bot.handlers.authorization.auth_users",
                 "bot.handlers.start.start",
-            ]
-        )
+            ],
+        ),
     )
 
 

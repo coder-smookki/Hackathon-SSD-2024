@@ -10,7 +10,8 @@ external_vcc_router = Router(name=__name__)
 
 
 @external_vcc_router.callback_query(
-    CreateVccState.backend, ChooseBackendVcc.filter(F.name == "external")
+    CreateVccState.backend,
+    ChooseBackendVcc.filter(F.name == "external"),
 )
 async def start_get_external_settings(
     callback: CallbackQuery,

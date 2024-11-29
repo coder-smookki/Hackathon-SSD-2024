@@ -12,7 +12,8 @@ vinteo_vcc_router = Router(name=__name__)
 
 
 @vinteo_vcc_router.callback_query(
-    CreateVccState.backend, ChooseBackendVcc.filter(F.name == "vinteo")
+    CreateVccState.backend,
+    ChooseBackendVcc.filter(F.name == "vinteo"),
 )
 async def start_get_external_settings(
     callback: CallbackQuery,
@@ -22,12 +23,14 @@ async def start_get_external_settings(
     await state.update_data(backend="vinteo")
     await state.set_state(VinteoSettingsState.need_video_recording)
     await callback.message.edit_text(
-        text="📍 Включать ли видео запись?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли видео запись?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 @vinteo_vcc_router.callback_query(
-    VinteoSettingsState.need_video_recording, YesNo.filter()
+    VinteoSettingsState.need_video_recording,
+    YesNo.filter(),
 )
 async def start_get_external_settings(
     callback: CallbackQuery,
@@ -36,7 +39,7 @@ async def start_get_external_settings(
 ):
     """сохранение need_video_recording, запрос на проверку данных"""
     await state.update_data(
-        settings={"needVideoRecording": callback_data.result == "Да"}
+        settings={"needVideoRecording": callback_data.result == "Да"},
     )
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])

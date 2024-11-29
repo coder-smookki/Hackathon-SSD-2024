@@ -16,12 +16,14 @@ from bot.core.utils.enums import Operation, TextCommands
 def get_filters_keyboard(meetings_count: int, page: int):
     back_button = (
         InlineKeyboardButton(
-            text="◀️ Назад", callback_data=PagionationVccData(value=-1).pack()
+            text="◀️ Назад",
+            callback_data=PagionationVccData(value=-1).pack(),
         ),
     )
     forward_button = (
         InlineKeyboardButton(
-            text="Дальше ▶️", callback_data=PagionationVccData(value=1).pack()
+            text="Дальше ▶️",
+            callback_data=PagionationVccData(value=1).pack(),
         ),
     )
     keyboard = InlineKeyboardMarkup(
@@ -31,18 +33,22 @@ def get_filters_keyboard(meetings_count: int, page: int):
             ],
             [
                 InlineKeyboardButton(
-                    text="Начатые", callback_data=StateVcc(name="started").pack()
+                    text="Начатые",
+                    callback_data=StateVcc(name="started").pack(),
                 ),
                 InlineKeyboardButton(
-                    text="Законченные", callback_data=StateVcc(name="ended").pack()
+                    text="Законченные",
+                    callback_data=StateVcc(name="ended").pack(),
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Забронированные", callback_data=StateVcc(name="booked").pack()
+                    text="Забронированные",
+                    callback_data=StateVcc(name="booked").pack(),
                 ),
                 InlineKeyboardButton(
-                    text="Отмененные", callback_data=StateVcc(name="cancelled").pack()
+                    text="Отмененные",
+                    callback_data=StateVcc(name="cancelled").pack(),
                 ),
             ],
             [
@@ -50,15 +56,18 @@ def get_filters_keyboard(meetings_count: int, page: int):
             ],
             [
                 InlineKeyboardButton(
-                    text="Наименование", callback_data=FilterVcc(name="name").pack()
+                    text="Наименование",
+                    callback_data=FilterVcc(name="name").pack(),
                 ),
                 InlineKeyboardButton(
-                    text="Организатор", callback_data=FilterVcc(name="user").pack()
+                    text="Организатор",
+                    callback_data=FilterVcc(name="user").pack(),
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Приоритет", callback_data=FilterVcc(name="priority").pack()
+                    text="Приоритет",
+                    callback_data=FilterVcc(name="priority").pack(),
                 ),
                 InlineKeyboardButton(
                     text="Департамент",
@@ -73,7 +82,7 @@ def get_filters_keyboard(meetings_count: int, page: int):
                     callback_data=BackMenu(back_menu=Operation.BACK_MENU).pack(),
                 ),
             ],
-        ]
+        ],
     )
     if page != 1:
         keyboard.inline_keyboard[-2] += back_button
@@ -88,9 +97,9 @@ cancel_name_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text="🗑️ Сбросить фильтр",
                 callback_data=CancelFilterDataVcc(filter_="filter").pack(),
-            )
-        ]
-    ]
+            ),
+        ],
+    ],
 )
 cancel_user_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -98,9 +107,9 @@ cancel_user_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text="🗑️ Сбросить фильтр",
                 callback_data=CancelFilterDataVcc(filter_="userId").pack(),
-            )
-        ]
-    ]
+            ),
+        ],
+    ],
 )
 
 
@@ -115,9 +124,9 @@ priority_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text="🗑️ Сбросить фильтр",
                 callback_data=CancelFilterDataVcc(filter_="priority").pack(),
-            )
+            ),
         ],
-    ]
+    ],
 )
 
 
@@ -128,8 +137,8 @@ def create_choose_department_keyboard(departmens: list[dict]):
             InlineKeyboardButton(
                 text="🗑️ Сбросить фильтр",
                 callback_data=CancelFilterDataVcc(filter_="departmentId").pack(),
-            )
-        ]
+            ),
+        ],
     ]
     for departmen in departmens:
         mass.append(
@@ -137,7 +146,7 @@ def create_choose_department_keyboard(departmens: list[dict]):
                 InlineKeyboardButton(
                     text=departmen["name"],
                     callback_data=DepartmenVcc(id=departmen["id"]).pack(),
-                )
-            ]
+                ),
+            ],
         )
     return InlineKeyboardMarkup(inline_keyboard=mass)

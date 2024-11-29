@@ -9,9 +9,9 @@ start_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text=TextCommands.AUTHORIZATIONS,
                 callback_data=Authorization(
-                    operation_auth=Operation.AUTHORIZATIONS
+                    operation_auth=Operation.AUTHORIZATIONS,
                 ).pack(),
-            )
-        ]
-    ]
+            ),
+        ],
+    ],
 )

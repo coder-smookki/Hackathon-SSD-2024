@@ -53,7 +53,7 @@ async def main():
             participants=participants,
             room_id=1,
             means_conducting="cisco",
-        )
+        ),
     )
     print("\n\n")
 
@@ -69,7 +69,7 @@ async def main():
             phone="string12343",
             birthday="2024-11-26",
             roleId=5,
-        )
+        ),
     )
     print("\n\n")
     print(await client.auth_login(login="bobi", password="string12343"))
@@ -82,7 +82,7 @@ async def main():
         await client.get_meetings(
             toDatetime="2024-11-26T23:00:00.000000",
             fromDatetime="2023-11-25T00:00:00.000000",
-        )
+        ),
     )
 
 

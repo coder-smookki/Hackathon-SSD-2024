@@ -17,7 +17,7 @@ start_router = Router(name=__name__)
 async def cmd_start(message: Message, state: FSMContext, token) -> None:
     if token:
         await message.reply(
-            "⚙️ Вы уже авторизованы\n\n📍Если вы хотите выйти с аккаунта, то нажмите - [🚪] Выйти из аккаунта."
+            "⚙️ Вы уже авторизованы\n\n📍Если вы хотите выйти с аккаунта, то нажмите - [🚪] Выйти из аккаунта.",
         )
 
         await cmd_menu(message=message, state=state)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED
@@ -91,7 +91,7 @@ class LoggingMiddleware(BaseMiddleware):
 
     def get_short_info(
         self,
-        event: "Union[CallbackQuery, Message]",
+        event: "CallbackQuery | Message",
     ) -> str | None:
         """Короткая информация о пользователе для логов."""
         from_user = cast(User, event.from_user)

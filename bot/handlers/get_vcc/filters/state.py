@@ -24,7 +24,12 @@ async def filter_state_date(
     await state.update_data(state=callback_data.name, page=1)
     data = await state.get_data()
     meetings, meetings_count = await api_client.get_meetings(
-        token, 1, data["date_from"], data["date_to"], callback_data.name, data["filter"]
+        token,
+        1,
+        data["date_from"],
+        data["date_to"],
+        callback_data.name,
+        data["filter"],
     )
     try:
         await callback.message.edit_text(

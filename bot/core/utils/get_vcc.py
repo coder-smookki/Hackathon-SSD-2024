@@ -17,7 +17,7 @@ def refactor_meetings(meetings: list) -> str:
                 meeting["name"],
                 meeting["startedAt"],
                 meeting["startedAt"],
-            ]
+            ],
         )
         + "\n"
         for meeting in meetings
@@ -39,7 +39,7 @@ def refactor_meetings(meetings: list) -> str:
                     ),
                 )
                 for meeting in result
-            ]
+            ],
         )
         if "\n\n".join(
             [
@@ -54,7 +54,7 @@ def refactor_meetings(meetings: list) -> str:
                     ),
                 )
                 for meeting in result
-            ]
+            ],
         )
         != ""
         else NOT_FOUND_VKS
@@ -73,7 +73,7 @@ def refactor_meeting(meeting: dict) -> str:
                 meeting["name"],
                 meeting["startedAt"],
                 meeting["startedAt"],
-            ]
+            ],
         )
         + "\n"
     )

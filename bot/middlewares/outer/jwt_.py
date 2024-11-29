@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict
+from typing import Any
 
 from aiogram import BaseMiddleware, Bot
 from aiogram.fsm.context import FSMContext
@@ -18,9 +19,9 @@ class JWTMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Any],
+        handler: Callable[[TelegramObject, dict[str, Any]], Any],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         bot: Bot = data["bot"]
         event_chat: Chat | None = data.get("event_chat")
@@ -51,7 +52,8 @@ class JWTMiddleware(BaseMiddleware):
 
             if new_data["user"]["birthday"] is not None:
                 user_birthday = datetime.strptime(
-                    new_data["user"]["birthday"], "%Y-%m-%d"
+                    new_data["user"]["birthday"],
+                    "%Y-%m-%d",
                 ).date()
             else:
                 user_birthday = None

@@ -24,5 +24,6 @@ async def cmd_logout(
     await state.clear()
     await user_repo.delete(user.tg_id)
     await callback.message.edit_text(
-        text="Вы успешно вышли из системы.", reply_markup=start_keyboard
+        text="Вы успешно вышли из системы.",
+        reply_markup=start_keyboard,
     )

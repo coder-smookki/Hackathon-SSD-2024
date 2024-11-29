@@ -17,10 +17,14 @@ pagination_router = Router(name=__name__)
 
 
 @pagination_router.callback_query(
-    FiltersState.base, PagionationVccData.filter(F.value == 1)
+    FiltersState.base,
+    PagionationVccData.filter(F.value == 1),
 )
 async def increment_page(
-    callback: CallbackQuery, state: FSMContext, api_client: AsyncAPIClient, token: str
+    callback: CallbackQuery,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
 ):
     data = await state.get_data()
     await state.update_data(page=data["page"] + 1)
@@ -40,10 +44,14 @@ async def increment_page(
 
 
 @pagination_router.callback_query(
-    FiltersState.base, PagionationVccData.filter(F.value == -1)
+    FiltersState.base,
+    PagionationVccData.filter(F.value == -1),
 )
 async def increment_page(
-    callback: CallbackQuery, state: FSMContext, api_client: AsyncAPIClient, token: str
+    callback: CallbackQuery,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
 ):
     data = await state.get_data()
     await state.update_data(page=data["page"] - 1)

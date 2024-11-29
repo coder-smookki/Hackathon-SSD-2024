@@ -12,7 +12,8 @@ cisco_vcc_router = Router(name=__name__)
 
 
 @cisco_vcc_router.callback_query(
-    CreateVccState.backend, ChooseBackendVcc.filter(F.name == "cisco")
+    CreateVccState.backend,
+    ChooseBackendVcc.filter(F.name == "cisco"),
 )
 async def start_get_cisco_settings(
     callback: CallbackQuery,
@@ -22,7 +23,8 @@ async def start_get_cisco_settings(
     await state.update_data(backend="cisco")
     await state.set_state(CiscoSettingsState.is_microphone_on)
     await callback.message.edit_text(
-        text="📍 Включать ли микрофон обязательно?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли микрофон обязательно?",
+        reply_markup=yes_no_keyboard,
     )
 
 
@@ -36,7 +38,8 @@ async def start_get_cisco_settings(
     await state.update_data(is_microphone_on=callback_data.result == "Да")
     await state.set_state(CiscoSettingsState.is_video_on)
     await callback.message.edit_text(
-        text="📍 Включать ли видео обязательно?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли видео обязательно?",
+        reply_markup=yes_no_keyboard,
     )
 
 
@@ -50,12 +53,14 @@ async def start_get_cisco_settings(
     await state.update_data(is_video_on=callback_data.result == "Да")
     await state.set_state(CiscoSettingsState.is_waiting_room_enabled)
     await callback.message.edit_text(
-        text="📍 Включать ли ожидание ВКС?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли ожидание ВКС?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 @cisco_vcc_router.callback_query(
-    CiscoSettingsState.is_waiting_room_enabled, YesNo.filter()
+    CiscoSettingsState.is_waiting_room_enabled,
+    YesNo.filter(),
 )
 async def start_get_cisco_settings(
     callback: CallbackQuery,
@@ -66,12 +71,14 @@ async def start_get_cisco_settings(
     await state.update_data(is_waiting_room_enabled=callback_data.result == "Да")
     await state.set_state(CiscoSettingsState.need_video_recording)
     await callback.message.edit_text(
-        text="📍 Включать ли видео запись?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли видео запись?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 @cisco_vcc_router.callback_query(
-    CiscoSettingsState.need_video_recording, YesNo.filter()
+    CiscoSettingsState.need_video_recording,
+    YesNo.filter(),
 )
 async def start_get_cisco_settings(
     callback: CallbackQuery,
@@ -86,7 +93,7 @@ async def start_get_cisco_settings(
             "isVideoOn": data["is_video_on"],
             "isWaitingRoomEnabled": data["is_waiting_room_enabled"],
             "needVideoRecording": callback_data.result == "Да",
-        }
+        },
     )
 
     await state.set_state(CreateVccState.participants)

@@ -14,7 +14,6 @@ export const getDecodedToken = (token: string): IToken | null => {
     try {
         return jwtDecode<IToken>(token);
     } catch (error) {
-        console.error('Ошибка при декодировании токена:', error);
         return null;
     }
 }

@@ -22,7 +22,6 @@ $api.interceptors.response.use((config) => {
     return config;
 }, async (error) => {
     const originalRequest = error.config;
-    console.log(error)
     if (error.response && error.response.status == 401 && error.config && !error.config._isRetry) {
         originalRequest._isRetry = true;
         try {
@@ -32,10 +31,10 @@ $api.interceptors.response.use((config) => {
             localStorage.setItem('refreshToken', getRefreshToken(response.data.token));
             localStorage.setItem('token', response.data.token);
             return $api.request(originalRequest);
-        } catch (e) {
+        } catch {
             localStorage.removeItem("token");
             localStorage.removeItem("refreshToken");
-            console.log("НЕ АВТОРИЗОВАН", e)
+            console.log("НЕ АВТОРИЗОВАН")
         }
     }
     throw error;

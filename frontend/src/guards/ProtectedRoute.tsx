@@ -9,7 +9,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         return <Navigate to="/login" replace />;
     }

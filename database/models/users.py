@@ -1,11 +1,9 @@
-from typing import Any
 from datetime import date, datetime
 
-from sqlalchemy import BigInteger, DateTime, Integer, String, ARRAY, Date
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ARRAY, BigInteger, Date, DateTime, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 from database.models.base import AlchemyBaseModel
-
 
 MAX_LOGIN_LENGTH = 128
 MAX_EMAIL_LENGTH = 254
@@ -24,9 +22,12 @@ class UserModel(AlchemyBaseModel):
     token: Mapped[str] = mapped_column(String(4000), nullable=False)
     token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
     refresh_token: Mapped[str] = mapped_column(String(1000), nullable=False)
-    refresh_token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
+    refresh_token_expired_at: Mapped[datetime] = mapped_column(
+        DateTime(),
+        nullable=False,
+    )
 
-    events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)  
+    events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)
     # С id встреч, в которых учавствует человек
 
     vcc_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
@@ -43,4 +44,3 @@ class UserModel(AlchemyBaseModel):
     #     self.email = email
     #     self.password = password
     #     self.jwt_token = jwt_token
-

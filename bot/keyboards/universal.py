@@ -1,20 +1,15 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from bot.callbacks.back_menu import BackMenu
 from bot.callbacks.state import InStateData
 from bot.callbacks.universal import YesNo
-from bot.callbacks.back_menu import BackMenu
-from bot.core.utils.enums import Operation
-from bot.callbacks.back_menu import BackMenu
-from bot.core.utils.enums import TextCommands
+from bot.core.utils.enums import Operation, TextCommands
 
+CANCEL = "❌ Отмена"
+CONFIRM = "✅ Подтвердить"
 
-
-CANCEL = f"❌ Отмена"
-CONFIRM = f"✅ Подтвердить"
-
-YES = f"Да"
-NO = f"Нет"
+YES = "Да"
+NO = "Нет"
 
 confirm_state_button = InlineKeyboardButton(
     text=CONFIRM,
@@ -32,16 +27,18 @@ confirm_cancel_keyboard = InlineKeyboardMarkup(
 
 
 yes_no_keyboard = InlineKeyboardMarkup(
-    inline_keyboard=[[
-        InlineKeyboardButton(text=YES, callback_data=YesNo(result=YES).pack()),
-        InlineKeyboardButton(text=NO, callback_data=YesNo(result=NO).pack())
-    ]]
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text=YES, callback_data=YesNo(result=YES).pack()),
+            InlineKeyboardButton(text=NO, callback_data=YesNo(result=NO).pack()),
+        ]
+    ]
 )
 
 
 back_menu_button = InlineKeyboardButton(
     text=TextCommands.BACK_MENU,
-    callback_data=BackMenu(back_menu=Operation.BACK_MENU).pack()
+    callback_data=BackMenu(back_menu=Operation.BACK_MENU).pack(),
 )
 
 back_menu_keyboard = InlineKeyboardMarkup(inline_keyboard=[[back_menu_button]])

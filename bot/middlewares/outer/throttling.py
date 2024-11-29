@@ -8,7 +8,11 @@ from bot.middlewares.base_information import BaseInfoMiddleware
 
 
 class ThrottlingMiddleware(BaseInfoMiddleware):
+<<<<<<< HEAD
     RATE_LIMIT = 0.5
+=======
+    RATE_LIMIT = 1.0
+>>>>>>> 161edae91ea397ee91c27637176e92985429beac
 
     def __init__(self, rate_limit: float = RATE_LIMIT) -> None:
         self.cache = TTLCache(maxsize=10_000, ttl=rate_limit)

@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Any, Union, cast
 
-from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED
 from aiogram import BaseMiddleware
-from loguru import logger
+from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED
 from aiogram.types import User
+from loguru import logger
 
-from bot.core.utils.utils import extract_username, extract_chat_id
+from bot.core.utils.utils import extract_chat_id, extract_username
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -88,7 +88,6 @@ class LoggingMiddleware(BaseMiddleware):
             result not in (UNHANDLED, REJECTED),
         )
         return result
-
 
     def get_short_info(
         self,

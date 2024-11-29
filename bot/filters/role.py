@@ -9,7 +9,6 @@ class EmailExistsFilter:
         return True
 
 
-
 class EmailNotExistsFilter(BaseFilter):
     async def __call__(self, message: Message, user_info: dict | None) -> bool:
         """

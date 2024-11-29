@@ -6,6 +6,7 @@ sys.path.insert(1, os.getcwd())
 
 from webapp.backend import all_routers
 
+
 app = FastAPI()
 [app.include_router(r) for r in all_routers]
 
@@ -17,8 +18,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/test")
-async def connect():
-    return {"message": "Hello World"}

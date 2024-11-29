@@ -17,17 +17,18 @@ services:
         depends_on:
             - database
   
-    # backend:
-    #     image: ssd-backend-image
-    #     container_name: ssd-backend
-    #     restart: unless-stopped
-    #     build:
-    #         context: .
-    #         dockerfile: ./webapp/backend/Dockerfile
-    #     ports:
-    #         - "8001:8001"
-    #     networks:
-    #         - app-network
+    backend:
+        image: ssd-backend-image
+        container_name: ssd-backend
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./webapp/backend/Dockerfile
+        env_file: .env
+        ports:
+            - "8001:8001"
+        # networks:
+        #     - app-network
 
     # frontend:
     #     image: ssd-frontend-image
@@ -74,6 +75,6 @@ services:
     #     links:
     #         - database
 
-networks:
-  app-network:
-    driver: bridge
+# networks:
+#   app-network:
+#     driver: bridge

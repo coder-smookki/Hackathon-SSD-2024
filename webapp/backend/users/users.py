@@ -1,7 +1,7 @@
 from typing import Union
 
 import os, sys
-
+sys.path.insert(1, os.getcwd())
 from dotenv import load_dotenv
 
 from fastapi import APIRouter, HTTPException
@@ -13,11 +13,11 @@ from database.settings import get_settings
 
 
 load_dotenv()
-sys.path.insert(1, os.getcwd())
+
 users_router = APIRouter()
 
 
-@users_router.get("/users_jwt/{tg_id}", response_model=Union[dict, str])
+@users_router.get("/api/users_jwt/{tg_id}", response_model=Union[dict, str])
 async def get_users_jwt_handler(tg_id) -> Union[dict, list]:
 
     if not tg_id.isdigit():

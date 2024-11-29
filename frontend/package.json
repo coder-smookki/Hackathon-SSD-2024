@@ -2,7 +2,7 @@
   "name": "hackaton",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://bertram202.github.io/HACK-Preview/",
+  "homepage": "https://coder-smookki.github.io/Hackathon-SSD-2024/",
   "type": "module",
   "scripts": {
     "dev": "vite",

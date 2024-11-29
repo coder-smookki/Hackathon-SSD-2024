@@ -13,5 +13,5 @@ export default defineConfig({
   server: {
     port: 1234
   },
-  base: "/HACK-Preview",
+  base: "/Hackathon-SSD-2024",
 })

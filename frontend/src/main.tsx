@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <BrowserRouter basename="/HACK-Preview">
+      <BrowserRouter basename="/Hackathon-SSD-2024">
           <App />
       </BrowserRouter>
   </StrictMode>,

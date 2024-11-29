@@ -15,22 +15,24 @@ main_menu_inline_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text=TextCommands.VIEW_VKS, callback_data=StartGetVcc().pack()
+                text=TextCommands.VIEW_VKS,
+                callback_data=StartGetVcc().pack(),
             ),
             InlineKeyboardButton(
-                text=TextCommands.CREATE_VKS, callback_data=StartCreateVcc().pack()
+                text=TextCommands.CREATE_VKS,
+                callback_data=StartCreateVcc().pack(),
             ),
         ],
         [
             InlineKeyboardButton(
                 text=TextCommands.PROFILE,
                 callback_data=ProfileOpen(operation_prof=Operation.PROFILE).pack(),
-            )
+            ),
         ],
         [InlineKeyboardButton(text=TextCommands.LOGOUT, callback_data=Logout().pack())],
-    ]
+    ],
 )
 
 main_menu_keyoard = ReplyKeyboardMarkup(
-    keyboard=[[KeyboardButton(text="Главное меню")]]
+    keyboard=[[KeyboardButton(text="Главное меню")]],
 )

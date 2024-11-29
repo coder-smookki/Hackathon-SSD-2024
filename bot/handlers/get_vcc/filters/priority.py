@@ -12,7 +12,8 @@ filter_priority_router = Router(name=__name__)
 
 
 @filter_priority_router.callback_query(
-    FiltersState.base, FilterVcc.filter(F.name == "priority")
+    FiltersState.base,
+    FilterVcc.filter(F.name == "priority"),
 )
 async def filter_priority_date(
     callback: CallbackQuery,
@@ -20,7 +21,8 @@ async def filter_priority_date(
 ):
     await state.set_state(FiltersState.priority)
     await callback.message.edit_text(
-        "выберите приоритет", reply_markup=priority_keyboard
+        "выберите приоритет",
+        reply_markup=priority_keyboard,
     )
 
 
@@ -37,7 +39,12 @@ async def filter_priority_date(
     await state.update_data(filter=data["filter"], page=1)
     await state.set_state(FiltersState.base)
     meetings, meetings_count = await api_client.get_meetings(
-        token, 1, data["date_from"], data["date_to"], data["state"], data["filter"]
+        token,
+        1,
+        data["date_from"],
+        data["date_to"],
+        data["state"],
+        data["filter"],
     )
     await callback.message.edit_text(
         refactor_meetings(meetings),

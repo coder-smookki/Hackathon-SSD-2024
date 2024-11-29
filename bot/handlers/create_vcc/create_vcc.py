@@ -73,7 +73,8 @@ async def get_date(message: Message, state: FSMContext):
     await state.update_data(date=update_data)
     await state.set_state(CreateVccState.duration)
     await message.answer(
-        "⌛ Введите продолжительность ВКС в минутах:", reply_markup=back_menu_keyboard
+        "⌛ Введите продолжительность ВКС в минутах:",
+        reply_markup=back_menu_keyboard,
     )
 
 
@@ -107,7 +108,8 @@ async def get_participants_count(message: Message, state: FSMContext):
 
 
 @create_vcc_router.callback_query(
-    CreateVccState.backend, ChooseBackendVcc.filter(F.name == "cisco")
+    CreateVccState.backend,
+    ChooseBackendVcc.filter(F.name == "cisco"),
 )
 async def start_get_cisco_settings(
     callback: CallbackQuery,
@@ -117,7 +119,8 @@ async def start_get_cisco_settings(
     await state.update_data(backend="cisco")
     await state.set_state(CiscoSettingsState.is_microphone_on)
     await callback.message.edit_text(
-        text="📍 Включать ли микрофон обязательно?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли микрофон обязательно?",
+        reply_markup=yes_no_keyboard,
     )
 
 
@@ -131,7 +134,8 @@ async def start_get_cisco_settings(
     await state.update_data(is_microphone_on=callback_data.result == "Да")
     await state.set_state(CiscoSettingsState.is_video_on)
     await callback.message.edit_text(
-        text="📍 Включать ли видео обязательно?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли видео обязательно?",
+        reply_markup=yes_no_keyboard,
     )
 
 
@@ -145,12 +149,14 @@ async def start_get_cisco_settings(
     await state.update_data(is_video_on=callback_data.result == "Да")
     await state.set_state(CiscoSettingsState.is_waiting_room_enabled)
     await callback.message.edit_text(
-        text="📍 Включать ли ожидание ВКС?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли ожидание ВКС?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 @create_vcc_router.callback_query(
-    CiscoSettingsState.is_waiting_room_enabled, YesNo.filter()
+    CiscoSettingsState.is_waiting_room_enabled,
+    YesNo.filter(),
 )
 async def start_get_cisco_settings(
     callback: CallbackQuery,
@@ -161,12 +167,14 @@ async def start_get_cisco_settings(
     await state.update_data(is_waiting_room_enabled=callback_data.result == "Да")
     await state.set_state(CiscoSettingsState.need_video_recording)
     await callback.message.edit_text(
-        text="📍 Включать ли видео запись?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли видео запись?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 @create_vcc_router.callback_query(
-    CiscoSettingsState.need_video_recording, YesNo.filter()
+    CiscoSettingsState.need_video_recording,
+    YesNo.filter(),
 )
 async def start_get_cisco_settings(
     callback: CallbackQuery,
@@ -181,7 +189,7 @@ async def start_get_cisco_settings(
             "isVideoOn": data["is_video_on"],
             "isWaitingRoomEnabled": data["is_waiting_room_enabled"],
             "needVideoRecording": callback_data.result == "Да",
-        }
+        },
     )
 
     await state.set_state(CreateVccState.participants)
@@ -193,7 +201,8 @@ async def start_get_cisco_settings(
 
 
 @create_vcc_router.callback_query(
-    CreateVccState.backend, ChooseBackendVcc.filter(F.name == "external")
+    CreateVccState.backend,
+    ChooseBackendVcc.filter(F.name == "external"),
 )
 async def start_get_external_settings(
     callback: CallbackQuery,
@@ -224,7 +233,8 @@ async def start_get_external_settings(
 
 
 @create_vcc_router.callback_query(
-    CreateVccState.backend, ChooseBackendVcc.filter(F.name == "vinteo")
+    CreateVccState.backend,
+    ChooseBackendVcc.filter(F.name == "vinteo"),
 )
 async def start_get_external_settings(
     callback: CallbackQuery,
@@ -234,12 +244,14 @@ async def start_get_external_settings(
     await state.update_data(backend="vinteo")
     await state.set_state(VinteoSettingsState.need_video_recording)
     await callback.message.edit_text(
-        text="📍 Включать ли видео запись?", reply_markup=yes_no_keyboard
+        text="📍 Включать ли видео запись?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 @create_vcc_router.callback_query(
-    VinteoSettingsState.need_video_recording, YesNo.filter()
+    VinteoSettingsState.need_video_recording,
+    YesNo.filter(),
 )
 async def start_get_external_settings(
     callback: CallbackQuery,
@@ -248,7 +260,7 @@ async def start_get_external_settings(
 ):
     """сохранение need_video_recording, запрос на проверку данных"""
     await state.update_data(
-        settings={"needVideoRecording": callback_data.result == "Да"}
+        settings={"needVideoRecording": callback_data.result == "Да"},
     )
     await state.set_state(CreateVccState.participants)
     await state.update_data(participants=[])
@@ -260,7 +272,10 @@ async def start_get_external_settings(
 
 @create_vcc_router.message(CreateVccState.participants)
 async def get_participants(
-    message: Message, state: FSMContext, api_client: AsyncAPIClient, token: str
+    message: Message,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
 ):
     if not is_valid_email(message.text):
         await message.answer("❌ Это не email!", reply_markup=stop_add_users)
@@ -272,7 +287,8 @@ async def get_participants(
     data = await state.get_data()
     if {"id": user_data["data"]["data"][0]["id"]} in data["participants"]:
         await message.answer(
-            "❌ Этот пользователь уже добавлен", reply_markup=stop_add_users
+            "❌ Этот пользователь уже добавлен",
+            reply_markup=stop_add_users,
         )
         return
     data["participants"].append({"id": user_data["data"]["data"][0]["id"]})
@@ -286,16 +302,21 @@ async def cancel_participants(
 ):
     await state.set_state(CreateVccState.set_room)
     await callback.message.edit_text(
-        text="🔒 Хотите ли вы указать помещение ВКС?", reply_markup=yes_no_keyboard
+        text="🔒 Хотите ли вы указать помещение ВКС?",
+        reply_markup=yes_no_keyboard,
     )
 
 
 # может стоит объединить проверку даты?
 @create_vcc_router.callback_query(
-    CreateVccState.set_room, YesNo.filter(F.result == "Нет")
+    CreateVccState.set_room,
+    YesNo.filter(F.result == "Нет"),
 )
 async def no_set_room(
-    callback: CallbackQuery, state: FSMContext, token: str, user: UserModel
+    callback: CallbackQuery,
+    state: FSMContext,
+    token: str,
+    user: UserModel,
 ):
     await state.set_state(CreateVccState.check_data)
     state_data = await state.get_data()
@@ -350,7 +371,8 @@ async def no_set_room(
 
 
 @create_vcc_router.callback_query(
-    CreateVccState.set_room, YesNo.filter(F.result == "Да")
+    CreateVccState.set_room,
+    YesNo.filter(F.result == "Да"),
 )
 async def yes_set_room(
     callback: CallbackQuery,
@@ -445,7 +467,8 @@ async def get_room(
 
 
 @create_vcc_router.callback_query(
-    CreateVccState.check_data, YesNo.filter(F.result == "Нет")
+    CreateVccState.check_data,
+    YesNo.filter(F.result == "Нет"),
 )
 async def no_check_data(
     callback: CallbackQuery,
@@ -457,7 +480,8 @@ async def no_check_data(
 
 
 @create_vcc_router.callback_query(
-    CreateVccState.check_data, YesNo.filter(F.result == "Да")
+    CreateVccState.check_data,
+    YesNo.filter(F.result == "Да"),
 )
 async def yes_check_data(
     callback: CallbackQuery,

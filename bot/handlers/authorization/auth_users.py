@@ -26,7 +26,7 @@ auth_router = Router(name=__name__)
 async def send_email(callback: CallbackQuery, state: FSMContext) -> None:
     """Запрашиваем email у пользователя"""
     await callback.message.edit_text(
-        text="✉️ Введите почту:\n\n⚙️ Пример: hantaton10.h@mail.ru"
+        text="✉️ Введите почту:\n\n⚙️ Пример: hantaton10.h@mail.ru",
     )
     await state.set_state(ExtractData.email)
 
@@ -59,12 +59,14 @@ async def save_password(message: Message, state: FSMContext) -> None:
 
 
 @auth_router.callback_query(
-    ExtractData.confirm_check_data, InStateData.filter(F.action == Operation.CANCEL)
+    ExtractData.confirm_check_data,
+    InStateData.filter(F.action == Operation.CANCEL),
 )
 async def no_confirm_check_data(callback: CallbackQuery, state: FSMContext) -> None:
     """Пользователь отменил действия"""
     await callback.message.edit_text(
-        text="❗ Действие отменено.", reply_markup=start_keyboard
+        text="❗ Действие отменено.",
+        reply_markup=start_keyboard,
     )
     await state.clear()
 
@@ -79,7 +81,7 @@ async def yes_confirm_check_data(
 ) -> None:
     """Финальный этап, получение токена, сохранение данных с него в бд"""
     await state.update_data(
-        confirm_check_data=callback_data.action == Operation.CONFIRM
+        confirm_check_data=callback_data.action == Operation.CONFIRM,
     )
     user_data = await state.get_data()
     user_info = {
@@ -89,11 +91,13 @@ async def yes_confirm_check_data(
 
     try:
         auth_data = await api_client.auth_login(
-            user_data["email"], user_data["password"]
+            user_data["email"],
+            user_data["password"],
         )
     except AuthorizationException:
         await callback.message.edit_text(
-            text="❌ Данные неверны!", reply_markup=start_keyboard
+            text="❌ Данные неверны!",
+            reply_markup=start_keyboard,
         )
         await state.clear()
         return

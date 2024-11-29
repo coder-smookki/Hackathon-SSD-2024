@@ -24,7 +24,12 @@ async def cancel_filter(
     await state.update_data(filter=data["filter"], page=1)
     await state.set_state(FiltersState.base)
     meetings, meetings_count = await api_client.get_meetings(
-        token, 1, data["date_from"], data["date_to"], data["state"], data["filter"]
+        token,
+        1,
+        data["date_from"],
+        data["date_to"],
+        data["state"],
+        data["filter"],
     )
     await callback.message.edit_text(
         refactor_meetings(meetings),

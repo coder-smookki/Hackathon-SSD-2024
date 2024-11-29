@@ -23,7 +23,8 @@ class UserModel(AlchemyBaseModel):
     token_expired_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
     refresh_token: Mapped[str] = mapped_column(String(1000), nullable=False)
     refresh_token_expired_at: Mapped[datetime] = mapped_column(
-        DateTime(), nullable=False
+        DateTime(),
+        nullable=False,
     )
 
     events: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)

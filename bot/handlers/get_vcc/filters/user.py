@@ -13,7 +13,8 @@ filter_user_router = Router(name=__name__)
 
 
 @filter_user_router.callback_query(
-    FiltersState.base, FilterVcc.filter(F.name == "user")
+    FiltersState.base,
+    FilterVcc.filter(F.name == "user"),
 )
 async def filter_user_date(
     callback: CallbackQuery,
@@ -21,13 +22,17 @@ async def filter_user_date(
 ):
     await state.set_state(FiltersState.user)
     await callback.message.edit_text(
-        "Введите Имейл админа", reply_markup=cancel_user_keyboard
+        "Введите Имейл админа",
+        reply_markup=cancel_user_keyboard,
     )
 
 
 @filter_user_router.message(FiltersState.user)
 async def get_filter_user_date(
-    message: Message, state: FSMContext, api_client: AsyncAPIClient, token: str
+    message: Message,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
 ):
     if not is_valid_email(message.text):
         await message.answer("это не имейл", reply_markup=cancel_user_keyboard)
@@ -41,7 +46,12 @@ async def get_filter_user_date(
     await state.update_data(filter=data["filter"], page=1)
     await state.set_state(FiltersState.base)
     meetings, meetings_count = await api_client.get_meetings(
-        token, 1, data["date_from"], data["date_to"], data["state"], data["filter"]
+        token,
+        1,
+        data["date_from"],
+        data["date_to"],
+        data["state"],
+        data["filter"],
     )
     await message.answer(
         refactor_meetings(meetings),

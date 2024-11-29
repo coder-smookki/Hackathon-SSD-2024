@@ -31,8 +31,8 @@ yes_no_keyboard = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(text=YES, callback_data=YesNo(result=YES).pack()),
             InlineKeyboardButton(text=NO, callback_data=YesNo(result=NO).pack()),
-        ]
-    ]
+        ],
+    ],
 )
 
 

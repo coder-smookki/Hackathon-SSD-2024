@@ -16,7 +16,7 @@ users_router = APIRouter()
 
 
 @users_router.get("/users_jwt/{tg_id}", response_model=Union[dict, str])
-async def get_users_jwt_handler(tg_id) -> Union[dict, list]:
+async def get_users_jwt_handler(tg_id) -> dict | list:
 
     if not tg_id.isdigit():
         return {"status": "400 bad request", "messages": []}
@@ -28,7 +28,7 @@ async def get_users_jwt_handler(tg_id) -> Union[dict, list]:
     async with session_maker() as session:
 
         result = await session.execute(
-            select(UserModel).where(UserModel.tg_id == tg_id)
+            select(UserModel).where(UserModel.tg_id == tg_id),
         )
         print(result)
         user = result.scalar_one_or_none()

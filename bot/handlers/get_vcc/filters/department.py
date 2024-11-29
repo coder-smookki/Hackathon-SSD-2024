@@ -19,10 +19,14 @@ filter_department_router = Router(name=__name__)
 
 
 @filter_department_router.callback_query(
-    FiltersState.base, FilterVcc.filter(F.name == "department")
+    FiltersState.base,
+    FilterVcc.filter(F.name == "department"),
 )
 async def filter_department_datd(
-    callback: CallbackQuery, state: FSMContext, api_client: AsyncAPIClient, token: str
+    callback: CallbackQuery,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
 ):
     await state.set_state(FiltersState.department)
     departments = await api_client.get_departments(token)
@@ -45,7 +49,12 @@ async def get_filter_department_data(
     await state.update_data(filter=data["filter"], page=1)
     await state.set_state(FiltersState.base)
     meetings, meetings_count = await api_client.get_meetings(
-        token, 1, data["date_from"], data["date_to"], data["state"], data["filter"]
+        token,
+        1,
+        data["date_from"],
+        data["date_to"],
+        data["state"],
+        data["filter"],
     )
     await callback.message.edit_text(
         refactor_meetings(meetings),

@@ -24,7 +24,10 @@ class AsyncAPIClient:
 
     # Получение jwt токена для пользователя
     async def auth_login(
-        self, login: str, password: str, params: dict = None
+        self,
+        login: str,
+        password: str,
+        params: dict = None,
     ) -> dict[str, Any]:
         data = {
             "login": login,
@@ -36,7 +39,9 @@ class AsyncAPIClient:
         }
 
         async with self.session.post(
-            "https://test.vcc.uriit.ru/api/auth/login", json=data, headers=headers
+            "https://test.vcc.uriit.ru/api/auth/login",
+            json=data,
+            headers=headers,
         ) as response:
             if response.status == 200:
                 response_data = await response.json()
@@ -47,7 +52,8 @@ class AsyncAPIClient:
     async def auth_logout(self, token: str):
         headers = {"Authorization": "bearer " + token}
         async with self.session.get(
-            "https://test.vcc.uriit.ru/api/auth/logout", headers=headers
+            "https://test.vcc.uriit.ru/api/auth/logout",
+            headers=headers,
         ) as response:
             return {"data": await response.json(), "status": response.status}
 
@@ -78,7 +84,7 @@ class AsyncAPIClient:
         backend: str,
         settings: dict,
         place: str | None = None,
-    ) -> Optional[Any]:
+    ) -> Any | None:
         data = {
             "name": name_vks,
             "participantsCount": participants_count_vks,
@@ -105,7 +111,9 @@ class AsyncAPIClient:
         if place is not None:
             data["roomId"] = place
         async with self.session.post(
-            "https://test.vcc.uriit.ru/api/meetings", json=data, headers=headers
+            "https://test.vcc.uriit.ru/api/meetings",
+            json=data,
+            headers=headers,
         ) as response:
             try:
                 data = await response.json()
@@ -137,7 +145,8 @@ class AsyncAPIClient:
     async def get_user(self, jwt_token: str, email: str):
         headers = {"Authorization": "bearer " + jwt_token}
         async with self.session.get(
-            f"https://test.vcc.uriit.ru/api/users?email={email}", headers=headers
+            f"https://test.vcc.uriit.ru/api/users?email={email}",
+            headers=headers,
         ) as response:
             data = {"data": await response.json(), "status": response.status}
         return data
@@ -165,7 +174,7 @@ class AsyncAPIClient:
             if response.ok:
                 data = await response.json()
             else:
-                raise Exception()
+                raise Exception
         return data["data"][:MEETINGS_ON_PAGE], data["rowsNumber"]
 
     async def get_departments(

@@ -1,7 +1,7 @@
 import asyncio
 import os
 from logging.config import fileConfig
-from typing import Any, List
+from typing import Any
 
 from alembic import context
 from alembic.script import ScriptDirectory
@@ -30,7 +30,7 @@ if config.config_file_name is not None:
 target_metadata = AlchemyBaseModel.metadata
 
 
-def process_revision_directives(context: Any, revision: str, directives: List[object]):
+def process_revision_directives(context: Any, revision: str, directives: list[object]):
     """
     Функция для обработки директив миграции и назначения нового номера ревизии.
 

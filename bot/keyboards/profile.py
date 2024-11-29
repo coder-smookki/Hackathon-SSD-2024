@@ -10,6 +10,6 @@ profile_keyboard = InlineKeyboardMarkup(
                 text=TextCommands.BACK_MENU,
                 callback_data=BackMenu(back_menu=Operation.BACK_MENU).pack(),
             ),
-        ]
-    ]
+        ],
+    ],
 )

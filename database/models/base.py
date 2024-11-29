@@ -24,7 +24,7 @@ class AlchemyBaseModel(DeclarativeBase):
             **{
                 c.name: getattr(self, c.name)
                 for c in self.__table__.columns  # type: ignore
-            }
+            },
         )
 
     def _repr(self, **fields: Any) -> str:

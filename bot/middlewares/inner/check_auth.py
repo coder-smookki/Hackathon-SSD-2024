@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict
+from collections.abc import Callable
+from typing import Any
 
 from aiogram import BaseMiddleware, Bot, Router
 from aiogram.types import Chat, TelegramObject
@@ -15,9 +16,9 @@ class AuthMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Any],
+        handler: Callable[[TelegramObject, dict[str, Any]], Any],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         """
         Выполнение middleware при достижении состояния ExtractData.confirm.

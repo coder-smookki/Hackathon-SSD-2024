@@ -36,14 +36,14 @@ def paginate_keyboard(
             InlineKeyboardButton(
                 text=PAGE_BACK,
                 callback_data=fabric(menu=menu, page=page - 1).pack(),
-            )
+            ),
         )
     if end < len(buttons):
         left_right.append(
             InlineKeyboardButton(
                 text=PAGE_FORWARD,
                 callback_data=fabric(menu=menu, page=page + 1).pack(),
-            )
+            ),
         )
     builder.row(*left_right, width=2)
 

@@ -49,7 +49,10 @@ async def get_date(message: Message, state: FSMContext):
 
 @start_router.message(GetVccState.date_to)
 async def get_date(
-    message: Message, state: FSMContext, api_client: AsyncAPIClient, token: str
+    message: Message,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
 ):
     """сохранение даты до, перенос в меню фильтров"""
     try:
@@ -62,7 +65,11 @@ async def get_date(
     data = await state.get_data()
     print(data)
     meetings, meetings_count = await api_client.get_meetings(
-        token, data["page"], data["date_from"], data["date_to"], "booked"
+        token,
+        data["page"],
+        data["date_from"],
+        data["date_to"],
+        "booked",
     )
     print(meetings)
     await message.answer(

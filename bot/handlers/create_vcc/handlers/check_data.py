@@ -14,7 +14,8 @@ check_data_vcc_router = Router(name=__name__)
 
 
 @check_data_vcc_router.callback_query(
-    CreateVccState.check_data, YesNo.filter(F.result == "Нет")
+    CreateVccState.check_data,
+    YesNo.filter(F.result == "Нет"),
 )
 async def no_check_data(
     callback: CallbackQuery,
@@ -26,7 +27,8 @@ async def no_check_data(
 
 
 @check_data_vcc_router.callback_query(
-    CreateVccState.check_data, YesNo.filter(F.result == "Да")
+    CreateVccState.check_data,
+    YesNo.filter(F.result == "Да"),
 )
 async def yes_check_data(
     callback: CallbackQuery,

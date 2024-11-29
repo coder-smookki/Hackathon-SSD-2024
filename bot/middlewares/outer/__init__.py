@@ -10,6 +10,6 @@ __all__ = (
     "JWTMiddleware",
     "LoggingMiddleware",
     "ServiceDIMiddleware",
-    "UserContextMiddleware",
     "ThrottlingMiddleware",
+    "UserContextMiddleware",
 )

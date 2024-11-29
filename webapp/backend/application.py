@@ -1,8 +1,9 @@
+import os
+import sys
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from users import users_routers
-import os, sys
-
 
 sys.path.insert(1, os.getcwd())
 all_routers = [*users_routers]

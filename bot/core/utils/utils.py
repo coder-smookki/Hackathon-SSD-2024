@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timedelta
 
-from aiogram.types import User, CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, User
 
 
 def is_valid_email(email: str) -> bool:
@@ -16,14 +16,16 @@ def parse_datetime(string: str) -> str:
         string (str): dd mm yyyy hh mm
 
     Returns:
-        str: 
+        str:
     """
-    return (datetime.strptime(string, "%d %m %Y %H %M")
-            - timedelta(hours=5)).isoformat() # смещение относительно utc
+    return (
+        datetime.strptime(string, "%d %m %Y %H %M") - timedelta(hours=5)
+    ).isoformat()  # смещение относительно utc
 
 
 def extract_username(from_user: User) -> str | None:
     return from_user.username or from_user.first_name or from_user.last_name
+
 
 def extract_chat_id(event: CallbackQuery | Message) -> int | None:
     if isinstance(event, CallbackQuery):

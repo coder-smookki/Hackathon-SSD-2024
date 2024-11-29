@@ -1,12 +1,12 @@
-from typing import Callable, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime
+from typing import Any, Callable, Dict
 
 from aiogram import BaseMiddleware, Bot
-from aiogram.types import TelegramObject, Chat
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Chat, TelegramObject
 
 from bot.core.api.api_vks import AsyncAPIClient
-from bot.core.utils.jwt import parse_token, get_expired_time_token
+from bot.core.utils.jwt import get_expired_time_token, parse_token
 from database.models import UserModel
 from database.repositories import UserAlchemyRepo
 
@@ -15,11 +15,12 @@ class JWTMiddleware(BaseMiddleware):
     """
     Middleware проверяет jwt токен, при необходимости обновляет его
     """
+
     async def __call__(
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Any],
         event: TelegramObject,
-        data: Dict[str, Any]
+        data: Dict[str, Any],
     ) -> Any:
         bot: Bot = data["bot"]
         event_chat: Chat | None = data.get("event_chat")
@@ -38,7 +39,7 @@ class JWTMiddleware(BaseMiddleware):
         if datetime.now() < user.token_expired_at:
             data["token"] = user.token
             return await handler(event, data)
-        
+
         # Обновление токена
         if datetime.now() < user.refresh_token_expired_at:
             new_data = await api_client.update_token(user.refresh_token)
@@ -49,15 +50,17 @@ class JWTMiddleware(BaseMiddleware):
             user.refresh_token_expired_at = get_expired_time_token(user.refresh_token)
 
             if new_data["user"]["birthday"] is not None:
-                user_birthday = datetime.strptime(new_data["user"]["birthday"], "%Y-%m-%d").date()
-            else: 
+                user_birthday = datetime.strptime(
+                    new_data["user"]["birthday"], "%Y-%m-%d"
+                ).date()
+            else:
                 user_birthday = None
 
-            user.first_name=new_data["user"]["firstName"]
-            user.last_name=new_data["user"]["lastName"]
-            user.midle_name=new_data["user"]["middleName"]
-            user.birthday=user_birthday
-            user.phone=new_data["user"]["phone"]
+            user.first_name = new_data["user"]["firstName"]
+            user.last_name = new_data["user"]["lastName"]
+            user.midle_name = new_data["user"]["middleName"]
+            user.birthday = user_birthday
+            user.phone = new_data["user"]["phone"]
 
             user = await user_repo.update(user)
 

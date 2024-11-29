@@ -1,97 +1,70 @@
-from datetime import datetime, timedelta
-
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery
 
-from bot.callbacks.create_vcc import (
-    StartCreateVcc, 
-    ChooseBackendVcc,
-    ChooseBuilding,
-    ChooseRoom,
-    StopAddUser
-)
+from bot.callbacks.create_vcc import ChooseBuilding, ChooseRoom
 from bot.callbacks.universal import YesNo
-from bot.callbacks.state import InStateData
-from bot.handlers.create_vcc.state import (
-    CreateVccState,
-    CiscoSettingsState,
-    VinteoSettingsState,
-    ExternalSettingsState
-)
-from bot.keyboards.create_vcc import (
-    choose_backend_keyboard, 
-    stop_add_users,
-    create_choose_building_keyboard,
-    create_choose_room_keyboard
-)
-from bot.keyboards.universal import yes_no_keyboard, back_menu_keyboard
-from bot.core.utils.enums import Operation
-from bot.core.utils.utils import parse_datetime
 from bot.core.api.api_vks import AsyncAPIClient
-from bot.core.utils.utils import is_valid_email
-from database.models import UserModel
 from bot.handlers.create_vcc.formulations import (
-    CREATION_VKS_CISCO, 
+    CREATION_VKS_CISCO,
     CREATION_VKS_EXTERNAL,
     CREATION_VKS_VINTEO,
-    END_CREATION_VKS
 )
-
+from bot.handlers.create_vcc.state import CreateVccState
+from bot.keyboards.create_vcc import (
+    create_choose_building_keyboard,
+    create_choose_room_keyboard,
+)
+from bot.keyboards.universal import yes_no_keyboard
+from database.models import UserModel
 
 room_vcc_router = Router(name=__name__)
 
-@room_vcc_router.callback_query(
-        CreateVccState.set_room,
-        YesNo.filter(F.result == "Да")
-)
+
+@room_vcc_router.callback_query(CreateVccState.set_room, YesNo.filter(F.result == "Да"))
 async def yes_set_room(
-        callback: CallbackQuery, 
-        state: FSMContext,
-        api_client: AsyncAPIClient,
-        token: str,
-    ):
+    callback: CallbackQuery,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
+):
     await state.set_state(CreateVccState.building)
     data = await api_client.get_buildings(token)
     await callback.message.edit_text(
-        "🔒 Выберите здание, где будет ВКС.", 
-        reply_markup=create_choose_building_keyboard(data["data"]["data"])
+        "🔒 Выберите здание, где будет ВКС.",
+        reply_markup=create_choose_building_keyboard(data["data"]["data"]),
     )
 
-@room_vcc_router.callback_query(
-        CreateVccState.building,
-        ChooseBuilding.filter()
-)
+
+@room_vcc_router.callback_query(CreateVccState.building, ChooseBuilding.filter())
 async def get_building(
-        callback: CallbackQuery, 
-        callback_data: ChooseBuilding,
-        state: FSMContext,
-        api_client: AsyncAPIClient,
-        token: str,
-    ):
+    callback: CallbackQuery,
+    callback_data: ChooseBuilding,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
+):
     await state.set_state(CreateVccState.room)
     data = await api_client.get_rooms(token, callback_data.id)
     await callback.message.edit_text(
-        "🔒 Выберите комнату для ВКС.", 
-        reply_markup=create_choose_room_keyboard(data["data"]["data"])
+        "🔒 Выберите комнату для ВКС.",
+        reply_markup=create_choose_room_keyboard(data["data"]["data"]),
     )
 
-@room_vcc_router.callback_query(
-        CreateVccState.room,
-        ChooseRoom.filter()
-)
+
+@room_vcc_router.callback_query(CreateVccState.room, ChooseRoom.filter())
 async def get_room(
-        callback: CallbackQuery, 
-        callback_data: ChooseRoom,
-        state: FSMContext,
-        api_client: AsyncAPIClient,
-        token: str,
-        user: UserModel
-    ):
+    callback: CallbackQuery,
+    callback_data: ChooseRoom,
+    state: FSMContext,
+    api_client: AsyncAPIClient,
+    token: str,
+    user: UserModel,
+):
     await state.set_state(CreateVccState.check_data)
     state_data = await state.get_data()
     data = dict(
-        jwt_token=token, # от тут не нужен
+        jwt_token=token,  # от тут не нужен
         organizer_id=user.vcc_id,
         name_vks=state_data["name"],
         date_vks=state_data["date"],
@@ -100,33 +73,42 @@ async def get_room(
         participants=state_data["participants"],
         backend=state_data["backend"],
         settings=state_data["settings"],
-        place=callback_data.id
+        place=callback_data.id,
     )
     if state_data["backend"] == "cisco":
         result = CREATION_VKS_CISCO.format(
-            name=data['name_vks'], participantsCount=data['participants_count_vks'],
-            startedAt=data['date_vks'], duration=data['duration_vks'],
-            backend=data['backend'], 
-            isMicrophoneOn='Да' if bool(data['settings']['isMicrophoneOn']) else 'Нет',
-            isVideoOn='Да' if bool(data['settings']['isVideoOn']) else 'Нет',
-            isWaitingRoomEnabled='Да' if bool(data['settings']['isWaitingRoomEnabled']) else 'Нет',
-            needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'
+            name=data["name_vks"],
+            participantsCount=data["participants_count_vks"],
+            startedAt=data["date_vks"],
+            duration=data["duration_vks"],
+            backend=data["backend"],
+            isMicrophoneOn="Да" if bool(data["settings"]["isMicrophoneOn"]) else "Нет",
+            isVideoOn="Да" if bool(data["settings"]["isVideoOn"]) else "Нет",
+            isWaitingRoomEnabled=(
+                "Да" if bool(data["settings"]["isWaitingRoomEnabled"]) else "Нет"
+            ),
+            needVideoRecording=(
+                "Да" if bool(data["settings"]["needVideoRecording"]) else "Нет"
+            ),
         )
     elif state_data["backend"] == "external":
         result = CREATION_VKS_EXTERNAL.format(
-            name=data['name_vks'], participantsCount=data['participants_count_vks'],
-            startedAt=data['date_vks'], duration=data['duration_vks'],
-            backend=data['backend'], 
-            externalUrl=data['settings']['externalUrl']
+            name=data["name_vks"],
+            participantsCount=data["participants_count_vks"],
+            startedAt=data["date_vks"],
+            duration=data["duration_vks"],
+            backend=data["backend"],
+            externalUrl=data["settings"]["externalUrl"],
         )
     if state_data["backend"] == "vinteo":
         result = CREATION_VKS_VINTEO.format(
-            name=data['name_vks'], participantsCount=data['participants_count_vks'],
-            startedAt=data['date_vks'], duration=data['duration_vks'],
-            backend=data['backend'], 
-            needVideoRecording='Да' if bool(data['settings']['needVideoRecording']) else 'Нет'
+            name=data["name_vks"],
+            participantsCount=data["participants_count_vks"],
+            startedAt=data["date_vks"],
+            duration=data["duration_vks"],
+            backend=data["backend"],
+            needVideoRecording=(
+                "Да" if bool(data["settings"]["needVideoRecording"]) else "Нет"
+            ),
         )
-    await callback.message.edit_text(
-        text=result,
-        reply_markup=yes_no_keyboard
-    )
+    await callback.message.edit_text(text=result, reply_markup=yes_no_keyboard)

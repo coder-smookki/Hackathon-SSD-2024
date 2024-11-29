@@ -3,7 +3,6 @@ from typing import Any
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
-from aiohttp import ClientSession
 
 from bot.core.api.api_vks import AsyncAPIClient
 from database.repositories import UserAlchemyRepo
@@ -24,9 +23,6 @@ class ServiceDIMiddleware(BaseMiddleware):
 
         api_client = AsyncAPIClient()
 
-        data.update(
-            user_repo=user_repo,
-            api_client=api_client
-        )
+        data.update(user_repo=user_repo, api_client=api_client)
 
         return await handler(event, data)

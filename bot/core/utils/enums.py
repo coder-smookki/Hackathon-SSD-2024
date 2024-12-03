@@ -10,7 +10,7 @@ class ValuesEnum(Enum):
 class StrEnum(str, Enum):
     def __str__(self) -> str:
         return str(self.value)
-    
+
 
 class ProfileField(StrEnum, ValuesEnum):
     EMAIL = "email"
@@ -21,25 +21,25 @@ class ProfileField(StrEnum, ValuesEnum):
 class SlashCommands(str, Enum):
     START = "start"
     MENU = "menu"
-    #BACK_MENU = "back_menu"
+    # BACK_MENU = "back_menu"
     HELP = "help"
     PROFILE = "profile"
     AUTHORIZATIONS = "authorization"
 
 
 class TextCommands(str, Enum):
-    HELP = 'Помощь'
-    PROFILE = 'Профиль'
-    MAIN_MENU = 'Главное меню'
-    BACK_MENU = 'Вернуться в меню'
-    VIEW_VKS = 'Просмотр ВКС'
-    CREATE_VKS = 'Создать ВКС'
-    LOGOUT = 'Выйти из аккаунта'
-    AUTHORIZATIONS = "Авторизация"
+    HELP = "⚙️Помощь"
+    PROFILE = "👤Профиль"
+    MAIN_MENU = "📍Главное меню"
+    BACK_MENU = "⬅️Вернуться в меню"
+    VIEW_VKS = "🔍Просмотр ВКС"
+    CREATE_VKS = "🖥Создать ВКС"
+    LOGOUT = "🚪Выйти из аккаунта"
+    AUTHORIZATIONS = "❓Авторизация"
 
 
 class Operation(str, Enum):
-    '''Для Callbacks'''
+    """Для Callbacks"""
 
     PROFILE = "profile"
     MENU = "menu"

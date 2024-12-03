@@ -24,22 +24,23 @@ services:
         build:
             context: .
             dockerfile: ./webapp/backend/Dockerfile
+        env_file: .env
         ports:
             - "8001:8001"
-        networks:
-            - app-network
+        # networks:
+        #     - app-network
 
-    frontend:
-        image: ssd-frontend-image
-        container_name: ssd-frontend
-        restart: unless-stopped
-        build:
-            context: .
-            dockerfile: ./webapp/frontend/Dockerfile
-        ports:
-            - "1234:1234"
-        networks:
-            - app-network
+    # frontend:
+    #     image: ssd-frontend-image
+    #     container_name: ssd-frontend
+    #     restart: unless-stopped
+    #     build:
+    #         context: .
+    #         dockerfile: ./webapp/frontend/Dockerfile
+    #     ports:
+    #         - "1234:1234"
+    #     networks:
+    #         - app-network
 
     database:
         image: postgres:15.4-alpine
@@ -74,6 +75,6 @@ services:
     #     links:
     #         - database
 
-networks:
-  app-network:
-    driver: bridge
+# networks:
+#   app-network:
+#     driver: bridge

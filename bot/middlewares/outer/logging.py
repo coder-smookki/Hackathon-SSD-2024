@@ -1,11 +1,11 @@
-from typing import TYPE_CHECKING, Any, Union, cast
+from typing import TYPE_CHECKING, Any, cast
 
-from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED
 from aiogram import BaseMiddleware
-from loguru import logger
+from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED
 from aiogram.types import User
+from loguru import logger
 
-from bot.core.utils.utils import extract_username, extract_chat_id
+from bot.core.utils.utils import extract_chat_id, extract_username
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -89,10 +89,9 @@ class LoggingMiddleware(BaseMiddleware):
         )
         return result
 
-
     def get_short_info(
         self,
-        event: "Union[CallbackQuery, Message]",
+        event: "CallbackQuery | Message",
     ) -> str | None:
         """Короткая информация о пользователе для логов."""
         from_user = cast(User, event.from_user)

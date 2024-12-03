@@ -1,10 +1,10 @@
 from abc import ABC
-from typing import Union, cast
+from typing import cast
 
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message, User
 
-from bot.utils.utils import extract_username
+from bot.core.utils.utils import extract_username
 
 
 class BaseInfoMiddleware(BaseMiddleware, ABC):
@@ -12,7 +12,7 @@ class BaseInfoMiddleware(BaseMiddleware, ABC):
 
     def get_short_info(
         self,
-        event: "Union[CallbackQuery, Message]",
+        event: "CallbackQuery | Message",
     ) -> str | None:
         """Короткая информация о пользователе для логов."""
         from_user = cast(User, event.from_user)
@@ -23,7 +23,7 @@ class BaseInfoMiddleware(BaseMiddleware, ABC):
         )
 
     @staticmethod
-    def extract_chat_id(event: "Union[CallbackQuery, Message]") -> int | None:
+    def extract_chat_id(event: "CallbackQuery | Message") -> int | None:
         """
         Получение имени для бд из сообщения или нажатия кнопки.
 

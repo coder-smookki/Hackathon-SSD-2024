@@ -1,11 +1,11 @@
 import asyncio
 import os
 from logging.config import fileConfig
-from typing import List, Any
-from dotenv import load_dotenv
+from typing import Any
 
 from alembic import context
 from alembic.script import ScriptDirectory
+from dotenv import load_dotenv
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -13,8 +13,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from database.models import *
 from database.models.base import AlchemyBaseModel
 
-
-load_dotenv() # Загрузка переменных из .env файла
+load_dotenv()  # Загрузка переменных из .env файла
 
 config = context.config
 
@@ -31,7 +30,7 @@ if config.config_file_name is not None:
 target_metadata = AlchemyBaseModel.metadata
 
 
-def process_revision_directives(context: Any, revision: str, directives: List[object]):
+def process_revision_directives(context: Any, revision: str, directives: list[object]):
     """
     Функция для обработки директив миграции и назначения нового номера ревизии.
 

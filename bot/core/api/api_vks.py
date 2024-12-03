@@ -176,6 +176,28 @@ class AsyncAPIClient:
             else:
                 raise Exception
         return data["data"][:MEETINGS_ON_PAGE], data["rowsNumber"]
+    
+    async def get_meetings_by_id(
+        self,
+        jwt_token: str,
+        id: int,
+    ) -> tuple[list, int]:  # (meetings, rowsNumber)
+        url = f"https://test.vcc.uriit.ru/api/meetings/{id}"
+        headers = {"Authorization": "bearer " + jwt_token}
+        # params = {
+        #     "page": page,
+        #     "rowsPerPage": MEETINGS_ON_PAGE,
+        #     "fromDatetime": date_from,
+        #     "toDatetime": date_to,
+        #     "state": state,
+        # }
+        # params.update(**filters)
+        async with self.session.get(url, headers=headers) as response:
+            if response.ok:
+                data = await response.json()
+            else:
+                raise Exception
+        return data["data"][:MEETINGS_ON_PAGE], data["rowsNumber"]
 
     async def get_departments(
         self,

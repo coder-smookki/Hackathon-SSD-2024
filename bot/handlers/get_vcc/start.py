@@ -72,6 +72,7 @@ async def get_date(
         "booked",
     )
     print(meetings)
+    #meetings
     await message.answer(
         refactor_meetings(meetings),
         reply_markup=get_filters_keyboard(meetings_count, 1),
